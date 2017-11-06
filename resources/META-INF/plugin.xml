@@ -1,0 +1,41 @@
+<idea-plugin>
+  <id>com.janusresearch.tdXmlPlugin</id>
+  <name>TD Xml Tools</name>
+  <version>1.0</version>
+  <vendor email="jim.timmerman@janusresearch.com" url="http://www.janusresearch.com">Janus Research Group, Inc.</vendor>
+
+  <description><![CDATA[
+      This a proprietary plugin created for Janus Training Developers.<br><br>
+      Provides actions for:<br><br>
+      - Renumbering a Lesson
+    ]]></description>
+
+  <change-notes><![CDATA[
+      Added support for Indented Sub Steps.<br>
+    ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="145.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+    <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.dom.XmlDomFileDescription"/>
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+    <action id="renumberLesson" class="com.janusresearch.tdXmlPlugin.RenumberLesson"
+            text="Renumber Lesson" description="Renumbers a lesson automatically"
+            icon="PluginIcons.renumberLesson">
+      <add-to-group group-id="MainToolBar" anchor="after" relative-to-action="HelpTopics"/>
+    </action>
+  </actions>
+
+</idea-plugin>

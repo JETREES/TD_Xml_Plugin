@@ -22,9 +22,7 @@ public class WriteToXmlFile {
 
             //replace the StepTree name and id attributes so they are in sequence starting with 01
             int i = 0;
-            Notifications.showInformationMessage("StepTree Modifications");
             for (XmlAttribute[] a : nodeAttributes) {
-                String message = ("<node name=\"" + a[0].getValue() + "\" parent=\"" + a[1].getValue() + "\" id=\"" + a[2].getValue() + "\"/>  changed to  ");
                 if (i < 9) {
                     a[0].setValue("0" + (i + 1));
                     a[2].setValue("0" + (i + 1));
@@ -55,7 +53,6 @@ public class WriteToXmlFile {
                 else {
                     a[1].setValue("0");
                 }
-                Notifications.showInformationMessage(message + "<node name=\"" + a[0].getValue() + "\" parent=\"" + a[1].getValue() + "\" id=\"" + a[2].getValue() + "\"/>");
             }
 
             //replace each Frame id, node and weight attributes in sequence

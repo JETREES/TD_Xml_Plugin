@@ -9,6 +9,7 @@ import com.intellij.structuralsearch.impl.matcher.compiler.CompileContext;
 import com.intellij.ui.content.MessageView;
 import com.intellij.ui.content.impl.MessageViewImpl;
 import com.intellij.util.xml.DomManager;
+import com.janusresearch.tdXmlPlugin.debug.Debug;
 import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import com.janusresearch.tdXmlPlugin.notification.Notifications;
@@ -45,7 +46,10 @@ public class RenumberLesson extends AnAction {
 
             if (Objects.equals(xmlRoot.getXmlElementName(), "Module")) {
                 //Process the Step Tree
-                new StepTree(xmlRoot);
+                StepTree stepTree = new StepTree(xmlRoot);
+                stepTree.storeNodeAttributes();
+                stepTree.storeOldNodeValues();
+                stepTree.storeNewNodeValues();
 
                 //Process the xml FrameSet and create an Object of that class
                 new FrameSet(xmlRoot);
@@ -57,13 +61,13 @@ public class RenumberLesson extends AnAction {
                 new CommandMacros(xmlRoot, FrameSet.oldToNewFrameValues);
 
                 //write all the stored data from arrays to the xml file
-                WriteToXmlFile.writeFile(project, StepTree.nodeAttributes, FrameSet.frameAttributes);
+                WriteToXmlFile.writeFile(project, stepTree, FrameSet.frameAttributes);
 
                 //Determine if the Last StepTree node id is equal to the Last Frame node id then show a notification when it doesn't
-                int lastNode = Integer.parseInt(StepTree.nodeAttributes[StepTree.nodeAttributes.length - 1][2].getValue());
+                int lastNode = Integer.parseInt(stepTree.getNodeAttributes()[stepTree.getNodeCount() - 1][2].getValue());
                 int lastFrame = Integer.parseInt(FrameSet.frameAttributes[FrameSet.frameAttributes.length - 1][1].getValue());
                 if (lastNode != lastFrame) {
-                    Notifications.showWarningMessage("Last StepTree node id not equal to Last Frame node id.\nXml contains too many/too few StepTree nodes.");
+                    Notifications.showWarningMessage("Last StepTree node id not equal to Last Frame node id.  Xml contains too many/too few StepTree nodes.");
                 }
 
 

@@ -42,7 +42,7 @@ public class CommandMacros {
 
                     //If the value contains an open bracket
                     if (send.getValue().contains("[") ) {
-                        value = send.getValue().substring(12, (length - 1));
+                        value = send.getValue().substring(13, (length - 1));
                     }
                     else {
                         value = send.getValue().substring(12);

@@ -6,6 +6,7 @@ package com.janusresearch.tdXmlPlugin.write;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.xml.XmlAttribute;
+import com.janusresearch.tdXmlPlugin.debug.Debug;
 import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.notification.Notifications;
 import com.janusresearch.tdXmlPlugin.xml.CommandMacros;
@@ -21,50 +22,82 @@ public class WriteToXmlFile {
         //Start writing to the xml file
         WriteCommandAction.runWriteCommandAction(project, () -> {
 
-            //replace the StepTree name and id attributes so they are in sequence starting with 01
             int i = 0;
-            for (XmlAttribute[] x : stepTree.getNodeAttributes()) {
-                x[0].setValue(stepTree.getNewNodeValues()[i][0]);
-                x[1].setValue(stepTree.getNewNodeValues()[i][1]);
-                x[2].setValue(stepTree.getNewNodeValues()[i][2]);
-                i++;
+            try {
+                //replace the StepTree name and id attributes so they are in sequence starting with 01
+                for (XmlAttribute[] x : stepTree.getNodeAttributes()) {
+                    x[0].setValue(stepTree.getNewNodeValues()[i][0]);
+                    x[1].setValue(stepTree.getNewNodeValues()[i][1]);
+                    x[2].setValue(stepTree.getNewNodeValues()[i][2]);
+                    i++;
+                }
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+                Debug.print("StepTree " + e.getMessage());
             }
 
-            //replace each Frame id, node and weight attributes in sequence
             i = 0;
-            for (XmlAttribute[] x : frameSet.getFrameAttributes()) {
-                x[0].setValue(frameSet.getNewFrameValues()[i][0]);
-                x[1].setValue(frameSet.getNewFrameValues()[i][1]);
-                x[2].setValue(frameSet.getNewFrameValues()[i][2]);
-                i++;
+            try {
+                //replace each Frame id, node and weight attributes in sequence
+                for (XmlAttribute[] x : frameSet.getFrameAttributes()) {
+                    x[0].setValue(frameSet.getNewFrameValues()[i][0]);
+                    x[1].setValue(frameSet.getNewFrameValues()[i][1]);
+                    x[2].setValue(frameSet.getNewFrameValues()[i][2]);
+                    i++;
+                }
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+                Debug.print("Frame " + e.getMessage());
             }
 
-            //replace each Play Events nextid attribute value
             i = 0;
-            for (XmlAttribute p : Events.playEvents) {
-                p.setValue(Events.newPlayEventsValues.get(i));
-                i++;
+            try {
+                //replace each Play Events nextid attribute value
+                for (XmlAttribute p : Events.playEvents) {
+                    p.setValue(Events.newPlayEventsValues.get(i));
+                    i++;
+                }
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+                Debug.print("Play " + e.getMessage());
             }
 
-            //replace each Back Events nextid attribute value
             i = 0;
-            for (XmlAttribute b : Events.backEvents) {
-                b.setValue(Events.newBackEventsValues.get(i));
-                i++;
+            try {
+                //replace each Back Events nextid attribute value
+                for (XmlAttribute b : Events.backEvents) {
+                    b.setValue(Events.newBackEventsValues.get(i));
+                    i++;
+                }
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+                Debug.print("Back " + e.getMessage());
             }
 
-            //replace each Other Events nextid attribute value
             i = 0;
-            for (XmlAttribute o : Events.otherEvents) {
-                o.setValue(Events.newOtherEventsValues.get(i));
-                i++;
+            try {
+                //replace each Other Events nextid attribute value
+                for (XmlAttribute o : Events.otherEvents) {
+                    o.setValue(Events.newOtherEventsValues.get(i));
+                    i++;
+                }
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+                Debug.print("Other " + e.getMessage());
             }
 
-            //replace FrameChange commands for CommandMacros
             i = 0;
-            for (XmlAttribute f : CommandMacros.frameChangeCommands) {
-                f.setValue(CommandMacros.newFrameChangeCommandsValues.get(i));
-                i++;
+            try {
+                if (CommandMacros.frameChangeCommands.size() != 0) {
+                    //replace FrameChange commands for CommandMacros
+                    for (XmlAttribute f : CommandMacros.frameChangeCommands) {
+                        f.setValue(CommandMacros.newFrameChangeCommandsValues.get(i));
+                        i++;
+                    }
+                }
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+                Debug.print("FrameChange" + e.getMessage());
             }
         });
     }

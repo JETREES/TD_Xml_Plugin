@@ -13,7 +13,7 @@ public class CommandMacros {
     public static List<String> newFrameChangeCommandsValues = new ArrayList<>();
 
     @SuppressWarnings("ConstantConditions")
-    public CommandMacros(XmlRoot xmlRoot, String[][] oldToNewFrameValues) {
+    public CommandMacros(XmlRoot xmlRoot, String[][] oldFrameValues, String[][] newFrameValues) {
         //Get the CommandMacros XmlTag
         XmlTag commandMacros = xmlRoot.getXmlTag().findFirstSubTag("CommandMacros");
 
@@ -48,13 +48,15 @@ public class CommandMacros {
                         value = send.getValue().substring(12);
                     }
 
-                    for (String[] s : oldToNewFrameValues) {
+                    int i = 0;
+                    for (String[] s : oldFrameValues) {
                         //If the FrameChange ID equals an old Frame ID
                         //Then set it to the new Frame ID
                         if (Objects.equals(s[0], value)) {
-                            newFrameChangeCommandsValues.add("FrameChange [" + s[1] + "]");
+                            newFrameChangeCommandsValues.add("FrameChange [" + newFrameValues[i][0] + "]");
                             break;
                         }
+                        i++;
                     }
                 }
             }

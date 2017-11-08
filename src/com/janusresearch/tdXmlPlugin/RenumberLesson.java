@@ -52,20 +52,23 @@ public class RenumberLesson extends AnAction {
                 stepTree.storeNewNodeValues();
 
                 //Process the xml FrameSet and create an Object of that class
-                new FrameSet(xmlRoot);
+                FrameSet frameSet = new FrameSet(xmlRoot);
+                frameSet.storeFrameAttributes();
+                frameSet.storeOldFrameValues();
+                frameSet.storeNewFrameValues();
 
                 //Process every Frames Events and create an Object of that class
-                new Events(FrameSet.frames);
+                new Events(frameSet.getFrames());
 
                 //Process CommandMacros to collect all FrameChange commands
-                new CommandMacros(xmlRoot, FrameSet.oldToNewFrameValues);
+                new CommandMacros(xmlRoot, frameSet.getOldFrameValues(), frameSet.getNewFrameValues());
 
                 //write all the stored data from arrays to the xml file
-                WriteToXmlFile.writeFile(project, stepTree, FrameSet.frameAttributes);
+                WriteToXmlFile.writeFile(project, stepTree, frameSet.getFrameAttributes());
 
                 //Determine if the Last StepTree node id is equal to the Last Frame node id then show a notification when it doesn't
                 int lastNode = Integer.parseInt(stepTree.getNodeAttributes()[stepTree.getNodeCount() - 1][2].getValue());
-                int lastFrame = Integer.parseInt(FrameSet.frameAttributes[FrameSet.frameAttributes.length - 1][1].getValue());
+                int lastFrame = Integer.parseInt(frameSet.getFrameAttributes()[frameSet.getFrameCount() - 1][1].getValue());
                 if (lastNode != lastFrame) {
                     Notifications.showWarningMessage("Last StepTree node id not equal to Last Frame node id.  Xml contains too many/too few StepTree nodes.");
                 }

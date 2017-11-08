@@ -27,17 +27,22 @@ public class StepTree {
         setNodeCount();
     }
 
+    /** Store the length of the StepTree as nodeCount */
+    private void setNodeCount() {
+        nodeCount = getNodes().length;
+    }
+
     /** Store the reference to every StepTree node attributes in the nodeAttributes array */
     public void storeNodeAttributes() {
         storeNodes();
         //Set array size based on nodes array length
         nodeAttributes = new XmlAttribute[nodeCount][3];
         int i = 0;
-        for (XmlTag n : getNodes()) {
+        for (XmlTag x : getNodes()) {
             //Store the name, parent and id attributes in the array
-            nodeAttributes[i][0] = n.getAttribute("name");
-            nodeAttributes[i][1] = n.getAttribute("parent");
-            nodeAttributes[i][2] = n.getAttribute("id");
+            nodeAttributes[i][0] = x.getAttribute("name");
+            nodeAttributes[i][1] = x.getAttribute("parent");
+            nodeAttributes[i][2] = x.getAttribute("id");
             i++;
         }
     }
@@ -47,18 +52,13 @@ public class StepTree {
         //Set array size based on nodes array length
         oldNodeValues = new String[nodeCount][3];
         int i = 0;
-        for (XmlAttribute[] a : getNodeAttributes()) {
-            //store the old and new values for each node
-            oldNodeValues[i][0] = a[0].getValue();
-            oldNodeValues[i][1] = a[1].getValue();
-            oldNodeValues[i][2] = a[2].getValue();
+        for (XmlAttribute[] x : getNodeAttributes()) {
+            //store the old values for each node
+            oldNodeValues[i][0] = x[0].getValue();
+            oldNodeValues[i][1] = x[1].getValue();
+            oldNodeValues[i][2] = x[2].getValue();
             i++;
         }
-    }
-
-    /** Store the length of the StepTree as nodeCount */
-    private void setNodeCount() {
-        nodeCount = getNodes().length;
     }
 
     /** Store the new values for each node in the newNodeValues array */
@@ -67,6 +67,7 @@ public class StepTree {
         newNodeValues = new String[nodeCount][3];
         int i = 0;
         for (String[] s : getNewNodeValues()) {
+            //Store the new node values
             if (i < 9) {
                 s[0] = "0" + (i + 1);
                 s[2] = "0" + (i + 1);
@@ -75,6 +76,10 @@ public class StepTree {
                 s[0] = String.valueOf(i + 1);
                 s[2] = String.valueOf(i + 1);
             }
+            //All parents are set to 0 in the new node value array
+            //in order to prevent a case where we have a null array index
+            //and allowing for more simplified logic when dealing with the
+            //indented sub steps
             s[1] = "0";
             i++;
         }
@@ -87,8 +92,8 @@ public class StepTree {
                 String oldParent = getOldNodeValues()[i][1];
                 if (!Objects.equals(oldParent, "0")) {
                     int j = 0;
-                    for (String[] n : getOldNodeValues()) {
-                        if (Objects.equals(oldParent, n[0])) {
+                    for (String[] st : getOldNodeValues()) {
+                        if (Objects.equals(oldParent, st[0])) {
                             s[1] = getNewNodeValues()[j][0];
                             break;
                         }

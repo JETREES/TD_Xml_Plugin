@@ -100,15 +100,6 @@ public class StepTree {
         }
     }
 
-
-
-
-
-
-
-
-
-
     /** Returns the nodes array */
     private XmlTag[] getNodes() {
         return nodes;

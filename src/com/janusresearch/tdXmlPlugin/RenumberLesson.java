@@ -5,21 +5,14 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
-import com.intellij.structuralsearch.impl.matcher.compiler.CompileContext;
-import com.intellij.ui.content.MessageView;
-import com.intellij.ui.content.impl.MessageViewImpl;
 import com.intellij.util.xml.DomManager;
-import com.janusresearch.tdXmlPlugin.debug.Debug;
 import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import com.janusresearch.tdXmlPlugin.notification.Notifications;
 import com.janusresearch.tdXmlPlugin.write.WriteToXmlFile;
 import com.janusresearch.tdXmlPlugin.xml.CommandMacros;
-import com.janusresearch.tdXmlPlugin.xml.Events;
 import com.janusresearch.tdXmlPlugin.xml.FrameSet;
 import com.janusresearch.tdXmlPlugin.xml.StepTree;
-import org.intellij.plugins.relaxNG.validation.MessageViewHelper;
-import org.jetbrains.jps.api.CmdlineRemoteProto;
 
 import java.util.Objects;
 
@@ -51,14 +44,12 @@ public class RenumberLesson extends AnAction {
                 stepTree.storeOldNodeValues();
                 stepTree.storeNewNodeValues();
 
-                //Process the xml FrameSet and create an Object of that class
+                //Process the FrameSet
                 FrameSet frameSet = new FrameSet(xmlRoot);
                 frameSet.storeFrameAttributes();
                 frameSet.storeOldFrameValues();
                 frameSet.storeNewFrameValues();
-
-                //Process every Frames Events and create an Object of that class
-                new Events(frameSet.getFrames());
+                frameSet.processEvents();
 
                 //Process CommandMacros to collect all FrameChange commands
                 new CommandMacros(xmlRoot, frameSet.getOldFrameValues(), frameSet.getNewFrameValues());

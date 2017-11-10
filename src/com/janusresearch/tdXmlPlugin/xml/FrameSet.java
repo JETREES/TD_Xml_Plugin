@@ -3,6 +3,7 @@ package com.janusresearch.tdXmlPlugin.xml;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -199,6 +200,7 @@ public class FrameSet {
     }
 
     /** Returns the frames array */
+    @Contract(pure = true)
     private XmlTag[] getFrames() {
         return frames;
     }

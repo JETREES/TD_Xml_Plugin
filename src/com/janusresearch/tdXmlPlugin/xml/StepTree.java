@@ -4,6 +4,7 @@ import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import org.jetbrains.annotations.Contract;
 
 import java.util.Objects;
 
@@ -106,6 +107,7 @@ public class StepTree {
     }
 
     /** Returns the nodes array */
+    @Contract(pure = true)
     private XmlTag[] getNodes() {
         return nodes;
     }

@@ -8,52 +8,52 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("ConstantConditions")
 public class CommandMacros {
-    public static List<XmlAttribute> frameChangeCommands = new ArrayList<>();
-    public static List<String> newFrameChangeCommandsValues = new ArrayList<>();
+    private XmlRoot root;
+    private XmlTag[] macros;
+    private List<XmlAttribute> frameChangeCommands = new ArrayList<>();
+    private List<String> newFrameChangeValues = new ArrayList<>();
 
-    @SuppressWarnings("ConstantConditions")
-    public CommandMacros(XmlRoot xmlRoot, String[][] oldFrameValues, String[][] newFrameValues) {
-        //Get the CommandMacros XmlTag
-        XmlTag commandMacros = xmlRoot.getXmlTag().findFirstSubTag("CommandMacros");
+    public CommandMacros(XmlRoot xmlRoot) {
+        root = xmlRoot;
+    }
 
-        //Get all sub tags from CommandMacros
-        XmlTag[] macros = commandMacros.findSubTags("Macro");
+    private void storeMacros() {
+        macros = root.getXmlTag().findFirstSubTag("CommandMacros").findSubTags("Macro");
+    }
 
-        for (XmlTag m : macros) {
-            //Get all sub tags from Macros
-            XmlTag[] commands = m.findSubTags("Command");
+    private void addFrameChange(XmlAttribute x) {
+        frameChangeCommands.add(x);
+    }
 
-            for (XmlTag c : commands) {
+    private void addFrameChangeValue(String s) {
+        newFrameChangeValues.add(s);
+    }
 
-                //Get the current Command send attribute
+    private boolean isFrameChange(XmlAttribute x) {
+        return x.getValue().startsWith("FrameChange");
+    }
+
+    public void processMacros(String[][] oldFrameValues, String[][] newFrameValues) {
+        storeMacros();
+        for (XmlTag m : getMacros()) {
+            for (XmlTag c : getMacroCommands(m)) {
                 XmlAttribute send = c.getAttribute("send");
-
-                //if the send attribute starts with FrameChange
-                if (send.getValue().startsWith("FrameChange")) {
-
-                    //Add the current Command send attribute to the List
-                    frameChangeCommands.add(send);
-
-                    //Get the length of the FrameChange command
-                    //And create String variable to hold send value
-                    int length = send.getValue().length();
-                    String value;
-
-                    //If the value contains an open bracket
+                if (isFrameChange(send)) {
+                    addFrameChange(send);
+                    String frameId;
                     if (send.getValue().contains("[") ) {
-                        value = send.getValue().substring(13, (length - 1));
+                        frameId = send.getValue().substring(13, (getLength(send) - 1));
                     }
                     else {
-                        value = send.getValue().substring(12);
+                        frameId = send.getValue().substring(12);
                     }
 
                     int i = 0;
                     for (String[] s : oldFrameValues) {
-                        //If the FrameChange ID equals an old Frame ID
-                        //Then set it to the new Frame ID
-                        if (Objects.equals(s[0], value)) {
-                            newFrameChangeCommandsValues.add("FrameChange [" + newFrameValues[i][0] + "]");
+                        if (Objects.equals(s[0], frameId)) {
+                            addFrameChangeValue("FrameChange [" + newFrameValues[i][0] + "]");
                             break;
                         }
                         i++;
@@ -61,5 +61,25 @@ public class CommandMacros {
                 }
             }
         }
+    }
+
+    private XmlTag[] getMacros() {
+        return macros;
+    }
+
+    private XmlTag[] getMacroCommands(XmlTag x) {
+        return x.findSubTags("Command");
+    }
+
+    private int getLength(XmlAttribute x) {
+        return x.getValue().length();
+    }
+
+    public List<String> getNewFrameChangeValues() {
+        return newFrameChangeValues;
+    }
+
+    public List<XmlAttribute> getFrameChanges() {
+        return frameChangeCommands;
     }
 }

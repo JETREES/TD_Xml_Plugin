@@ -11,7 +11,7 @@ import com.janusresearch.tdXmlPlugin.xml.FrameSet;
 import com.janusresearch.tdXmlPlugin.xml.StepTree;
 
 public class WriteToXmlFile {
-    public static void writeFile(Project project, StepTree stepTree, FrameSet frameSet) {
+    public static void writeFile(Project project, StepTree stepTree, FrameSet frameSet, CommandMacros commandMacros) {
 
         //Start writing to the xml file
         WriteCommandAction.runWriteCommandAction(project, () -> {
@@ -57,9 +57,9 @@ public class WriteToXmlFile {
 
             i = 0;
             //replace FrameChange commands for CommandMacros
-            if (CommandMacros.frameChangeCommands.size() != 0) {
-                for (XmlAttribute f : CommandMacros.frameChangeCommands) {
-                    f.setValue(CommandMacros.newFrameChangeCommandsValues.get(i));
+            if (commandMacros.getFrameChanges().size() != 0) {
+                for (XmlAttribute f : commandMacros.getFrameChanges()) {
+                    f.setValue(commandMacros.getNewFrameChangeValues().get(i));
                     i++;
                 }
             }

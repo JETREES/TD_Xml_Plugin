@@ -2,8 +2,8 @@ package com.janusresearch.tdXmlPlugin.xml;
 
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
-import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,14 +84,15 @@ public class FrameSet {
             i++;
         }
 
-        i = 0;
+        /*i = 0;
         if (OptionsDialog.subStepsHidden) {
             int j;
             //TODO add code that handles hidden sub steps
-        }
+        }*/
     }
 
     /** Get all Event sub tags from a Frame */
+    @NotNull
     private XmlTag[] getFrameEvents(XmlTag x) {
         return x.findFirstSubTag("Events").findSubTags("Event");
     }
@@ -198,7 +199,7 @@ public class FrameSet {
     }
 
     /** Returns the frames array */
-    public XmlTag[] getFrames() {
+    private XmlTag[] getFrames() {
         return frames;
     }
 

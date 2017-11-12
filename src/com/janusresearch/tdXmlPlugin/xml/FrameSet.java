@@ -98,6 +98,40 @@ public class FrameSet {
         return x.findFirstSubTag("Events").findSubTags("Event");
     }
 
+    public int getStepCount() {
+        int count = 0;
+        for (XmlTag f : getFrames()) {
+            for (XmlTag e : getFrameEvents(f)) {
+                String get = e.getAttribute("get").getValue();
+
+
+
+
+
+                if (Objects.equals(get, "Play")) {
+                    count++;
+                    break;
+                }
+                else if (get.startsWith("LIST_ORDER")) {
+                    get = get.substring(11);
+                }
+                else if (get.startsWith("LIST_DISORDER")) {
+                    get = get.substring(14);
+                }
+                else if (get.startsWith("INSPECT") | get.startsWith("POSITION")) {
+                    count++;
+                }
+                else {
+                    if (!Objects.equals(get, "Back")) {
+                        count++;
+                    }
+
+                }
+            }
+        }
+        return count;
+    }
+
     /** Process Events from every Frame to determine new nextid values */
     public void processEvents() {
         int i = 0;

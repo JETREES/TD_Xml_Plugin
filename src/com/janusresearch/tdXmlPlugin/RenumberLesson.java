@@ -9,6 +9,7 @@ import com.intellij.util.xml.DomManager;
 import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import com.janusresearch.tdXmlPlugin.notification.Notifications;
+import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsole;
 import com.janusresearch.tdXmlPlugin.write.WriteToXmlFile;
 import com.janusresearch.tdXmlPlugin.xml.CommandMacros;
 import com.janusresearch.tdXmlPlugin.xml.FrameSet;
@@ -29,7 +30,8 @@ public class RenumberLesson extends AnAction {
 
         if (dialog.isOK()) {
             //get the current editor as a Xml File
-            XmlFile xmlFile = (XmlFile) e.getData(LangDataKeys.PSI_FILE);
+            PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
+            XmlFile xmlFile = (XmlFile) psiFile;
 
             //Create DomManager, FileDescription and register the description
             DomManager manager = DomManager.getDomManager(project);
@@ -69,6 +71,8 @@ public class RenumberLesson extends AnAction {
                 //Reset OptionsDialog values
                 OptionsDialog.subStepsIndented = false;
                 OptionsDialog.subStepsHidden = false;
+
+                XmlConsole.printLessonModifications(psiFile, stepTree, frameSet);
             }
         }
     }
@@ -89,8 +93,8 @@ public class RenumberLesson extends AnAction {
 
         //Set visibility of plugin button
         if (isXmlFile && nameMatchesSchema) {
-            e.getPresentation().setVisible(project != null && editor != null);
+            e.getPresentation().setEnabled(true);
         } else
-            e.getPresentation().setVisible(false);
+            e.getPresentation().setEnabled(false);
     }
 }

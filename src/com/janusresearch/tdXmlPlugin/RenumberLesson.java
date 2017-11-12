@@ -19,6 +19,8 @@ import java.util.Objects;
 
 public class RenumberLesson extends AnAction {
 
+
+
     @Override
     @SuppressWarnings("ConstantConditions")
     public void actionPerformed(AnActionEvent e) {

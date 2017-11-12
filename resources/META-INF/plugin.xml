@@ -26,9 +26,15 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <toolWindow id="XmlConsole" anchor="left" secondary="true" factoryClass="com.janusresearch.tdXmlPlugin.toolWindow.XmlConsole" icon="PluginIcons.xml" />
+        <!--<toolWindow id="XmlConsole" anchor="left" secondary="true" factoryClass="com.janusresearch.tdXmlPlugin.toolWindow.XmlConsole" icon="PluginIcons.xml" />-->
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.dom.XmlDomFileDescription"/>
     </extensions>
+
+    <project-components>
+        <component>
+            <implementation-class>TDXmlTools</implementation-class>
+        </component>
+    </project-components>
 
     <actions>
         <action id="renumberLesson" class="com.janusresearch.tdXmlPlugin.RenumberLesson"

@@ -3,7 +3,6 @@ package com.janusresearch.tdXmlPlugin.toolWindow;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -17,8 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class XmlConsole implements ToolWindowFactory{
     private static ConsoleView console;
@@ -40,6 +37,7 @@ public class XmlConsole implements ToolWindowFactory{
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         myToolWindow = toolWindow;
+        myToolWindow.setIcon(PluginIcons.xml);
 
         //Create a console, get its component and then add it to the console panel in the tool window
         console = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();

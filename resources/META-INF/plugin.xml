@@ -40,11 +40,9 @@
         <action id="renumberLesson" class="com.janusresearch.tdXmlPlugin.RenumberLesson"
                 text="Renumber Lesson" description="Renumbers a lesson automatically"
                 icon="PluginIcons.renumberLesson">
-            <!--<add-to-group group-id="MainToolBar" anchor="after" relative-to-action="HelpTopics"/>-->
         </action>
         <action id="stepCount" class="com.janusresearch.tdXmlPlugin.StepCount" text="Step Count"
                 description="Intelligently determines the step count for an APV lesson.">
-            <!--<add-to-group group-id="MainToolBar" anchor="after" relative-to-action="renumberLesson"/>-->
         </action>
 
         <group id="TD.Tools">

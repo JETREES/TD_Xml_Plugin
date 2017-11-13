@@ -10,4 +10,6 @@ public interface PluginIcons {
     Icon xml = IconLoader.getIcon("/icons/Components/xml.png");
     Icon deleteAll = IconLoader.getIcon("/icons/Actions/delete.png");
     Icon deleteAll_dark = IconLoader.getIcon("/icons/Actions/delete_dark.png");
+    Icon deleteAllDisabled = IconLoader.getIcon("/icons/Actions/deleteDisabled.png");
+    Icon deleteAllDisabled_dark = IconLoader.getIcon("/icons/Actions/deleteDisabled_dark.png");
 }

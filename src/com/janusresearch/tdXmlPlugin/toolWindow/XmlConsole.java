@@ -7,6 +7,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.psi.PsiFile;
+import com.intellij.ui.JBColor;
+import com.intellij.ui.RoundedLineBorder;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.janusresearch.tdXmlPlugin.xml.FrameSet;
@@ -16,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class XmlConsole implements ToolWindowFactory{
     private static ConsoleView console;
@@ -30,7 +34,28 @@ public class XmlConsole implements ToolWindowFactory{
         deleteAll.addActionListener(e -> {
             console.clear();
             deleteAll.setEnabled(false);
+            deleteAll.setBorder(null);
+            deleteAll.setBorderPainted(false);
+            deleteAll.setBackground(null);
             myToolWindow.hide(null);
+        });
+
+        deleteAll.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                if (deleteAll.isEnabled()) {
+                    deleteAll.setBorder(new RoundedLineBorder(XmlConsoleColors.BORDER, 5));
+                    deleteAll.setBorderPainted(true);
+                    deleteAll.setBackground(XmlConsoleColors.BACKGROUND);
+                }
+            }
+
+            public void mouseExited(MouseEvent e) {
+                if (deleteAll.isEnabled()) {
+                    deleteAll.setBorder(null);
+                    deleteAll.setBorderPainted(false);
+                    deleteAll.setBackground(null);
+                }
+            }
         });
     }
 
@@ -38,17 +63,11 @@ public class XmlConsole implements ToolWindowFactory{
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         myToolWindow = toolWindow;
         myToolWindow.setIcon(PluginIcons.xml);
-
         //Create a console, get its component and then add it to the console panel in the tool window
         console = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
         JComponent consoleComponent = console.getComponent();
         consolePanel.add(consoleComponent, BorderLayout.CENTER);
-
-        deleteAll.setIcon(PluginIcons.deleteAll);
-
-        //Copy the deleteAll button to a static variable so it can be called from the static print method
-        deleteAll_copy = deleteAll;
-
+        createUIComponents();
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(xmlToolWindowContent, "", false);
         toolWindow.getContentManager().addContent(content);
@@ -58,7 +77,7 @@ public class XmlConsole implements ToolWindowFactory{
         myToolWindow.show(null);
 
         //Print lesson number to console
-        console.print("Lesson Number:", XmlConsoleViewContentType.TITLE_OUTPUT);
+        console.print("Renumber Lesson:", XmlConsoleViewContentType.TITLE_OUTPUT);
         console.print(" " + psiFile.getName() + "\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
 
         //Print StepTree Modifications to console
@@ -120,6 +139,12 @@ public class XmlConsole implements ToolWindowFactory{
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
+        deleteAll.setIcon(PluginIcons.deleteAll);
+        deleteAll.setDisabledIcon(PluginIcons.deleteAllDisabled);
+        deleteAll.setBorder(null);
+        deleteAll.setContentAreaFilled(false);
+
+        //Copy the deleteAll button to a static variable so it can be called from the static print method
+        deleteAll_copy = deleteAll;
     }
 }

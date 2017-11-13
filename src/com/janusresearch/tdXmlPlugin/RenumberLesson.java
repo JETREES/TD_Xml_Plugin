@@ -52,7 +52,7 @@ public class RenumberLesson extends AnAction {
                 FrameSet frameSet = new FrameSet(xmlRoot);
                 frameSet.storeFrameAttributes();
                 frameSet.storeOldFrameValues();
-                frameSet.storeNewFrameValues();
+                frameSet.storeNewFrameValues(stepTree);
                 frameSet.processEvents();
 
                 //Process CommandMacros to store FrameChange commands and their new values

@@ -2,6 +2,7 @@ package com.janusresearch.tdXmlPlugin.xml;
 
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
+import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -66,10 +67,15 @@ public class FrameSet {
     }
 
     /** Store the new values for each Frame in the newFrameValues array */
-    public void storeNewFrameValues() {
+    public void storeNewFrameValues(StepTree stepTree) {
         //Set array size based on nodes array length
         newFrameValues = new String[frameCount][3];
         int i = 0;
+        String lastNode;
+        String currentNode;
+        String parentNodeId = "01";
+        int subStepCount = 0;
+        boolean isSubStep = false;
         for (String[] s : getNewFrameValues()) {
             //store the new values for each frame
             if (i < 9) {
@@ -82,14 +88,38 @@ public class FrameSet {
                 s[1] = String.valueOf(i + 1);
                 s[2] = String.valueOf(i + 1);
             }
+
+            if (OptionsDialog.subStepsHidden) {
+                if (i > 0) {
+                    lastNode = getFrameAttributes()[i - 1][1].getValue();
+                    currentNode = getFrameAttributes()[i][1].getValue();
+
+                    if (Objects.equals(currentNode, lastNode) && !isSubStep) {
+                        isSubStep = true;
+                        parentNodeId = getNewFrameValues()[i - 1][1];
+                        s[1] = parentNodeId;
+                        subStepCount++;
+                    }
+                    else if (Objects.equals(currentNode, lastNode) && isSubStep) {
+                        s[1] = parentNodeId;
+                        subStepCount++;
+                    }
+                    else {
+                        isSubStep = false;
+                        int temp = Integer.parseInt(parentNodeId);
+                        if (temp < 9) {
+                            parentNodeId = "0" + String.valueOf(temp + 1);
+                        }
+                        else {
+                            parentNodeId = String.valueOf(temp + 1);
+                        }
+                        s[1] = parentNodeId;
+                    }
+                }
+            }
             i++;
         }
 
-        /*i = 0;
-        if (OptionsDialog.subStepsHidden) {
-            int j;
-            //TODO add code that handles hidden sub steps
-        }*/
     }
 
     /** Get all Event sub tags from a Frame */
@@ -98,6 +128,7 @@ public class FrameSet {
         return x.findFirstSubTag("Events").findSubTags("Event");
     }
 
+    /** Still working out a logic behind this that makes sense. Every path so far seems like it could never be very accurate. */
     public int getStepCount() {
         int count = 0;
         for (XmlTag f : getFrames()) {

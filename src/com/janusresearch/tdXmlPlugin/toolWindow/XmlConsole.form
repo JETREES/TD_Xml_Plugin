@@ -19,11 +19,11 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="119ae" class="javax.swing.JButton" binding="deleteAll">
+          <component id="119ae" class="javax.swing.JButton" binding="clearBtn">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
-                <minimum-size width="23" height="20"/>
-                <preferred-size width="23" height="20"/>
+                <minimum-size width="23" height="23"/>
+                <preferred-size width="23" height="23"/>
                 <maximum-size width="50" height="50"/>
               </grid>
             </constraints>

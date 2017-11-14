@@ -7,7 +7,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.psi.PsiFile;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.RoundedLineBorder;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -27,37 +26,51 @@ public class XmlConsole implements ToolWindowFactory{
     private JPanel xmlToolWindowContent;
     private JPanel consolePanel;
     private JPanel controlPanel;
-    public JButton deleteAll;
-    private static JButton deleteAll_copy;
+    private JButton clearBtn;
+    private static JButton clearBtn_copy;
 
-    public XmlConsole() {
-        deleteAll.addActionListener(e -> {
+    public XmlConsole() {}
+
+    private void initClearBtn() {
+        clearBtn.setIcon(PluginIcons.clear);
+        clearBtn.setDisabledIcon(PluginIcons.clearDisabled);
+        clearBtn.setBorder(null);
+        clearBtn.setContentAreaFilled(false);
+
+        //Copy the clearBtn button to a static variable so it can be called from the static print method
+        clearBtn_copy = clearBtn;
+
+        clearBtn.addActionListener(e -> {
             console.clear();
-            deleteAll.setEnabled(false);
-            deleteAll.setBorder(null);
-            deleteAll.setBorderPainted(false);
-            deleteAll.setBackground(null);
+            clearBtn.setEnabled(false);
+            clearBtn.setBorder(null);
+            clearBtn.setBorderPainted(false);
+            clearBtn.setBackground(null);
+            clearBtn.setContentAreaFilled(false);
             myToolWindow.hide(null);
         });
 
-        deleteAll.addMouseListener(new MouseAdapter() {
+        clearBtn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                if (deleteAll.isEnabled()) {
-                    deleteAll.setBorder(new RoundedLineBorder(XmlConsoleColors.BORDER, 5));
-                    deleteAll.setBorderPainted(true);
-                    deleteAll.setBackground(XmlConsoleColors.BACKGROUND);
+                if (clearBtn.isEnabled()) {
+                    clearBtn.setBorder(new RoundedLineBorder(XmlColors.icon.BORDER, 6));
+                    clearBtn.setBorderPainted(true);
+                    clearBtn.setContentAreaFilled(true);
+                    clearBtn.setBackground(XmlColors.icon.BACKGROUND);
                 }
             }
 
             public void mouseExited(MouseEvent e) {
-                if (deleteAll.isEnabled()) {
-                    deleteAll.setBorder(null);
-                    deleteAll.setBorderPainted(false);
-                    deleteAll.setBackground(null);
+                if (clearBtn.isEnabled()) {
+                    clearBtn.setBorder(null);
+                    clearBtn.setBorderPainted(false);
+                    clearBtn.setBackground(null);
+                    clearBtn.setContentAreaFilled(false);
                 }
             }
         });
     }
+
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -134,17 +147,11 @@ public class XmlConsole implements ToolWindowFactory{
             console.print("/>\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
         }
         console.print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
-        deleteAll_copy.setEnabled(true);
+        clearBtn_copy.setEnabled(true);
 
     }
 
     private void createUIComponents() {
-        deleteAll.setIcon(PluginIcons.deleteAll);
-        deleteAll.setDisabledIcon(PluginIcons.deleteAllDisabled);
-        deleteAll.setBorder(null);
-        deleteAll.setContentAreaFilled(false);
-
-        //Copy the deleteAll button to a static variable so it can be called from the static print method
-        deleteAll_copy = deleteAll;
+        initClearBtn();
     }
 }

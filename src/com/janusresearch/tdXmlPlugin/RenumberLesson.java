@@ -60,7 +60,7 @@ public class RenumberLesson extends AnAction {
                 commandMacros.processMacros(frameSet.getOldFrameValues(), frameSet.getNewFrameValues());
 
                 //write all the stored data from arrays to the xml file
-                WriteToXmlFile.writeFile(project, stepTree, frameSet, commandMacros);
+                WriteToXmlFile.renumberLesson(project, stepTree, frameSet, commandMacros);
 
                 //Determine if the Last StepTree node id is equal to the Last Frame node id then show a notification when it doesn't
                 int lastNode = Integer.parseInt(stepTree.getNodeAttributes()[stepTree.getNodeCount() - 1][2].getValue());

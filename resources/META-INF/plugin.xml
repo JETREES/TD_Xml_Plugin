@@ -49,7 +49,6 @@
             <separator/>
             <reference id="renumberLesson" />
             <reference id="stepCount" />
-            <separator/>
             <add-to-group group-id="MainToolBar" anchor="after" relative-to-action="HelpTopics"/>
         </group>
     </actions>

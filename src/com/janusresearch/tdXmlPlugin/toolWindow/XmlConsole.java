@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -27,68 +29,42 @@ public class XmlConsole implements ToolWindowFactory{
     private JPanel consolePanel;
     private JPanel controlPanel;
     private JButton clearBtn;
+    private JComponent consoleComponent;
     private static JButton clearBtn_copy;
 
     public XmlConsole() {}
-
-    private void initClearBtn() {
-        clearBtn.setIcon(PluginIcons.clear);
-        clearBtn.setDisabledIcon(PluginIcons.clearDisabled);
-        clearBtn.setBorder(null);
-        clearBtn.setContentAreaFilled(false);
-
-        //Copy the clearBtn button to a static variable so it can be called from the static print method
-        clearBtn_copy = clearBtn;
-
-        clearBtn.addActionListener(e -> {
-            console.clear();
-            clearBtn.setEnabled(false);
-            clearBtn.setBorder(null);
-            clearBtn.setBorderPainted(false);
-            clearBtn.setBackground(null);
-            clearBtn.setContentAreaFilled(false);
-            myToolWindow.hide(null);
-        });
-
-        clearBtn.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                if (clearBtn.isEnabled()) {
-                    clearBtn.setBorder(new RoundedLineBorder(XmlColors.icon.BORDER, 6));
-                    clearBtn.setBorderPainted(true);
-                    clearBtn.setContentAreaFilled(true);
-                    clearBtn.setBackground(XmlColors.icon.BACKGROUND);
-                }
-            }
-
-            public void mouseExited(MouseEvent e) {
-                if (clearBtn.isEnabled()) {
-                    clearBtn.setBorder(null);
-                    clearBtn.setBorderPainted(false);
-                    clearBtn.setBackground(null);
-                    clearBtn.setContentAreaFilled(false);
-                }
-            }
-        });
-    }
-
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         myToolWindow = toolWindow;
         myToolWindow.setIcon(PluginIcons.xml);
+
         //Create a console, get its component and then add it to the console panel in the tool window
         console = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
-        JComponent consoleComponent = console.getComponent();
-        consolePanel.add(consoleComponent, BorderLayout.CENTER);
+        consoleComponent = console.getComponent();
         createUIComponents();
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(xmlToolWindowContent, "", false);
         toolWindow.getContentManager().addContent(content);
     }
 
-    public static void printLessonModifications(@NotNull PsiFile psiFile, StepTree stepTree, FrameSet frameSet) {
-        myToolWindow.show(null);
+    private void createUIComponents() {
+        consolePanel.add(consoleComponent, BorderLayout.CENTER);
+        initClearBtn();
 
+    }
+
+    private static void showToolWindow() {
+        myToolWindow.show(null);
+        if (console.getContentSize() > 0) {
+            clearBtn_copy.setEnabled(true);
+        }
+        else {
+            clearBtn_copy.setEnabled(false);
+        }
+    }
+
+    public static void printLessonModifications(@NotNull PsiFile psiFile, StepTree stepTree, FrameSet frameSet) {
         //Print lesson number to console
         console.print("Renumber Lesson:", XmlConsoleViewContentType.TITLE_OUTPUT);
         console.print(" " + psiFile.getName() + "\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
@@ -147,21 +123,59 @@ public class XmlConsole implements ToolWindowFactory{
             console.print("/>\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
         }
         console.print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
-        clearBtn_copy.setEnabled(true);
+//        clearBtn_copy.setEnabled(true);
+        showToolWindow();
 
     }
 
     public static void printStepCount(PsiFile psiFile, int stepCount) {
-        myToolWindow.show(null);
 
         //Print lesson step count to console
         console.print("Lesson Number:", XmlConsoleViewContentType.TITLE_OUTPUT);
         console.print(" " + psiFile.getName() + "\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
         console.print("Step Count=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
         console.print("\"" + String.valueOf(stepCount) + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
+//        clearBtn_copy.setEnabled(true);
+        showToolWindow();
     }
 
-    private void createUIComponents() {
-        initClearBtn();
+    private void initClearBtn() {
+        clearBtn.setIcon(PluginIcons.clear);
+        clearBtn.setDisabledIcon(PluginIcons.clearDisabled);
+        clearBtn.setBorder(null);
+        clearBtn.setContentAreaFilled(false);
+
+        //Copy the clearBtn button to a static variable so it can be called from the static print method
+        clearBtn_copy = clearBtn;
+
+        clearBtn.addActionListener(e -> {
+            console.clear();
+            clearBtn.setEnabled(false);
+            clearBtn.setBorder(null);
+            clearBtn.setBorderPainted(false);
+            clearBtn.setBackground(null);
+            clearBtn.setContentAreaFilled(false);
+            myToolWindow.hide(null);
+        });
+
+        clearBtn.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                if (clearBtn.isEnabled()) {
+                    clearBtn.setBorder(new RoundedLineBorder(XmlColors.icon.BORDER, 6));
+                    clearBtn.setBorderPainted(true);
+                    clearBtn.setContentAreaFilled(true);
+                    clearBtn.setBackground(XmlColors.icon.BACKGROUND);
+                }
+            }
+
+            public void mouseExited(MouseEvent e) {
+                if (clearBtn.isEnabled()) {
+                    clearBtn.setBorder(null);
+                    clearBtn.setBorderPainted(false);
+                    clearBtn.setBackground(null);
+                    clearBtn.setContentAreaFilled(false);
+                }
+            }
+        });
     }
 }

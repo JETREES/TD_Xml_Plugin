@@ -94,13 +94,13 @@ public class FrameSet {
                     lastNode = getFrameAttributes()[i - 1][1].getValue();
                     currentNode = getFrameAttributes()[i][1].getValue();
 
-                    if (Objects.equals(currentNode, lastNode) && !isSubStep) {
+                    if (Objects.equals(currentNode, lastNode) && !isSubStep && !Objects.equals(currentNode, "")) {
                         isSubStep = true;
                         parentNodeId = getNewFrameValues()[i - 1][1];
                         s[1] = parentNodeId;
                         subStepCount++;
                     }
-                    else if (Objects.equals(currentNode, lastNode) && isSubStep) {
+                    else if (Objects.equals(currentNode, lastNode) && isSubStep && !Objects.equals(currentNode, "")) {
                         s[1] = parentNodeId;
                         subStepCount++;
                     }
@@ -130,15 +130,18 @@ public class FrameSet {
 
     /** Still working out a logic behind this that makes sense. Every path so far seems like it could never be very accurate. */
     public int getStepCount() {
+
         int count = 0;
         for (XmlTag f : getFrames()) {
-            for (XmlTag e : getFrameEvents(f)) {
+            XmlAttribute steps = f.getAttribute("steps");
+            if (steps != null && !Objects.equals(steps.getValue(), "")) {
+                count += Integer.parseInt(f.getAttribute("steps").getValue());
+            }
+//            else {
+//                count++;
+//            }
+            /*for (XmlTag e : getFrameEvents(f)) {
                 String get = e.getAttribute("get").getValue();
-
-
-
-
-
                 if (Objects.equals(get, "Play")) {
                     count++;
                     break;
@@ -156,9 +159,8 @@ public class FrameSet {
                     if (!Objects.equals(get, "Back")) {
                         count++;
                     }
-
                 }
-            }
+            }*/
         }
         return count;
     }

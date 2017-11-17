@@ -151,6 +151,16 @@ public class XmlConsole implements ToolWindowFactory{
 
     }
 
+    public static void printStepCount(PsiFile psiFile, int stepCount) {
+        myToolWindow.show(null);
+
+        //Print lesson step count to console
+        console.print("Lesson Number:", XmlConsoleViewContentType.TITLE_OUTPUT);
+        console.print(" " + psiFile.getName() + "\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+        console.print("Step Count=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+        console.print("\"" + String.valueOf(stepCount) + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
+    }
+
     private void createUIComponents() {
         initClearBtn();
     }

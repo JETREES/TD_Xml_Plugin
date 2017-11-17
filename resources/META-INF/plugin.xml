@@ -48,7 +48,7 @@
         <group id="TD.Tools">
             <separator/>
             <reference id="renumberLesson" />
-            <!--<reference id="stepCount" />-->
+            <reference id="stepCount" />
             <separator/>
             <add-to-group group-id="MainToolBar" anchor="after" relative-to-action="HelpTopics"/>
         </group>

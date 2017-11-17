@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsole;
 import com.janusresearch.tdXmlPlugin.xml.FrameSet;
 
 import java.util.Objects;
@@ -20,7 +21,8 @@ public class StepCount extends AnAction {
         Project project = e.getData(PlatformDataKeys.PROJECT);
 
         //get the current editor as a Xml File
-        XmlFile xmlFile = (XmlFile) e.getData(LangDataKeys.PSI_FILE);
+        PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
+        XmlFile xmlFile = (XmlFile) psiFile;
 
         //Create DomManager, FileDescription and register the description
         DomManager manager = DomManager.getDomManager(project);
@@ -31,6 +33,7 @@ public class StepCount extends AnAction {
         if (Objects.equals(xmlRoot.getXmlElementName(), "Module")) {
             FrameSet frameSet = new FrameSet(xmlRoot);
             frameSet.storeFrameAttributes();
+            XmlConsole.printStepCount(psiFile, frameSet.getStepCount());
         }
 
     }

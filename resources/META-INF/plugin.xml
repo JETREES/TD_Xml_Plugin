@@ -42,7 +42,8 @@
                 icon="PluginIcons.renumberLesson">
         </action>
         <action id="stepCount" class="com.janusresearch.tdXmlPlugin.StepCount" text="Step Count"
-                description="Intelligently determines the step count for an APV lesson.">
+                description="Intelligently determines the step count for an APV lesson."
+                icon="PluginIcons.stepCount">
         </action>
 
         <group id="TD.Tools">

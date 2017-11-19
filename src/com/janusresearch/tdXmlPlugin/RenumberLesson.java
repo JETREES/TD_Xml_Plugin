@@ -65,10 +65,12 @@ public class RenumberLesson extends AnAction {
                 //Determine if the Last StepTree node id is equal to the Last Frame node id then show a notification when it doesn't
                 int lastNode = Integer.parseInt(stepTree.getNodeAttributes()[stepTree.getNodeCount() - 1][2].getValue());
                 int lastFrame = Integer.parseInt(frameSet.getFrameAttributes()[frameSet.getFrameCount() - 1][1].getValue());
-                if (lastNode != lastFrame) {
-                    Notifications.showWarningMessage("Last StepTree node id not equal to Last Frame node id.  Xml contains too many/too few StepTree nodes.");
+                if (lastNode < lastFrame) {
+                    Notifications.showWarningMessage("Check Xml - There are not enough StepTree nodes.");
                 }
-
+                else if (lastNode > lastFrame) {
+                    Notifications.showWarningMessage("Check Xml - There are too many StepTree nodes");
+                }
 
                 //Reset OptionsDialog values
                 OptionsDialog.subStepsIndented = false;

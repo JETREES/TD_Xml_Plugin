@@ -137,28 +137,37 @@ public class FrameSet {
         return x.findFirstSubTag("Events").findSubTags("Event");
     }
 
+    /** Get the Text value from the Frame */
     public String getFrameText(XmlTag x) {
         return x.findFirstSubTag("Text").getValue().getText();
     }
 
+    /** Get the Text2 value from the Frame */
     @NotNull
     private String getFrameText2(XmlTag x) {
         return x.findFirstSubTag("Text2").getValue().getText();
     }
 
+    /** Returns boolean true if the Frame has a steps attribute otherwise false */
     private boolean hasSteps(XmlTag x) {
         return x.getAttribute("steps").isNamespaceDeclaration();
     }
 
+    /** Returns boolean true if the Frame has a steps attribute with no value otherwise false */
     private boolean isStepsEmpty(XmlTag x) {
         return x.getAttribute("steps").getValue().isEmpty();
     }
 
+    /** Returns boolean true if the Frame has a steps attribute with a value of zero otherwise false */
     private boolean isStepsZero(XmlTag x) {
         return x.getAttribute("steps").getValue().equals("0");
     }
 
-    /** Still working out a logic behind this that makes sense. Every path so far seems like it could never be very accurate. */
+    /** Returns the step count from a lesson. If the lesson contains step attributes in each Frame it will use
+     * those values for the count.  If they do not have the steps attribute or if the steps attribute is an empty
+     * String or equals zero then attribute is added/updated with a value that is an approximate value
+     * determined through processing the Text2 block
+     */
     public int getStepCount() {
         storeFrames();
         actualStepCount = 0;
@@ -174,6 +183,7 @@ public class FrameSet {
         return actualStepCount;
     }
 
+    /** Parses the Text2 text value to attempt to determine the number of steps in a given Frame */
     private int parseTextForCount(String s) {
         int count = 0;
 

@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomManager;
 import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
@@ -49,7 +50,7 @@ public class RenumberLesson extends AnAction {
                 stepTree.storeNewNodeValues();
 
                 //Process the FrameSet
-                FrameSet frameSet = new FrameSet(xmlRoot);
+                FrameSet frameSet = new FrameSet(project, xmlRoot);
                 frameSet.storeFrameAttributes();
                 frameSet.storeOldFrameValues();
                 frameSet.storeNewFrameValues(stepTree);

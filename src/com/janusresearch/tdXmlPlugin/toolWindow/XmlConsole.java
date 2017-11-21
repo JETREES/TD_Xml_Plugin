@@ -123,7 +123,6 @@ public class XmlConsole implements ToolWindowFactory{
             console.print("/>\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
         }
         console.print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
-//        clearBtn_copy.setEnabled(true);
         showToolWindow();
 
     }
@@ -135,7 +134,7 @@ public class XmlConsole implements ToolWindowFactory{
         console.print(" " + psiFile.getName() + "\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
         console.print("Step Count=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
         console.print("\"" + String.valueOf(stepCount) + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
-//        clearBtn_copy.setEnabled(true);
+        console.print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
         showToolWindow();
     }
 

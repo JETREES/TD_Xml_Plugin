@@ -1,7 +1,12 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
+import com.janusresearch.tdXmlPlugin.debug.Debug;
 import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import org.jetbrains.annotations.Contract;
@@ -16,29 +21,33 @@ public class FrameSet {
     private XmlRoot root;
     private XmlTag[] frames;
     private int frameCount;
+    private Project myProject;
     private XmlAttribute[][] frameAttributes;
     private String[][] oldFrameValues;
     private String[][] newFrameValues;
+    private String[][] framesMissingStepsValues;
     private List<XmlAttribute> playEvents = new ArrayList<>();
     private List<XmlAttribute> backEvents = new ArrayList<>();
     private List<XmlAttribute> otherEvents = new ArrayList<>();
     private List<String> newPlayValues = new ArrayList<>();
     private List<String> newBackValues = new ArrayList<>();
     private List<String> newOtherValues = new ArrayList<>();
+    private int actualStepCount;
 
-    public FrameSet(XmlRoot xmlRoot) {
+    public FrameSet(Project project, XmlRoot xmlRoot) {
+        myProject = project;
         root = xmlRoot;
     }
 
     /** Store every Frame sub tag from Frame Set in the frames array */
     private void storeFrames() {
         frames = root.getXmlTag().findFirstSubTag("FrameSet").findSubTags("Frame");
-        setFrameCount();
+        setFrameCount(frames);
     }
 
     /** Store the length of the FrameSet as frameCount */
-    private void setFrameCount() {
-        frameCount = getFrames().length;
+    private void setFrameCount(XmlTag[] frames) {
+        frameCount = frames.length;
     }
 
     /** Store the reference to all Frame attributes from FrameSet in the frameAttributes array */
@@ -128,40 +137,43 @@ public class FrameSet {
         return x.findFirstSubTag("Events").findSubTags("Event");
     }
 
+    public String getFrameText(XmlTag x) {
+        return x.findFirstSubTag("Text").getValue().getText();
+    }
+
+    private String getFrameText2(XmlTag x) {
+        return x.findFirstSubTag("Text2").getValue().getText();
+    }
+
+    private boolean hasSteps(XmlTag x) {
+        return x.getAttribute("steps").isNamespaceDeclaration();
+    }
+
+    private boolean isStepsEmpty(XmlTag x) {
+        return x.getAttribute("steps").getValue().isEmpty();
+    }
+
     /** Still working out a logic behind this that makes sense. Every path so far seems like it could never be very accurate. */
     public int getStepCount() {
-
-        int count = 0;
-        for (XmlTag f : getFrames()) {
-            XmlAttribute steps = f.getAttribute("steps");
-            if (steps != null && !Objects.equals(steps.getValue(), "")) {
-                count += Integer.parseInt(f.getAttribute("steps").getValue());
+        storeFrames();
+        actualStepCount = 0;
+        WriteCommandAction.runWriteCommandAction(myProject, () -> {
+            for (XmlTag f : getFrames()) {
+                if (!hasSteps(f) || (hasSteps(f) && isStepsEmpty(f))) {
+                    int stepCount = parseTextForCount(getFrameText2(f));
+                    f.setAttribute("steps", String.valueOf(stepCount));
+                }
+                actualStepCount += Integer.parseInt(f.getAttribute("steps").getValue());
             }
-//            else {
-//                count++;
-//            }
-            /*for (XmlTag e : getFrameEvents(f)) {
-                String get = e.getAttribute("get").getValue();
-                if (Objects.equals(get, "Play")) {
-                    count++;
-                    break;
-                }
-                else if (get.startsWith("LIST_ORDER")) {
-                    get = get.substring(11);
-                }
-                else if (get.startsWith("LIST_DISORDER")) {
-                    get = get.substring(14);
-                }
-                else if (get.startsWith("INSPECT") | get.startsWith("POSITION")) {
-                    count++;
-                }
-                else {
-                    if (!Objects.equals(get, "Back")) {
-                        count++;
-                    }
-                }
-            }*/
-        }
+        });
+        return actualStepCount;
+    }
+
+    private int parseTextForCount(String s) {
+        int count = 0;
+
+        //parse String s to determine an approximate count for the Frame
+
         return count;
     }
 

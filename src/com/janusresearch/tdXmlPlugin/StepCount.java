@@ -1,7 +1,6 @@
 package com.janusresearch.tdXmlPlugin;
 
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
@@ -31,17 +30,15 @@ public class StepCount extends AnAction {
         XmlRoot xmlRoot = manager.getFileElement(xmlFile, XmlRoot.class).getRootElement();
 
         if (Objects.equals(xmlRoot.getXmlElementName(), "Module")) {
-            FrameSet frameSet = new FrameSet(xmlRoot);
-            frameSet.storeFrameAttributes();
+            FrameSet frameSet = new FrameSet(project, xmlRoot);
             XmlConsole.printStepCount(psiFile, frameSet.getStepCount());
         }
-
     }
 
     @Override
     public void update(AnActionEvent e) {
-        final Project project = e.getData(CommonDataKeys.PROJECT);
-        final Editor editor = e.getData(CommonDataKeys.EDITOR);
+//        final Project project = e.getData(CommonDataKeys.PROJECT);
+//        final Editor editor = e.getData(CommonDataKeys.EDITOR);
         PsiFile data = e.getData(LangDataKeys.PSI_FILE);
         boolean isXmlFile = false;
         boolean nameMatchesSchema = false;

@@ -141,6 +141,7 @@ public class FrameSet {
         return x.findFirstSubTag("Text").getValue().getText();
     }
 
+    @NotNull
     private String getFrameText2(XmlTag x) {
         return x.findFirstSubTag("Text2").getValue().getText();
     }
@@ -153,13 +154,17 @@ public class FrameSet {
         return x.getAttribute("steps").getValue().isEmpty();
     }
 
+    private boolean isStepsZero(XmlTag x) {
+        return x.getAttribute("steps").getValue().equals("0");
+    }
+
     /** Still working out a logic behind this that makes sense. Every path so far seems like it could never be very accurate. */
     public int getStepCount() {
         storeFrames();
         actualStepCount = 0;
         WriteCommandAction.runWriteCommandAction(myProject, () -> {
             for (XmlTag f : getFrames()) {
-                if (!hasSteps(f) || (hasSteps(f) && isStepsEmpty(f))) {
+                if (!hasSteps(f) || (hasSteps(f) && (isStepsEmpty(f) || isStepsZero(f)))) {
                     int stepCount = parseTextForCount(getFrameText2(f));
                     f.setAttribute("steps", String.valueOf(stepCount));
                 }
@@ -173,6 +178,7 @@ public class FrameSet {
         int count = 0;
 
         //parse String s to determine an approximate count for the Frame
+        //for Play Frames set steps="1"
 
         return count;
     }

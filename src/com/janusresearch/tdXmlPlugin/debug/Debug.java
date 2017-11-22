@@ -1,6 +1,6 @@
 //Custom methods used for debugging
 
-package com.janusresearch.tdXmlPlugin.debug;
+package com.janusresearch.modelTool.debug;
 
 import java.util.Arrays;
 

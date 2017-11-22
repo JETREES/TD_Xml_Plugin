@@ -2,11 +2,8 @@ package com.janusresearch.tdXmlPlugin.xml;
 
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
-import com.janusresearch.tdXmlPlugin.debug.Debug;
 import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import org.jetbrains.annotations.Contract;

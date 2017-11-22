@@ -72,7 +72,7 @@ public class CommandMacros {
 
     /** Returns the macros array */
     @Contract(pure = true)
-    private XmlTag[] getMacros() {
+    public XmlTag[] getMacros() {
         return macros;
     }
 

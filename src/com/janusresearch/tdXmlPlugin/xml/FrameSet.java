@@ -25,7 +25,6 @@ public class FrameSet {
     private XmlAttribute[][] frameAttributes;
     private String[][] oldFrameValues;
     private String[][] newFrameValues;
-    private String[][] framesMissingStepsValues;
     private List<XmlAttribute> playEvents = new ArrayList<>();
     private List<XmlAttribute> backEvents = new ArrayList<>();
     private List<XmlAttribute> otherEvents = new ArrayList<>();
@@ -76,7 +75,7 @@ public class FrameSet {
     }
 
     /** Store the new values for each Frame in the newFrameValues array */
-    public void storeNewFrameValues(StepTree stepTree) {
+    public void storeNewFrameValues() {
         //Set array size based on nodes array length
         newFrameValues = new String[frameCount][3];
         int i = 0;
@@ -133,7 +132,7 @@ public class FrameSet {
 
     /** Get all Event sub tags from a Frame */
     @NotNull
-    private XmlTag[] getFrameEvents(XmlTag x) {
+    public XmlTag[] getFrameEvents(XmlTag x) {
         return x.findFirstSubTag("Events").findSubTags("Event");
     }
 
@@ -296,7 +295,7 @@ public class FrameSet {
 
     /** Returns the frames array */
     @Contract(pure = true)
-    private XmlTag[] getFrames() {
+    public XmlTag[] getFrames() {
         return frames;
     }
 

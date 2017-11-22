@@ -149,7 +149,7 @@ public class FrameSet {
 
     /** Returns boolean true if the Frame has a steps attribute otherwise false */
     private boolean hasSteps(XmlTag x) {
-        return x.getAttribute("steps").isNamespaceDeclaration();
+        return x.getAttribute("steps") != null;
     }
 
     /** Returns boolean true if the Frame has a steps attribute with no value otherwise false */

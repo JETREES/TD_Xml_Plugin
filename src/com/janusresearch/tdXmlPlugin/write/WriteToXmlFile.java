@@ -12,6 +12,8 @@ import com.janusresearch.tdXmlPlugin.xml.CommandMacros;
 import com.janusresearch.tdXmlPlugin.xml.FrameSet;
 import com.janusresearch.tdXmlPlugin.xml.StepTree;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,22 +73,41 @@ public class WriteToXmlFile {
                 }
             }
 
+            //replace numbers in macros that match the regex pattern
+            //this should theoretically keep macro names that are numbered with
+            //frame numbers aligned when a lesson is renumbered
             Pattern pattern = Pattern.compile("^(?:Frame|frame)?[_\\s]?([\\d]{1,2}[a-zA-Z]?)[_\\s]?.*$");
+            List<List<String>> macrosToChange = new ArrayList<>();
+            List<String> currentMacro;
+            String eventMacroName;
+            XmlAttribute send;
             for (XmlTag f : frameSet.getFrames()) {
                 XmlTag[] events = frameSet.getFrameEvents(f);
+                String currentFrame = f.getAttribute("id").getValue();
                 for (XmlTag e : events) {
-                    XmlAttribute send = e.getAttribute("send");
+                    send = e.getAttribute("send");
                     if (send != null && send.getValue().startsWith("RUNMACRO")) {
-                        String eventMacroName = send.getValue().substring(9);
+                        eventMacroName = send.getValue().substring(9);
                         if (eventMacroName.matches(String.valueOf(pattern))) {
-                            send.setValue(send.getValue().replaceFirst("[\\d]{1,2}", f.getAttribute("id").getValue()));
-                            for (XmlTag m : commandMacros.getMacros()) {
-                                XmlAttribute commandMacro = m.getAttribute("name");
-                                String commandMacroName = m.getAttribute("name").getValue();
-                                if (Objects.equals(commandMacroName, eventMacroName)) {
-                                    commandMacro.setValue(send.getValue().substring(9));
-                                }
+                            send.setValue(send.getValue().replaceFirst("[\\d]{1,2}[a-zA-Z]?", currentFrame));
+                            currentMacro = new ArrayList<>();
+                            currentMacro.add(0, eventMacroName);
+                            currentMacro.add(1, currentFrame);
+                            if (!macrosToChange.contains(currentMacro)) {
+                                macrosToChange.add(currentMacro);
                             }
+                        }
+                    }
+                }
+            }
+            for (XmlTag m : commandMacros.getMacros()) {
+                XmlAttribute commandMacro = m.getAttribute("name");
+                String commandMacroName = m.getAttribute("name").getValue();
+                if (commandMacroName.matches(String.valueOf(pattern))) {
+                    for (List<String> mc : macrosToChange) {
+                        if (Objects.equals(commandMacroName, mc.get(0))) {
+                            commandMacro.setValue(commandMacro.getValue().replaceFirst("[\\d]{1,2}[a-zA-Z]?", mc.get(1)));
+                            break;
                         }
                     }
                 }

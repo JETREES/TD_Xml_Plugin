@@ -73,7 +73,7 @@ public class StepTree {
         for (String[] s : getNewNodeValues()) {
             if (i == 0) {
                 s[0] = "01";
-                s[1] = "01";
+                s[1] = "0";
                 s[2] = "01";
             }
             else {

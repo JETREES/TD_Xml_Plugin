@@ -171,7 +171,7 @@ public class FrameSet {
 
     /** Parses the Text2 text value to attempt to determine the number of steps in a given Frame */
     private int parseTextForCount(String s) {
-        int count = 0;
+        int count = 1;
 
         //parse String s to determine an approximate count for the Frame
         //for Play Frames set steps="1"

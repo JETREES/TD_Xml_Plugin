@@ -66,43 +66,41 @@ public class StepTree {
     public void storeNewNodeValues() {
         //Set array size based on nodes array length
         newNodeValues = new String[nodeCount][3];
-        int i = 0;
-        for (String[] s : getNewNodeValues()) {
-            //Store the new node values
-            if (i < 9) {
-                s[0] = "0" + (i + 1);
-                s[2] = "0" + (i + 1);
-            }
-            else {
-                s[0] = String.valueOf(i + 1);
-                s[2] = String.valueOf(i + 1);
-            }
-            //All parents are set to 0 in the new node value array
-            //in order to prevent a case where we have a null array index
-            //and allowing for more simplified logic when dealing with the
-            //indented sub steps
-            s[1] = "0";
-            i++;
-        }
 
         //This determines if we need to find the new value for a nodes
         //parent storing it in the newNodeValues array
-        i = 0;
-        if (OptionsDialog.subStepsIndented) {
-            for (String[] s : getNewNodeValues()) {
+        int i = 0;
+        for (String[] s : getNewNodeValues()) {
+            if (i == 0) {
+                s[0] = "01";
+                s[1] = "01";
+                s[2] = "01";
+            }
+            else {
+                if (i < 9) {
+                    s[0] = "0" + (i + 1);
+                    s[2] = "0" + (i + 1);
+                }
+                else {
+                    s[0] = String.valueOf(i + 1);
+                    s[2] = String.valueOf(i + 1);
+                }
                 String oldParent = getOldNodeValues()[i][1];
                 if (!Objects.equals(oldParent, "0")) {
                     int j = 0;
-                    for (String[] st : getOldNodeValues()) {
-                        if (Objects.equals(oldParent, st[0])) {
+                    for (String[] n : getOldNodeValues()) {
+                        if (Objects.equals(oldParent, n[0])) {
                             s[1] = getNewNodeValues()[j][0];
                             break;
                         }
                         j++;
                     }
                 }
-                i++;
+                else {
+                    s[1] = "0";
+                }
             }
+            i++;
         }
     }
 

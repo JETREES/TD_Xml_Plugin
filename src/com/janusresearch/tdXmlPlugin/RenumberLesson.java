@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
-import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomManager;
 import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
@@ -31,7 +30,7 @@ public class RenumberLesson extends AnAction {
         OptionsDialog dialog = new OptionsDialog();
         dialog.show();
 
-        if (dialog.isOK()) {
+//        if (dialog.isOK()) {
             //get the current editor as a Xml File
             PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
             XmlFile xmlFile = (XmlFile) psiFile;
@@ -74,12 +73,11 @@ public class RenumberLesson extends AnAction {
                 }
 
                 //Reset OptionsDialog values
-                OptionsDialog.subStepsIndented = false;
-                OptionsDialog.subStepsHidden = false;
+//                OptionsDialog.subStepsIndented = false;
 
                 XmlConsole.printLessonModifications(psiFile, stepTree, frameSet);
             }
-        }
+//        }
     }
 
     @Override

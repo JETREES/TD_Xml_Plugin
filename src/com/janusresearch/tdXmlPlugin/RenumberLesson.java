@@ -27,8 +27,8 @@ public class RenumberLesson extends AnAction {
         //Get all the required data from data keys
         Project project = e.getData(PlatformDataKeys.PROJECT);
 
-        OptionsDialog dialog = new OptionsDialog();
-        dialog.show();
+//        OptionsDialog dialog = new OptionsDialog();
+//        dialog.show();
 
 //        if (dialog.isOK()) {
             //get the current editor as a Xml File

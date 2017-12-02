@@ -86,7 +86,7 @@ public class StepTree {
                     s[2] = String.valueOf(i + 1);
                 }
                 String oldParent = getOldNodeValues()[i][1];
-                if (!Objects.equals(oldParent, "0")) {
+                if (!Objects.equals(oldParent, "0") && OptionsDialog.hasSubSteps()) {
                     int j = 0;
                     for (String[] n : getOldNodeValues()) {
                         if (Objects.equals(oldParent, n[0])) {

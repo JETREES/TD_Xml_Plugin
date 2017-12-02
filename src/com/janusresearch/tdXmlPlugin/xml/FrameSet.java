@@ -4,6 +4,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
+import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -97,7 +98,7 @@ public class FrameSet {
                 }
 
                 newLastNode = getNewFrameValues()[i - 1][1];
-                if (Objects.equals(oldCurrentNode, oldLastNode) && !Objects.equals(oldCurrentNode, "")) {
+                if (Objects.equals(oldCurrentNode, oldLastNode) && !Objects.equals(oldCurrentNode, "") && OptionsDialog.hasSubSteps()) {
                     s[1] = newLastNode;
                     s[2] = newLastNode;
                 }

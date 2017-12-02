@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
+import com.janusresearch.tdXmlPlugin.debug.Debug;
 import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import com.janusresearch.tdXmlPlugin.notification.Notifications;
@@ -27,10 +28,16 @@ public class RenumberLesson extends AnAction {
         //Get all the required data from data keys
         Project project = e.getData(PlatformDataKeys.PROJECT);
 
-//        OptionsDialog dialog = new OptionsDialog();
-//        dialog.show();
+        OptionsDialog dialog = new OptionsDialog();
+        dialog.show();
 
-//        if (dialog.isOK()) {
+        Debug.print(dialog.getExitCode());
+        if (dialog.isOK()) {
+            dialog.setSubSteps(true);
+        }
+        else {
+            dialog.setSubSteps(false);
+        }
             //get the current editor as a Xml File
             PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
             XmlFile xmlFile = (XmlFile) psiFile;
@@ -72,12 +79,9 @@ public class RenumberLesson extends AnAction {
                     Notifications.showWarningMessage("Check Xml - There are too many StepTree nodes");
                 }
 
-                //Reset OptionsDialog values
-//                OptionsDialog.subStepsIndented = false;
-
+                //Print the results in the Xml Console
                 XmlConsole.printLessonModifications(psiFile, stepTree, frameSet);
             }
-//        }
     }
 
     @Override

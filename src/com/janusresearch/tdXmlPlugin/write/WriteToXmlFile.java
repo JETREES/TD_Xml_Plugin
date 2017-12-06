@@ -89,7 +89,7 @@ public class WriteToXmlFile {
                     if (send != null && send.getValue().startsWith("RUNMACRO")) {
                         eventMacroName = send.getValue().substring(9);
                         if (eventMacroName.matches(String.valueOf(pattern))) {
-                            send.setValue(send.getValue().replaceFirst("[\\d]{1,2}[a-zA-Z]?", currentFrame));
+                            send.setValue(send.getValue().replaceFirst("[\\d]{1,2}", currentFrame));
                             currentMacro = new ArrayList<>();
                             currentMacro.add(0, eventMacroName);
                             currentMacro.add(1, currentFrame);
@@ -106,7 +106,7 @@ public class WriteToXmlFile {
                 if (commandMacroName.matches(String.valueOf(pattern))) {
                     for (List<String> mc : macrosToChange) {
                         if (Objects.equals(commandMacroName, mc.get(0))) {
-                            commandMacro.setValue(commandMacro.getValue().replaceFirst("[\\d]{1,2}[a-zA-Z]?", mc.get(1)));
+                            commandMacro.setValue(commandMacro.getValue().replaceFirst("[\\d]{1,2}", mc.get(1)));
                             break;
                         }
                     }

@@ -2,7 +2,7 @@ package com.janusresearch.tdXmlPlugin.xml;
 
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
-import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
+import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import org.jetbrains.annotations.Contract;
 
@@ -86,7 +86,7 @@ public class StepTree {
                     s[2] = String.valueOf(i + 1);
                 }
                 String oldParent = getOldNodeValues()[i][1];
-                if (!Objects.equals(oldParent, "0") && OptionsDialog.hasSubSteps()) {
+                if (!Objects.equals(oldParent, "0") && SubStepsDialog.hasSubSteps()) {
                     int j = 0;
                     for (String[] n : getOldNodeValues()) {
                         if (Objects.equals(oldParent, n[0])) {

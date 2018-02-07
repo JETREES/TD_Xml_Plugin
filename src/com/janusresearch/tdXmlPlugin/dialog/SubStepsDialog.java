@@ -6,10 +6,10 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 
-public class OptionsDialog extends DialogWrapper {
+public class SubStepsDialog extends DialogWrapper {
     private static boolean subSteps = false;
 
-    public OptionsDialog() {
+    public SubStepsDialog() {
         super(false);
         init();
         setTitle("Sub Steps");
@@ -25,19 +25,6 @@ public class OptionsDialog extends DialogWrapper {
         setOKButtonText("Yes");
         setCancelButtonText("No");
         panel.add(label);
-
-
-
-//        JCheckBox frameChangeCB = new JCheckBox("FrameChange Commands");
-//        JCheckBox subStepsHiddenCB = new JCheckBox("Sub Steps - Hidden");
-//        JCheckBox subStepsIndentedCB = new JCheckBox("Sub Steps - Indented");
-//        frameChangeCB.addItemListener(e -> frameChange = e.getStateChange() == ItemEvent.SELECTED);
-//        subStepsHiddenCB.addItemListener(e -> subStepsHidden = e.getStateChange() == ItemEvent.SELECTED);
-//        subStepsIndentedCB.addItemListener(e -> subStepsIndented = e.getStateChange() == ItemEvent.SELECTED);
-
-//        panel.add(frameChangeCB);
-//        panel.add(subStepsHiddenCB);
-//        panel.add(subStepsIndentedCB);
 
         return panel;
     }

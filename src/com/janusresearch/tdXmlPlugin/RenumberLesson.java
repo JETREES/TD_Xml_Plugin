@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
 import com.janusresearch.tdXmlPlugin.debug.Debug;
-import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
+import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import com.janusresearch.tdXmlPlugin.notification.Notifications;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsole;
@@ -28,10 +28,9 @@ public class RenumberLesson extends AnAction {
         //Get all the required data from data keys
         Project project = e.getData(PlatformDataKeys.PROJECT);
 
-        OptionsDialog dialog = new OptionsDialog();
+        SubStepsDialog dialog = new SubStepsDialog();
         dialog.show();
 
-        Debug.print(dialog.getExitCode());
         if (dialog.isOK()) {
             dialog.setSubSteps(true);
         }

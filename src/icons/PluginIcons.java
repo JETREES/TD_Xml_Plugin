@@ -14,4 +14,6 @@ public interface PluginIcons {
     Icon clearDisabled_dark = IconLoader.getIcon("/icons/Actions/clearDisabled_dark.png");
     Icon stepCount = IconLoader.getIcon("/icons/Actions/stepCount.png");
     Icon stepCount_dark = IconLoader.getIcon("/icons/Actions/stepCount_dark.png");
+    Icon lessonScript = IconLoader.getIcon("/icons/Actions/lessonScript.png");
+    Icon lessonScript_dark = IconLoader.getIcon("/icons/Actions/lessonScript_dark.png");
 }

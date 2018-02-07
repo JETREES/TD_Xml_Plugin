@@ -3,12 +3,20 @@ package com.janusresearch.tdXmlPlugin.xml;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
-import com.janusresearch.tdXmlPlugin.dialog.OptionsDialog;
+import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -59,6 +67,65 @@ public class FrameSet {
         }
     }
 
+    private boolean isPlayFrame(XmlTag x) {
+        boolean playFrame = false;
+        for (XmlTag e : getFrameEvents(x)) {
+            String get = e.getAttribute("get").getValue();
+            if (Objects.equals(get, "Play")) {
+                playFrame = true;
+                break;
+            }
+            else {
+                playFrame = false;
+            }
+        }
+        return playFrame;
+    }
+
+    public void createLessonScript(String fileName) {
+        storeFrameAttributes();
+
+        //Blank Document
+        XWPFDocument document = new XWPFDocument();
+
+        //Write the Document in file system
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream( new File("C:\\Users\\jim.timmerman\\Downloads\\" + fileName + ".docx"));
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+
+        //create Paragraph
+        XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun run = paragraph.createRun();
+        run.setText("Text of " + fileName);
+        run.addBreak();
+        run.setText("Line count: " + );
+
+        for (XmlTag f : getFrames()) {
+
+            if (isPlayFrame(f)) {
+                run.setText(getFrameText(f));
+            }
+            else {
+                run.setText(getFrameText2(f));
+            }
+        }
+
+        try {
+            document.write(out);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        try {
+            out.close();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+
     /** Store the old values for each Frame in the oldFrameValues array */
     public void storeOldFrameValues() {
         oldFrameValues = new String[frameCount][3];
@@ -98,7 +165,7 @@ public class FrameSet {
                 }
 
                 newLastNode = getNewFrameValues()[i - 1][1];
-                if (Objects.equals(oldCurrentNode, oldLastNode) && !Objects.equals(oldCurrentNode, "") && OptionsDialog.hasSubSteps()) {
+                if (Objects.equals(oldCurrentNode, oldLastNode) && !Objects.equals(oldCurrentNode, "") && SubStepsDialog.hasSubSteps()) {
                     s[1] = newLastNode;
                     s[2] = newLastNode;
                 }
@@ -125,6 +192,7 @@ public class FrameSet {
     }
 
     /** Get the Text value from the Frame */
+    @NotNull
     public String getFrameText(XmlTag x) {
         return x.findFirstSubTag("Text").getValue().getText();
     }

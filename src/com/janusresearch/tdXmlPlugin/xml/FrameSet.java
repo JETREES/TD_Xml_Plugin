@@ -7,6 +7,7 @@ import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -17,6 +18,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +48,7 @@ public class FrameSet {
     }
 
     /** Store every Frame sub tag from Frame Set in the frames array */
-    private void storeFrames() {
+    public void storeFrames() {
         frames = root.getXmlTag().findFirstSubTag("FrameSet").findSubTags("Frame");
         setFrameCount(frames);
     }
@@ -82,16 +86,26 @@ public class FrameSet {
         return playFrame;
     }
 
-    public void createLessonScript(String fileName) {
-        storeFrameAttributes();
+    public void createLessonScript(String fileName, StepTree stepTree) {
+
 
         //Blank Document
         XWPFDocument document = new XWPFDocument();
 
+        if (!Files.isDirectory(Paths.get("C:\\Users\\James Timmerman\\Downloads\\Scripts\\"))) {
+            File dir = new File("C:\\Users\\James Timmerman\\Downloads\\Scripts\\");
+            boolean successful = dir.mkdir();
+            if (successful) {
+                //add message to console for successful directory creation
+            }
+            else {
+                //add message to console for failed directory creation
+            }
+        }
         //Write the Document in file system
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream( new File("C:\\Users\\jim.timmerman\\Downloads\\" + fileName + ".docx"));
+            out = new FileOutputStream( new File("C:\\Users\\James Timmerman\\Downloads\\Scripts\\" + fileName + ".docx"));
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
         }
@@ -99,18 +113,36 @@ public class FrameSet {
         //create Paragraph
         XWPFParagraph paragraph = document.createParagraph();
         XWPFRun run = paragraph.createRun();
-        run.setText("Text of " + fileName);
+        run.setBold(true);
+        run.setUnderline(UnderlinePatterns.SINGLE);
+        run.setText("Lesson");
+        run = paragraph.createRun();
+        run.setText(": " + fileName);
         run.addBreak();
-        run.setText("Line count: " + );
+        run = paragraph.createRun();
+        run.setBold(true);
+        run.setUnderline(UnderlinePatterns.SINGLE);
+        run.setText("Line Count");
+        run = paragraph.createRun();
+        run.setText(": " + "determine line count later");
+        run.addBreak();
+        run.setText("----------------------------------------------------------------------");
+        run.addBreak();
 
         for (XmlTag f : getFrames()) {
+            run.setText("Frame: " + matchFrameToStep(f.getAttributeValue("id"), f.getAttributeValue("node"), stepTree));
+            paragraph = document.createParagraph();
+            run = paragraph.createRun();
 
             if (isPlayFrame(f)) {
-                run.setText(getFrameText(f));
+                run.setText("Text1: " + getFrameText(f));
             }
             else {
-                run.setText(getFrameText2(f));
+                run.setText("Text2: " + getFrameText2(f));
             }
+            run.addBreak();
+            run.setText("----------------------------------------------------------------------");
+            run.addBreak();
         }
 
         try {
@@ -124,6 +156,16 @@ public class FrameSet {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+    }
+
+    private String matchFrameToStep(String frameId, String frameNode, StepTree stepTree) {
+        String stepTreeLabel = null;
+        for (XmlTag n : stepTree.getNodes()) {
+            if (frameNode.equals(n.getAttributeValue("name"))) {
+                stepTreeLabel = n.getAttributeValue("label");
+            }
+        }
+        return frameId + " - " + stepTreeLabel;
     }
 
     /** Store the old values for each Frame in the oldFrameValues array */
@@ -193,14 +235,22 @@ public class FrameSet {
 
     /** Get the Text value from the Frame */
     @NotNull
-    public String getFrameText(XmlTag x) {
-        return x.findFirstSubTag("Text").getValue().getText();
+    private String getFrameText(XmlTag x) {
+        return stripText(x.findFirstSubTag("Text").getValue().getText());
     }
 
     /** Get the Text2 value from the Frame */
     @NotNull
     private String getFrameText2(XmlTag x) {
-        return x.findFirstSubTag("Text2").getValue().getText();
+        return stripText(x.findFirstSubTag("Text2").getValue().getText());
+    }
+
+    private String stripText(String text) {
+        text = text.replace("[f arial_bold]", "");
+        text = text.replace("[f arial_italic]", "");
+        text = text.replace("[f arial]", "");
+
+        return text;
     }
 
     /** Returns boolean true if the Frame has a steps attribute otherwise false */

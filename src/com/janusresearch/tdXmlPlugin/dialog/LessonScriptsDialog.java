@@ -22,8 +22,8 @@ public class LessonScriptsDialog extends DialogWrapper {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JCheckBox currentLesson = new JCheckBox("Generate Lesson Script for Current Lesson");
-        JCheckBox projectLessons = new JCheckBox("Generate Lesson Scripts for Project");
+        JCheckBox currentLesson = new JCheckBox("Current Lesson");
+        JCheckBox projectLessons = new JCheckBox("All Project Lessons");
         currentLesson.addItemListener(e -> LessonScriptsDialog.currentLesson = e.getStateChange() == ItemEvent.SELECTED);
         projectLessons.addItemListener(e -> LessonScriptsDialog.projectLessons = e.getStateChange() == ItemEvent.SELECTED);
         setOKButtonText("Generate");

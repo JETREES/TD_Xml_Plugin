@@ -69,16 +69,11 @@ public class LessonScripts extends AnAction {
                         }
                     }
                 }
-
             }
             else if (LessonScriptsDialog.isProjectLessons()) {
 
             }
-
         }
-
-
-
     }
 
     @Override

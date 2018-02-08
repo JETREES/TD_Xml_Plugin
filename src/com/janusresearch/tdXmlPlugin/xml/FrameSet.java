@@ -3,7 +3,6 @@ package com.janusresearch.tdXmlPlugin.xml;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
@@ -19,9 +18,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -87,13 +86,11 @@ public class FrameSet {
     }
 
     public void createLessonScript(String fileName, StepTree stepTree) {
-
-
         //Blank Document
         XWPFDocument document = new XWPFDocument();
 
-        if (!Files.isDirectory(Paths.get("C:\\Users\\James Timmerman\\Downloads\\Scripts\\"))) {
-            File dir = new File("C:\\Users\\James Timmerman\\Downloads\\Scripts\\");
+        if (!Files.isDirectory(Paths.get("C:\\Lesson Scripts\\"))) {
+            File dir = new File("C:\\Lesson Scripts\\");
             boolean successful = dir.mkdir();
             if (successful) {
                 //add message to console for successful directory creation
@@ -105,7 +102,7 @@ public class FrameSet {
         //Write the Document in file system
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream( new File("C:\\Users\\James Timmerman\\Downloads\\Scripts\\" + fileName + ".docx"));
+            out = new FileOutputStream( new File("C:\\Lesson Scripts\\" + fileName + ".docx"));
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
         }
@@ -119,29 +116,48 @@ public class FrameSet {
         run = paragraph.createRun();
         run.setText(": " + fileName);
         run.addBreak();
-        run = paragraph.createRun();
-        run.setBold(true);
-        run.setUnderline(UnderlinePatterns.SINGLE);
-        run.setText("Line Count");
-        run = paragraph.createRun();
-        run.setText(": " + "determine line count later");
-        run.addBreak();
-        run.setText("----------------------------------------------------------------------");
+        run.setText("------------------------------------------------------------------------------------------------------------------------------------------");
         run.addBreak();
 
+
+        List<List<String>> text;
+        List<List<String>> text2;
         for (XmlTag f : getFrames()) {
             run.setText("Frame: " + matchFrameToStep(f.getAttributeValue("id"), f.getAttributeValue("node"), stepTree));
             paragraph = document.createParagraph();
             run = paragraph.createRun();
 
             if (isPlayFrame(f)) {
-                run.setText("Text1: " + getFrameText(f));
+                text = splitParagraphs(stripText(getFrameText(f)));
+                run.setBold(true);
+                run.setText("Text1");
+                run = paragraph.createRun();
+                run.setText(":  ");
+                run = paragraph.createRun();
+                formatParagraphs(text, document, run, paragraph);
+
             }
             else {
-                run.setText("Text2: " + getFrameText2(f));
+                text = splitParagraphs(stripText(getFrameText(f)));
+                run.setBold(true);
+                run.setText("Text1");
+                run = paragraph.createRun();
+                run.setText(":  ");
+                run = paragraph.createRun();
+                formatParagraphs(text, document, run, paragraph);
+
+                paragraph = document.createParagraph();
+                run = paragraph.createRun();
+                text2 = splitParagraphs(stripText(getFrameText2(f)));
+                run.setBold(true);
+                run.setText("Text2");
+                run = paragraph.createRun();
+                run.setText(":  ");
+                run = paragraph.createRun();
+                formatParagraphs(text2, document, run, paragraph);
             }
             run.addBreak();
-            run.setText("----------------------------------------------------------------------");
+            run.setText("------------------------------------------------------------------------------------------------------------------------------------------");
             run.addBreak();
         }
 
@@ -156,6 +172,51 @@ public class FrameSet {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+    }
+
+    private void formatParagraphs(List<List<String>> text, XWPFDocument document, XWPFRun run, XWPFParagraph paragraph) {
+        int i = 0;
+        for (List<String> p : text) {
+            if (i != 0) {
+                paragraph = document.createParagraph();
+                run = paragraph.createRun();
+            }
+
+            if (p.size() == 1) {
+                run.setText(p.get(0));
+            }
+            else {
+                for (String l : p) {
+                    run.setText(l);
+                    run.addBreak();
+                }
+            }
+            i++;
+        }
+    }
+
+    private List<List<String>> splitParagraphs(String text) {
+        List<List<String>> paragraphs = new ArrayList<>();
+        List<String> paragraph;
+        String[] tempParagraphs;
+        String[] tempLines;
+
+        if (text.contains("\\r\\r")) {
+            tempParagraphs = text.split("\\\\r\\\\r");
+            for (String p : tempParagraphs) {
+                paragraph = new ArrayList<>();
+                if (!p.contains("\\r")) {
+                    paragraph.add(p);
+                }
+                else {
+                    tempLines = p.split("\\\\r");
+                    paragraph.addAll(Arrays.asList(tempLines));
+                }
+                paragraphs.add(paragraph);
+            }
+        }
+
+        return paragraphs;
     }
 
     private String matchFrameToStep(String frameId, String frameNode, StepTree stepTree) {
@@ -236,19 +297,26 @@ public class FrameSet {
     /** Get the Text value from the Frame */
     @NotNull
     private String getFrameText(XmlTag x) {
-        return stripText(x.findFirstSubTag("Text").getValue().getText());
+        return x.findFirstSubTag("Text").getValue().getText();
     }
 
     /** Get the Text2 value from the Frame */
     @NotNull
     private String getFrameText2(XmlTag x) {
-        return stripText(x.findFirstSubTag("Text2").getValue().getText());
+        return x.findFirstSubTag("Text2").getValue().getText();
     }
 
     private String stripText(String text) {
         text = text.replace("[f arial_bold]", "");
         text = text.replace("[f arial_italic]", "");
         text = text.replace("[f arial]", "");
+        text = text.replace("&#x2022;", "•");
+        text = text.replace("&amp;", "&");
+        text = text.replace("\t", "     ");
+        text = text.replaceAll("\\[c.*?].*?H.*?]WARNING(?i)\\[.*?\\?]", "");
+        text = text.replaceAll("\\[c.*?].*?H.*?]CAUTION(?i)\\[.*?\\?]", "");
+        text = text.replaceAll("\\[c.*?].*?H.*?]NOTE(?i)\\[.*?\\?]", "");
+        text = text.replaceAll("\\[c.*?].*?H.*?](.*?)\\[.*?\\?]", "$1");
 
         return text;
     }

@@ -1,10 +1,16 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
-import com.janusresearch.tdXmlPlugin.debug.Debug;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,17 +23,24 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ScriptGenerator {
+    private Project project;
+    private Module module;
     private XWPFDocument document;
     private XWPFParagraph paragraph;
     private XWPFRun run;
+    private String[][] acronyms;
 
-    public ScriptGenerator() {
+    public ScriptGenerator(Project project, Module module) {
+        this.project = project;
+        this.module = module;
     }
 
+    /** Generates a lesson Script from a lesson given the filename */
     public void createLessonScript(String fileName, StepTree stepTree, FrameSet frameSet) {
-        //Blank Document
+        //Create Blank Document
         document = new XWPFDocument();
 
+        //Create the directory to save the Lesson Scripts in if it does not exist
         if (!Files.isDirectory(Paths.get("C:\\Lesson Scripts\\"))) {
             File dir = new File("C:\\Lesson Scripts\\");
             boolean successful = dir.mkdir();
@@ -38,7 +51,8 @@ public class ScriptGenerator {
                 //add message to console for failed directory creation
             }
         }
-        //Write the Document in file system
+
+        //Name the document with the lesson number
         FileOutputStream out = null;
         try {
             out = new FileOutputStream( new File("C:\\Lesson Scripts\\" + fileName + ".docx"));
@@ -46,7 +60,8 @@ public class ScriptGenerator {
             e1.printStackTrace();
         }
 
-        //create Paragraph
+
+        //Create the document Title and document Heading
         paragraph = document.createParagraph();
         run = paragraph.createRun();
         run.setBold(true);
@@ -60,29 +75,32 @@ public class ScriptGenerator {
         run.setText("------------------------------------------------------------------------------------------------------------------------------------------");
         run.addBreak();
 
-
+        //Loop through the lesson collecting all the InfoText, Text, and Text2 data where necessary
         List<List<String>> infoText;
         List<List<String>> text;
         List<List<String>> text2;
         for (XmlTag f : frameSet.getFrames()) {
-            Debug.print(f.getAttributeValue("id"));
+            //Create the Frame title
             run = paragraph.createRun();
             run.setFontSize(15);
             run.setText("Frame: " + matchFrameToStep(f.getAttributeValue("id"), f.getAttributeValue("node"), stepTree));
             paragraph = document.createParagraph();
             run = paragraph.createRun();
 
+            //If the Frame is a Play Frame then only collect Text
+            //For all other Frames collect all 3 Text types
             if (frameSet.isPlayFrame(f)) {
+                //Create Text Entry for current Frame
                 run.setBold(true);
-                run.setText("Text1");
+                run.setText("Text");
                 run = paragraph.createRun();
                 run.setText(":  ");
                 run = paragraph.createRun();
                 text = splitParagraphs(stripText(frameSet.getFrameText(f)));
                 formatParagraphs(text);
-
             }
             else {
+                //Create InfoText Entry for current Frame
                 run.setBold(true);
                 run.setText("InfoText");
                 run = paragraph.createRun();
@@ -91,6 +109,7 @@ public class ScriptGenerator {
                 infoText = splitParagraphs(stripText(frameSet.getFrameInfoText(f)));
                 formatParagraphs(infoText);
 
+                //Create Text Entry for current Frame
                 paragraph = document.createParagraph();
                 run = paragraph.createRun();
                 run.addBreak();
@@ -102,6 +121,7 @@ public class ScriptGenerator {
                 text = splitParagraphs(stripText(frameSet.getFrameText(f)));
                 formatParagraphs(text);
 
+                //Create Text2 Entry for current Frame
                 paragraph = document.createParagraph();
                 run = paragraph.createRun();
                 run.addBreak();
@@ -113,17 +133,20 @@ public class ScriptGenerator {
                 run = paragraph.createRun();
                 formatParagraphs(text2);
             }
+            //Create a line to separate each Frames script
             run.addBreak();
             run.setText("------------------------------------------------------------------------------------------------------------------------------------------");
             run.addBreak();
         }
 
+        //Write the Document
         try {
             document.write(out);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
 
+        //Close the Document
         try {
             assert out != null;
             out.close();
@@ -132,6 +155,8 @@ public class ScriptGenerator {
         }
     }
 
+    /** Formats the List of Lists containing the paragraphs for the document ensuring
+     *  paragraphs and breaks are placed appropriately */
     private void formatParagraphs(List<List<String>> text) {
         int i = 0;
         for (List<String> p : text) {
@@ -155,6 +180,9 @@ public class ScriptGenerator {
         }
     }
 
+    /** Returns List of Lists containing the Frames text after being split by double/single returns
+     *  The split creates a 2 dimensional List where each row contains a paragraph and each column (if any) contains
+     *  text that is in the same paragraph but on different lines */
     private List<List<String>> splitParagraphs(String text) {
         List<List<String>> paragraphs = new ArrayList<>();
         List<String> paragraph;
@@ -185,10 +213,12 @@ public class ScriptGenerator {
             paragraph.add(text);
             paragraphs.add(paragraph);
         }
-
         return paragraphs;
     }
 
+    /** Matches the current Frame with its StepTree node in order to get the correct label attribute from the StepTree
+     *  Returns a String combination of the Frame id and StepTree label*/
+    @NotNull
     private String matchFrameToStep(String frameId, String frameNode, StepTree stepTree) {
         String stepTreeLabel = null;
         for (XmlTag n : stepTree.getNodes()) {
@@ -199,6 +229,7 @@ public class ScriptGenerator {
         return frameId + " - " + stepTreeLabel;
     }
 
+    /** Returns a Frames text with code related items stripped out of the text so it will be presented in a cleaner fashion in the document */
     private String stripText(String text) {
         text = text.replace("[f arial_bold]", "");
         text = text.replace("[f arial_italic]", "");
@@ -212,5 +243,32 @@ public class ScriptGenerator {
         text = text.replaceAll("\\[c.*?].*?H.*?](.*?)\\[.*?\\?]", "$1");
 
         return text;
+    }
+
+    /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing */
+    public void createAcronymPronunciations() {
+        String modulePath = module.getModuleFilePath();
+        String acronymPath = modulePath.replaceAll("[^\\\\/:*?\"<>|\\r\\n]+$", "");
+        VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymPath + "Dictionaries\\AcronymPronunciations.xml");
+
+        XmlFile xmlFile;
+        if (vFile != null) {
+            xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(vFile);
+            XmlTag rootTag;
+            if (xmlFile != null) {
+                rootTag = xmlFile.getRootTag();
+                XmlTag[] acronymTags;
+                if (rootTag != null) {
+                    acronymTags = rootTag.findSubTags("acronym");
+                    acronyms = new String[acronymTags.length][2];
+                    int i = 0;
+                    for (XmlTag x : acronymTags) {
+                        acronyms[i][0] = x.getAttributeValue("name");
+                        acronyms[i][1] = x.getAttributeValue("pronunciation");
+                        i++;
+                    }
+                }
+            }
+        }
     }
 }

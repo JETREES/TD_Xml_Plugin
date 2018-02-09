@@ -4,10 +4,13 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
+import com.janusresearch.tdXmlPlugin.debug.Debug;
 import com.janusresearch.tdXmlPlugin.dialog.LessonScriptsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import com.janusresearch.tdXmlPlugin.xml.FrameSet;
@@ -23,24 +26,26 @@ public class LessonScripts extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         //Get all the required data from data keys
         Project project = e.getData(PlatformDataKeys.PROJECT);
+        PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
+
+        Module module = ProjectFileIndex.getInstance(project).getModuleForFile(psiFile.getVirtualFile());
+
+        Debug.print(module.getModuleFilePath());
+
+        //Create DomManager, FileDescription and register the description
+        DomManager manager = DomManager.getDomManager(project);
+        ScriptGenerator sg = new ScriptGenerator(project, module);
+        sg.createAcronymPronunciations();
 
         LessonScriptsDialog dialog = new LessonScriptsDialog();
         dialog.show();
 
         if (dialog.isOK()) {
-            //Create DomManager, FileDescription and register the description
-            DomManager manager = DomManager.getDomManager(project);
-
             if (LessonScriptsDialog.isCurrentLesson()) {
-                PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
-
                 if (psiFile != null) {
-                    boolean isXmlFile;
-                    boolean nameMatchesSchema;
-
                     //Determine if file is xml type and name matches our naming schema
-                    isXmlFile = psiFile.getFileType().getName().equalsIgnoreCase("xml");
-                    nameMatchesSchema = psiFile.getName().matches("[A-Z]{2}[0-9][A-Z][0-9]{4}[a-zA-Z]?\\.xml");
+                    boolean isXmlFile = psiFile.getFileType().getName().equalsIgnoreCase("xml");
+                    boolean nameMatchesSchema = psiFile.getName().matches("[A-Z]{2}1[A-Z][0-9]{4}[a-zA-Z]?\\.xml");
 
                     if (isXmlFile && nameMatchesSchema) {
                         //get the current editor as a Xml File
@@ -59,7 +64,6 @@ public class LessonScripts extends AnAction {
                             stepTree.storeNodes();
                             frameSet.storeFrames();
 
-                            ScriptGenerator sg = new ScriptGenerator();
                             sg.createLessonScript(fileName, stepTree, frameSet);
                         }
                     }

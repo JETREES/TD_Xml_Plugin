@@ -6,21 +6,10 @@ import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
-import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,7 +59,7 @@ public class FrameSet {
         }
     }
 
-    private boolean isPlayFrame(XmlTag x) {
+    public boolean isPlayFrame(XmlTag x) {
         boolean playFrame = false;
         for (XmlTag e : getFrameEvents(x)) {
             String get = e.getAttribute("get").getValue();
@@ -83,150 +72,6 @@ public class FrameSet {
             }
         }
         return playFrame;
-    }
-
-    public void createLessonScript(String fileName, StepTree stepTree) {
-        //Blank Document
-        XWPFDocument document = new XWPFDocument();
-
-        if (!Files.isDirectory(Paths.get("C:\\Lesson Scripts\\"))) {
-            File dir = new File("C:\\Lesson Scripts\\");
-            boolean successful = dir.mkdir();
-            if (successful) {
-                //add message to console for successful directory creation
-            }
-            else {
-                //add message to console for failed directory creation
-            }
-        }
-        //Write the Document in file system
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream( new File("C:\\Lesson Scripts\\" + fileName + ".docx"));
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
-        }
-
-        //create Paragraph
-        XWPFParagraph paragraph = document.createParagraph();
-        XWPFRun run = paragraph.createRun();
-        run.setBold(true);
-        run.setUnderline(UnderlinePatterns.SINGLE);
-        run.setText("Lesson");
-        run = paragraph.createRun();
-        run.setText(": " + fileName);
-        run.addBreak();
-        run.setText("------------------------------------------------------------------------------------------------------------------------------------------");
-        run.addBreak();
-
-
-        List<List<String>> text;
-        List<List<String>> text2;
-        for (XmlTag f : getFrames()) {
-            run.setText("Frame: " + matchFrameToStep(f.getAttributeValue("id"), f.getAttributeValue("node"), stepTree));
-            paragraph = document.createParagraph();
-            run = paragraph.createRun();
-
-            if (isPlayFrame(f)) {
-                text = splitParagraphs(stripText(getFrameText(f)));
-                run.setBold(true);
-                run.setText("Text1");
-                run = paragraph.createRun();
-                run.setText(":  ");
-                run = paragraph.createRun();
-                formatParagraphs(text, document, run, paragraph);
-
-            }
-            else {
-                text = splitParagraphs(stripText(getFrameText(f)));
-                run.setBold(true);
-                run.setText("Text1");
-                run = paragraph.createRun();
-                run.setText(":  ");
-                run = paragraph.createRun();
-                formatParagraphs(text, document, run, paragraph);
-
-                paragraph = document.createParagraph();
-                run = paragraph.createRun();
-                text2 = splitParagraphs(stripText(getFrameText2(f)));
-                run.setBold(true);
-                run.setText("Text2");
-                run = paragraph.createRun();
-                run.setText(":  ");
-                run = paragraph.createRun();
-                formatParagraphs(text2, document, run, paragraph);
-            }
-            run.addBreak();
-            run.setText("------------------------------------------------------------------------------------------------------------------------------------------");
-            run.addBreak();
-        }
-
-        try {
-            document.write(out);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-        try {
-            out.close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
-
-    private void formatParagraphs(List<List<String>> text, XWPFDocument document, XWPFRun run, XWPFParagraph paragraph) {
-        int i = 0;
-        for (List<String> p : text) {
-            if (i != 0) {
-                paragraph = document.createParagraph();
-                run = paragraph.createRun();
-            }
-
-            if (p.size() == 1) {
-                run.setText(p.get(0));
-            }
-            else {
-                for (String l : p) {
-                    run.setText(l);
-                    run.addBreak();
-                }
-            }
-            i++;
-        }
-    }
-
-    private List<List<String>> splitParagraphs(String text) {
-        List<List<String>> paragraphs = new ArrayList<>();
-        List<String> paragraph;
-        String[] tempParagraphs;
-        String[] tempLines;
-
-        if (text.contains("\\r\\r")) {
-            tempParagraphs = text.split("\\\\r\\\\r");
-            for (String p : tempParagraphs) {
-                paragraph = new ArrayList<>();
-                if (!p.contains("\\r")) {
-                    paragraph.add(p);
-                }
-                else {
-                    tempLines = p.split("\\\\r");
-                    paragraph.addAll(Arrays.asList(tempLines));
-                }
-                paragraphs.add(paragraph);
-            }
-        }
-
-        return paragraphs;
-    }
-
-    private String matchFrameToStep(String frameId, String frameNode, StepTree stepTree) {
-        String stepTreeLabel = null;
-        for (XmlTag n : stepTree.getNodes()) {
-            if (frameNode.equals(n.getAttributeValue("name"))) {
-                stepTreeLabel = n.getAttributeValue("label");
-            }
-        }
-        return frameId + " - " + stepTreeLabel;
     }
 
     /** Store the old values for each Frame in the oldFrameValues array */
@@ -296,28 +141,32 @@ public class FrameSet {
 
     /** Get the Text value from the Frame */
     @NotNull
-    private String getFrameText(XmlTag x) {
-        return x.findFirstSubTag("Text").getValue().getText();
+    public String getFrameInfoText(XmlTag x) {
+        String text = "";
+        if (x.findFirstSubTag("InfoText") != null) {
+            text = x.findFirstSubTag("InfoText").getValue().getText();
+        }
+        return text;
+    }
+
+
+    /** Get the Text value from the Frame */
+    @NotNull
+    public String getFrameText(XmlTag x) {
+        String text = null;
+        if (x.findFirstSubTag("Text") != null) {
+            text = x.findFirstSubTag("Text").getValue().getText();
+        }
+        return text;
     }
 
     /** Get the Text2 value from the Frame */
     @NotNull
-    private String getFrameText2(XmlTag x) {
-        return x.findFirstSubTag("Text2").getValue().getText();
-    }
-
-    private String stripText(String text) {
-        text = text.replace("[f arial_bold]", "");
-        text = text.replace("[f arial_italic]", "");
-        text = text.replace("[f arial]", "");
-        text = text.replace("&#x2022;", "•");
-        text = text.replace("&amp;", "&");
-        text = text.replace("\t", "     ");
-        text = text.replaceAll("\\[c.*?].*?H.*?]WARNING(?i)\\[.*?\\?]", "");
-        text = text.replaceAll("\\[c.*?].*?H.*?]CAUTION(?i)\\[.*?\\?]", "");
-        text = text.replaceAll("\\[c.*?].*?H.*?]NOTE(?i)\\[.*?\\?]", "");
-        text = text.replaceAll("\\[c.*?].*?H.*?](.*?)\\[.*?\\?]", "$1");
-
+    public String getFrameText2(XmlTag x) {
+        String text = null;
+        if (x.findFirstSubTag("Text2") != null) {
+            text = x.findFirstSubTag("Text2").getValue().getText();
+        }
         return text;
     }
 

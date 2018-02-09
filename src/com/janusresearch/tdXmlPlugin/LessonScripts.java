@@ -11,15 +11,9 @@ import com.intellij.util.xml.DomManager;
 import com.janusresearch.tdXmlPlugin.dialog.LessonScriptsDialog;
 import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import com.janusresearch.tdXmlPlugin.xml.FrameSet;
+import com.janusresearch.tdXmlPlugin.xml.ScriptGenerator;
 import com.janusresearch.tdXmlPlugin.xml.StepTree;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Objects;
 
 public class LessonScripts extends AnAction {
@@ -41,8 +35,8 @@ public class LessonScripts extends AnAction {
                 PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
 
                 if (psiFile != null) {
-                    boolean isXmlFile = false;
-                    boolean nameMatchesSchema = false;
+                    boolean isXmlFile;
+                    boolean nameMatchesSchema;
 
                     //Determine if file is xml type and name matches our naming schema
                     isXmlFile = psiFile.getFileType().getName().equalsIgnoreCase("xml");
@@ -65,7 +59,8 @@ public class LessonScripts extends AnAction {
                             stepTree.storeNodes();
                             frameSet.storeFrames();
 
-                            frameSet.createLessonScript(fileName, stepTree);
+                            ScriptGenerator sg = new ScriptGenerator();
+                            sg.createLessonScript(fileName, stepTree, frameSet);
                         }
                     }
                 }

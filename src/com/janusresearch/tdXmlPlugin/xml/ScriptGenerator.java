@@ -4,9 +4,13 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.xml.DomManager;
+import com.janusresearch.tdXmlPlugin.debug.Debug;
+import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -21,6 +25,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class ScriptGenerator {
     private Project project;
@@ -96,7 +102,7 @@ public class ScriptGenerator {
                 run = paragraph.createRun();
                 run.setText(":  ");
                 run = paragraph.createRun();
-                text = splitParagraphs(stripText(frameSet.getFrameText(f)));
+                text = splitParagraphs(matchAcronymPronunciations(stripText(frameSet.getFrameText(f))));
                 formatParagraphs(text);
             }
             else {
@@ -106,7 +112,7 @@ public class ScriptGenerator {
                 run = paragraph.createRun();
                 run.setText(":  ");
                 run = paragraph.createRun();
-                infoText = splitParagraphs(stripText(frameSet.getFrameInfoText(f)));
+                infoText = splitParagraphs(matchAcronymPronunciations(stripText(frameSet.getFrameInfoText(f))));
                 formatParagraphs(infoText);
 
                 //Create Text Entry for current Frame
@@ -118,14 +124,14 @@ public class ScriptGenerator {
                 run = paragraph.createRun();
                 run.setText(":  ");
                 run = paragraph.createRun();
-                text = splitParagraphs(stripText(frameSet.getFrameText(f)));
+                text = splitParagraphs(matchAcronymPronunciations(stripText(frameSet.getFrameText(f))));
                 formatParagraphs(text);
 
                 //Create Text2 Entry for current Frame
                 paragraph = document.createParagraph();
                 run = paragraph.createRun();
                 run.addBreak();
-                text2 = splitParagraphs(stripText(frameSet.getFrameText2(f)));
+                text2 = splitParagraphs(matchAcronymPronunciations(stripText(frameSet.getFrameText2(f))));
                 run.setBold(true);
                 run.setText("Text2");
                 run = paragraph.createRun();
@@ -155,9 +161,24 @@ public class ScriptGenerator {
         }
     }
 
+    private String matchAcronymPronunciations(String text) {
+        for (String[] s : acronyms) {
+//            text = text.replaceAll("( | \\()" + s[0] + "( |\\) |\\.)", "$1" + s[0] + "$2" + s[1] + " " );
+            text = text.replace(" " + s[0] + " ", " " + s[0] + " " + s[1] + " " );
+            text = text.replace(" " + s[0] + ".", " " + s[0] + " " + s[1] + "." );
+            text = text.replace(" " + s[0] + ",", " " + s[0] + " " + s[1] + "," );
+            text = text.replace(" " + s[0] + "]", " " + s[0] + " " + s[1] + "]" );
+            text = text.replace(" (" + s[0] + ") ", " (" + s[0] + ") " + s[1] + " " );
+            text = text.replace(" (" + s[0] + ").", " (" + s[0] + ") " + s[1] + "." );
+            text = text.replace(" (" + s[0] + "),", " (" + s[0] + ") " + s[1] + "," );
+            text = text.replace(" (" + s[0] + ")]", " (" + s[0] + ") " + s[1] + "]" );
+        }
+        return text;
+    }
+
     /** Formats the List of Lists containing the paragraphs for the document ensuring
      *  paragraphs and breaks are placed appropriately */
-    private void formatParagraphs(List<List<String>> text) {
+    private void formatParagraphs(@NotNull List<List<String>> text) {
         int i = 0;
         for (List<String> p : text) {
             if (i != 0) {
@@ -182,8 +203,8 @@ public class ScriptGenerator {
 
     /** Returns List of Lists containing the Frames text after being split by double/single returns
      *  The split creates a 2 dimensional List where each row contains a paragraph and each column (if any) contains
-     *  text that is in the same paragraph but on different lines */
-    private List<List<String>> splitParagraphs(String text) {
+     *  text that is in the same paragraph but on different lines due to single returns */
+    private List<List<String>> splitParagraphs(@NotNull String text) {
         List<List<String>> paragraphs = new ArrayList<>();
         List<String> paragraph;
         String[] tempParagraphs;
@@ -219,7 +240,7 @@ public class ScriptGenerator {
     /** Matches the current Frame with its StepTree node in order to get the correct label attribute from the StepTree
      *  Returns a String combination of the Frame id and StepTree label*/
     @NotNull
-    private String matchFrameToStep(String frameId, String frameNode, StepTree stepTree) {
+    private String matchFrameToStep(String frameId, String frameNode, @NotNull StepTree stepTree) {
         String stepTreeLabel = null;
         for (XmlTag n : stepTree.getNodes()) {
             if (frameNode.equals(n.getAttributeValue("name"))) {
@@ -231,9 +252,7 @@ public class ScriptGenerator {
 
     /** Returns a Frames text with code related items stripped out of the text so it will be presented in a cleaner fashion in the document */
     private String stripText(String text) {
-        text = text.replace("[f arial_bold]", "");
-        text = text.replace("[f arial_italic]", "");
-        text = text.replace("[f arial]", "");
+        text = text.replaceAll("\\[[fF] .*?]", "");
         text = text.replace("&#x2022;", "•");
         text = text.replace("&amp;", "&");
         text = text.replace("\t", "     ");
@@ -247,28 +266,28 @@ public class ScriptGenerator {
 
     /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing */
     public void createAcronymPronunciations() {
-        String modulePath = module.getModuleFilePath();
-        String acronymPath = modulePath.replaceAll("[^\\\\/:*?\"<>|\\r\\n]+$", "");
+        //Gets the path to the Dictionaries folder located inside Streaming Assets
+        String acronymPath = module.getModuleFilePath().replaceAll("[^\\\\/:*?\"<>|\\r\\n]+$", "");
         VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymPath + "Dictionaries\\AcronymPronunciations.xml");
-
-        XmlFile xmlFile;
+        PsiFile psiFile = null;
         if (vFile != null) {
-            xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(vFile);
-            XmlTag rootTag;
-            if (xmlFile != null) {
-                rootTag = xmlFile.getRootTag();
-                XmlTag[] acronymTags;
-                if (rootTag != null) {
-                    acronymTags = rootTag.findSubTags("acronym");
-                    acronyms = new String[acronymTags.length][2];
-                    int i = 0;
-                    for (XmlTag x : acronymTags) {
-                        acronyms[i][0] = x.getAttributeValue("name");
-                        acronyms[i][1] = x.getAttributeValue("pronunciation");
-                        i++;
-                    }
-                }
-            }
+            psiFile = PsiManager.getInstance(project).findFile(vFile);
         }
+
+        DomManager manager = DomManager.getDomManager(project);
+
+        //Get the XmlRoot File Element
+        XmlRoot xmlRoot = Objects.requireNonNull(manager.getFileElement((XmlFile) psiFile, XmlRoot.class)).getRootElement();
+
+        XmlTag[] acronymTags;
+        acronymTags = xmlRoot.getXmlTag().findSubTags("acronym");
+        acronyms = new String[acronymTags.length][2];
+        int i = 0;
+        for (XmlTag x : acronymTags) {
+            acronyms[i][0] = x.getAttributeValue("name");
+            acronyms[i][1] = x.getAttributeValue("pronunciation");
+            i++;
+        }
+        Debug.print("check out the array now");
     }
 }

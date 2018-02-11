@@ -4,9 +4,9 @@
 */
 package com.janusresearch.tdXmlPlugin.dom;
 
-import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericDomValue;
+import com.intellij.util.xml.DomElement;
 
-public interface XmlRoot extends DomElement{
+public interface XmlRoot extends DomElement {
     GenericDomValue<String> getApplication();
 }

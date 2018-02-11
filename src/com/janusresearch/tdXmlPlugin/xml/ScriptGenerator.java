@@ -288,6 +288,5 @@ public class ScriptGenerator {
             acronyms[i][1] = x.getAttributeValue("pronunciation");
             i++;
         }
-        Debug.print("check out the array now");
     }
 }

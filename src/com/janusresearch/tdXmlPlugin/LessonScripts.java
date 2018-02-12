@@ -33,6 +33,7 @@ public class LessonScripts extends AnAction {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
 
+        //This is an Intellij Module, not to be confused with the xml dom class Module
         com.intellij.openapi.module.Module module = ProjectFileIndex.getInstance(project).getModuleForFile(psiFile.getVirtualFile());
 
         //Create DomManager, FileDescription and register the description
@@ -61,6 +62,7 @@ public class LessonScripts extends AnAction {
 
                         if (isLessonFile) {
                             Module moduleRoot = manager.getFileElement(xmlFile, Module.class).getRootElement();
+
                             //Create StepTree and FrameSet objects to collect lesson data and then use that data
                             //to generate the audio scripts for the selected lesson
                             StepTree stepTree = new StepTree(moduleRoot);

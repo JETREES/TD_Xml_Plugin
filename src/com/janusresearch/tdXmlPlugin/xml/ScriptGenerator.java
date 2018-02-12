@@ -1,10 +1,11 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
-import com.intellij.openapi.module.Module;
+import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
@@ -29,16 +30,13 @@ import java.util.Objects;
 
 public class ScriptGenerator {
     private Project project;
-    private Module module;
     private XWPFDocument document;
     private XWPFParagraph paragraph;
     private XWPFRun run;
-//    private String[][] acronyms;
     private List<Acronym> acronyms;
 
-    public ScriptGenerator(Project project, Module module) {
+    public ScriptGenerator(Project project) {
         this.project = project;
-        this.module = module;
     }
 
     /** Generates a lesson Script from a lesson given the filename */
@@ -274,20 +272,35 @@ public class ScriptGenerator {
         return text;
     }
 
-    /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing
-     * @param manager*/
-    public void createAcronymPronunciations(DomManager manager) {
-        //Gets the path to the Dictionaries folder located inside Streaming Assets
-        String acronymPath = module.getModuleFilePath().replaceAll("[^\\\\/:*?\"<>|\\r\\n]+$", "");
-        VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymPath + "Dictionaries\\AcronymPronunciations.xml");
-        PsiFile psiFile = null;
-        if (vFile != null) {
-            psiFile = PsiManager.getInstance(project).findFile(vFile);
-        }
+    /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing */
+    public void createAcronymPronunciations(DomManager manager, ProgressManager pm) {
+        FileChooserDescriptor descriptor = new FileChooserDescriptor(false, true, false, false, false, false);
+        descriptor.setTitle("Select the Location of AcronymPronunciations.Xml");
+        descriptor.setDescription("Browse to and select the folder where the AcronymPronunciations.Xml file resides.");
 
-        //Get the Module File Element
-        Acronyms acronymsRoot = Objects.requireNonNull(manager.getFileElement((XmlFile) psiFile, Acronyms.class)).getRootElement();
-        acronyms = acronymsRoot.getAcronyms();
+        FileChooser.chooseFiles(descriptor, project, null, folder -> {
+            List<VirtualFile> acronymFolder = new ArrayList<>();
+            final boolean hasSelection = pm.runProcessWithProgressSynchronously((Runnable) () -> acronymFolder.addAll(folder), "Looking for Acronym Folder...", false, project);
+            if (!hasSelection || acronymFolder.isEmpty()) return;
+
+            pm.runProcessWithProgressSynchronously(() -> {
+                //Gets the path to the Dictionaries folder located inside Streaming Assets
+                VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymFolder.get(0).getPath() + "\\AcronymPronunciations.xml");
+                XmlFile xmlFile = null;
+                if (vFile != null) {
+                    xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(vFile);
+                }
+
+                //Get the Module File Element
+                Acronyms acronymsRoot = Objects.requireNonNull(manager.getFileElement(xmlFile, Acronyms.class)).getRootElement();
+                acronyms = acronymsRoot.getAcronyms();
+
+            }, "Reading Acronym Pronunciations...", false, project);
+        });
+
+
+
+
 
 //        XmlTag[] acronymTags;
 //        acronymTags = acronymsRoot.getXmlTag().findSubTags("acronym");

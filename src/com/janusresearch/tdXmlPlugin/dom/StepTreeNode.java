@@ -27,7 +27,7 @@ public interface StepTreeNode extends DomElement {
 	 */
 	@NotNull
 	@Attribute("parent")
-	GenericAttributeValue<String> getParent();
+	GenericAttributeValue<String> getParentAttr();
 
 
 	/**

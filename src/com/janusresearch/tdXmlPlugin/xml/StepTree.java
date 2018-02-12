@@ -3,22 +3,22 @@ package com.janusresearch.tdXmlPlugin.xml;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
-import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import com.janusresearch.tdXmlPlugin.dom.Module;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Objects;
 
 @SuppressWarnings("ConstantConditions")
 public class StepTree {
-    private XmlRoot root;
+    private Module root;
     private XmlTag[] nodes;
     private int nodeCount;
     private XmlAttribute[][] nodeAttributes; //array stores name parent and id attributes from StepTree node
     private String[][] oldNodeValues;   //array stores old and new values for each node, used in processing FrameChange
     private String[][] newNodeValues;   //array stores old and new values for each node, used in processing FrameChange
 
-    public StepTree(XmlRoot xmlRoot) {
-        root = xmlRoot;
+    public StepTree(Module moduleRoot) {
+        root = moduleRoot;
     }
 
     /** Store every node tag in the Step Tree in the nodes array */

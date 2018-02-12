@@ -6,9 +6,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
-import com.janusresearch.tdXmlPlugin.debug.Debug;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
-import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import com.janusresearch.tdXmlPlugin.dom.Module;
 import com.janusresearch.tdXmlPlugin.notification.Notifications;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsole;
 import com.janusresearch.tdXmlPlugin.write.WriteToXmlFile;
@@ -44,25 +43,25 @@ public class RenumberLesson extends AnAction {
             //Create DomManager, FileDescription and register the description
             DomManager manager = DomManager.getDomManager(project);
 
-            //Get the XmlRoot File Element
-            XmlRoot xmlRoot = manager.getFileElement(xmlFile, XmlRoot.class).getRootElement();
+            //Get the Module File Element
+            Module moduleRoot = manager.getFileElement(xmlFile, Module.class).getRootElement();
 
-            if (Objects.equals(xmlRoot.getXmlElementName(), "Module")) {
+            if (Objects.equals(moduleRoot.getXmlElementName(), "Module")) {
                 //Process the Step Tree
-                StepTree stepTree = new StepTree(xmlRoot);
+                StepTree stepTree = new StepTree(moduleRoot);
                 stepTree.storeNodeAttributes();
                 stepTree.storeOldNodeValues();
                 stepTree.storeNewNodeValues();
 
                 //Process the FrameSet
-                FrameSet frameSet = new FrameSet(project, xmlRoot);
+                FrameSet frameSet = new FrameSet(project, moduleRoot);
                 frameSet.storeFrameAttributes();
                 frameSet.storeOldFrameValues();
                 frameSet.storeNewFrameValues();
                 frameSet.processEvents();
 
                 //Process CommandMacros to store FrameChange commands and their new values
-                CommandMacros commandMacros = new CommandMacros(xmlRoot);
+                CommandMacros commandMacros = new CommandMacros(moduleRoot);
                 commandMacros.processMacros(frameSet.getOldFrameValues(), frameSet.getNewFrameValues());
 
                 //write all the stored data from arrays to the xml file

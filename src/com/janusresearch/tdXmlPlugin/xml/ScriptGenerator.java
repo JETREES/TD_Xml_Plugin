@@ -9,8 +9,8 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomManager;
-import com.janusresearch.tdXmlPlugin.debug.Debug;
-import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import com.janusresearch.tdXmlPlugin.dom.Acronym;
+import com.janusresearch.tdXmlPlugin.dom.Acronyms;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 public class ScriptGenerator {
     private Project project;
@@ -34,7 +33,8 @@ public class ScriptGenerator {
     private XWPFDocument document;
     private XWPFParagraph paragraph;
     private XWPFRun run;
-    private String[][] acronyms;
+//    private String[][] acronyms;
+    private List<Acronym> acronyms;
 
     public ScriptGenerator(Project project, Module module) {
         this.project = project;
@@ -162,16 +162,26 @@ public class ScriptGenerator {
     }
 
     private String matchAcronymPronunciations(String text) {
-        for (String[] s : acronyms) {
-//            text = text.replaceAll("( | \\()" + s[0] + "( |\\) |\\.)", "$1" + s[0] + "$2" + s[1] + " " );
-            text = text.replace(" " + s[0] + " ", " " + s[0] + " " + s[1] + " " );
-            text = text.replace(" " + s[0] + ".", " " + s[0] + " " + s[1] + "." );
-            text = text.replace(" " + s[0] + ",", " " + s[0] + " " + s[1] + "," );
-            text = text.replace(" " + s[0] + "]", " " + s[0] + " " + s[1] + "]" );
-            text = text.replace(" (" + s[0] + ") ", " (" + s[0] + ") " + s[1] + " " );
-            text = text.replace(" (" + s[0] + ").", " (" + s[0] + ") " + s[1] + "." );
-            text = text.replace(" (" + s[0] + "),", " (" + s[0] + ") " + s[1] + "," );
-            text = text.replace(" (" + s[0] + ")]", " (" + s[0] + ") " + s[1] + "]" );
+        for (Acronym s : acronyms) {
+            /*I tried this with regex at one point and it didn't seem to work properly in every single case
+            text = text.replaceAll("( | \\()" + s.getName() + "( |\\) |\\.)", "$1" + s.getName() + "$2" + s.getPronunciation() + " " );*/
+            text = text.replace(" " + s.getName() + " ", " " + s.getName() + " " + s.getPronunciation() + " " );
+            text = text.replace(" " + s.getName() + "s", " " + s.getName() + "s " + s.getPronunciation());
+            text = text.replace(" " + s.getName() + ".", " " + s.getName() + " " + s.getPronunciation() + "." );
+            text = text.replace(" " + s.getName() + ",", " " + s.getName() + " " + s.getPronunciation() + "," );
+            text = text.replace(" " + s.getName() + "]", " " + s.getName() + " " + s.getPronunciation() + "]" );
+            text = text.replace(" " + s.getName() + "-", " " + s.getName() + "- " + s.getPronunciation() + " ");
+            text = text.replace(" " + s.getName() + "/", " " + s.getName() + " " + s.getPronunciation() + "/" );
+            text = text.replace("/" + s.getName() + " ", "/" + s.getName() + " " + s.getPronunciation() + " " );
+
+            text = text.replace(" (" + s.getName() + ") ", " (" + s.getName() + ") " + s.getPronunciation() + " ");
+            text = text.replace(" (" + s.getName() + ")s", " (" + s.getName() + ")s " + s.getPronunciation());
+            text = text.replace(" (" + s.getName() + ").", " (" + s.getName() + ") " + s.getPronunciation() + "." );
+            text = text.replace(" (" + s.getName() + "),", " (" + s.getName() + ") " + s.getPronunciation() + "," );
+            text = text.replace(" (" + s.getName() + ")]", " (" + s.getName() + ") " + s.getPronunciation() + "]" );
+            text = text.replace(" (" + s.getName() + ")-", " (" + s.getName() + ")- " + s.getPronunciation() + " ");
+            text = text.replace(" (" + s.getName() + ")/", " (" + s.getName() + ") " + s.getPronunciation() + "/" );
+            text = text.replace("/(" + s.getName() + ") ", "/(" + s.getName() + ") " + s.getPronunciation() + " " );
         }
         return text;
     }
@@ -264,8 +274,9 @@ public class ScriptGenerator {
         return text;
     }
 
-    /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing */
-    public void createAcronymPronunciations() {
+    /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing
+     * @param manager*/
+    public void createAcronymPronunciations(DomManager manager) {
         //Gets the path to the Dictionaries folder located inside Streaming Assets
         String acronymPath = module.getModuleFilePath().replaceAll("[^\\\\/:*?\"<>|\\r\\n]+$", "");
         VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymPath + "Dictionaries\\AcronymPronunciations.xml");
@@ -274,19 +285,22 @@ public class ScriptGenerator {
             psiFile = PsiManager.getInstance(project).findFile(vFile);
         }
 
-        DomManager manager = DomManager.getDomManager(project);
+        //Get the Module File Element
+        Acronyms acronymsRoot = Objects.requireNonNull(manager.getFileElement((XmlFile) psiFile, Acronyms.class)).getRootElement();
+        acronyms = acronymsRoot.getAcronyms();
 
-        //Get the XmlRoot File Element
-        XmlRoot xmlRoot = Objects.requireNonNull(manager.getFileElement((XmlFile) psiFile, XmlRoot.class)).getRootElement();
+//        XmlTag[] acronymTags;
+//        acronymTags = acronymsRoot.getXmlTag().findSubTags("acronym");
+//        acronyms = new String[acronymTags.length][2];
+//        int i = 0;
+//        for (XmlTag x : acronymTags) {
+//            acronyms[i][0] = x.getAttributeValue("name");
+//            acronyms[i][1] = x.getAttributeValue("pronunciation");
+//            i++;
+//        }
 
-        XmlTag[] acronymTags;
-        acronymTags = xmlRoot.getXmlTag().findSubTags("acronym");
-        acronyms = new String[acronymTags.length][2];
-        int i = 0;
-        for (XmlTag x : acronymTags) {
-            acronyms[i][0] = x.getAttributeValue("name");
-            acronyms[i][1] = x.getAttributeValue("pronunciation");
-            i++;
-        }
+
+
+
     }
 }

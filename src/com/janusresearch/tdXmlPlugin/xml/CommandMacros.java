@@ -2,7 +2,7 @@ package com.janusresearch.tdXmlPlugin.xml;
 
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
-import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import com.janusresearch.tdXmlPlugin.dom.Module;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,13 +12,13 @@ import java.util.Objects;
 
 @SuppressWarnings("ConstantConditions")
 public class CommandMacros {
-    private XmlRoot root;
+    private Module root;
     private XmlTag[] macros;
     private List<XmlAttribute> frameChangeCommands = new ArrayList<>();
     private List<String> newFrameChangeValues = new ArrayList<>();
 
-    public CommandMacros(XmlRoot xmlRoot) {
-        root = xmlRoot;
+    public CommandMacros(Module moduleRoot) {
+        root = moduleRoot;
     }
 
     /** Store every Macro sub tag from CommandMacros in the macros array */

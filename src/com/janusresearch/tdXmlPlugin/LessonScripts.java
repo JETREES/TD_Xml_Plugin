@@ -5,25 +5,21 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
-import com.intellij.util.xml.GenericDomValue;
 import com.janusresearch.tdXmlPlugin.debug.Debug;
 import com.janusresearch.tdXmlPlugin.dialog.LessonScriptsDialog;
 import com.janusresearch.tdXmlPlugin.dom.COL;
 import com.janusresearch.tdXmlPlugin.dom.COLs;
-import com.janusresearch.tdXmlPlugin.dom.Questions;
-import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import com.janusresearch.tdXmlPlugin.dom.Module;
 import com.janusresearch.tdXmlPlugin.xml.FrameSet;
 import com.janusresearch.tdXmlPlugin.xml.ScriptGenerator;
 import com.janusresearch.tdXmlPlugin.xml.StepTree;
 
 import java.util.List;
-import java.util.Objects;
 
 public class LessonScripts extends AnAction {
 
@@ -37,14 +33,14 @@ public class LessonScripts extends AnAction {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
 
-        Module module = ProjectFileIndex.getInstance(project).getModuleForFile(psiFile.getVirtualFile());
+        com.intellij.openapi.module.Module module = ProjectFileIndex.getInstance(project).getModuleForFile(psiFile.getVirtualFile());
 
         //Create DomManager, FileDescription and register the description
         DomManager manager = DomManager.getDomManager(project);
 
         //Create a Script Generator object and store the acronym pronunciations in memory
         ScriptGenerator sg = new ScriptGenerator(project, module);
-        sg.createAcronymPronunciations();
+        sg.createAcronymPronunciations(manager);
 
         //Create and display the Lesson Scripts dialog
         LessonScriptsDialog dialog = new LessonScriptsDialog();
@@ -59,16 +55,16 @@ public class LessonScripts extends AnAction {
                     boolean isColFile = psiFile.getName().matches("[A-Z]{2}1[A-Z][0-9]{4}[a-zA-Z]?(?:COL)\\.xml");
 
                     if (isXmlFile && isLessonFile || isColFile) {
-                        //get the current lesson name and XmlRoot File Element
+                        //get the current lesson name and Module File Element
                         xmlFile = (XmlFile) psiFile;
                         fileName = xmlFile.getName().replaceFirst("\\..*", "");
 
                         if (isLessonFile) {
-                            XmlRoot xmlRoot = manager.getFileElement(xmlFile, XmlRoot.class).getRootElement();
+                            Module moduleRoot = manager.getFileElement(xmlFile, Module.class).getRootElement();
                             //Create StepTree and FrameSet objects to collect lesson data and then use that data
                             //to generate the audio scripts for the selected lesson
-                            StepTree stepTree = new StepTree(xmlRoot);
-                            FrameSet frameSet = new FrameSet(project, xmlRoot);
+                            StepTree stepTree = new StepTree(moduleRoot);
+                            FrameSet frameSet = new FrameSet(project, moduleRoot);
                             stepTree.storeNodes();
                             frameSet.storeFrames();
                             sg.createLessonScript(fileName, stepTree, frameSet);

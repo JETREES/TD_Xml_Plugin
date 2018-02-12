@@ -12,237 +12,237 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Module extends DomElement {
 
-	/**
-	 * Returns the value of the title child.
-	 * @return the value of the title child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the title child.
+     * @return the value of the title child.
+     */
+    @NotNull
     @Attribute("title")
-	GenericAttributeValue<String> getTitle();
+    GenericAttributeValue<String> getTitle();
 
 
-	/**
-	 * Returns the value of the timed child.
-	 * @return the value of the timed child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the timed child.
+     * @return the value of the timed child.
+     */
+    @NotNull
     @Attribute("timed")
-	GenericAttributeValue<Boolean> getTimed();
+    GenericAttributeValue<Boolean> getTimed();
 
 
-	/**
-	 * Returns the value of the estimatedtime child.
-	 * @return the value of the estimatedtime child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the estimatedtime child.
+     * @return the value of the estimatedtime child.
+     */
+    @NotNull
     @Attribute("estimatedTime")
-	GenericAttributeValue<String> getEstimatedtime();
+    GenericAttributeValue<String> getEstimatedtime();
 
 
-	/**
-	 * Returns the value of the type child.
-	 * @return the value of the type child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the type child.
+     * @return the value of the type child.
+     */
+    @NotNull
     @Attribute("type")
-	GenericAttributeValue<String> getType();
+    GenericAttributeValue<String> getType();
 
 
-	/**
-	 * Returns the value of the view child.
-	 * @return the value of the view child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the view child.
+     * @return the value of the view child.
+     */
+    @NotNull
     @Attribute("view")
-	GenericAttributeValue<String> getView();
+    GenericAttributeValue<String> getView();
 
 
-	/**
-	 * Returns the value of the movie child.
-	 * @return the value of the movie child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the movie child.
+     * @return the value of the movie child.
+     */
+    @NotNull
     @Attribute("movie")
-	GenericAttributeValue<String> getMovie();
+    GenericAttributeValue<String> getMovie();
 
 
-	/**
-	 * Returns the value of the lines child.
-	 * @return the value of the lines child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the lines child.
+     * @return the value of the lines child.
+     */
+    @NotNull
     @Attribute("lines")
-	GenericAttributeValue<Integer> getLines();
+    GenericAttributeValue<Integer> getLines();
 
 
-	/**
-	 * Returns the value of the version child.
-	 * @return the value of the version child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the version child.
+     * @return the value of the version child.
+     */
+    @NotNull
     @Attribute("version")
-	GenericAttributeValue<Integer> getVersion();
+    GenericAttributeValue<Integer> getVersion();
 
 
-	/**
-	 * Returns the value of the widescreen child.
-	 * @return the value of the widescreen child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the widescreen child.
+     * @return the value of the widescreen child.
+     */
+    @NotNull
     @Attribute("widescreen")
-	GenericAttributeValue<String> getWidescreen();
+    GenericAttributeValue<String> getWidescreen();
 
 
-	/**
-	 * Returns the value of the w3d child.
-	 * @return the value of the w3d child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the w3d child.
+     * @return the value of the w3d child.
+     */
+    @NotNull
     @Attribute("w3d")
-	GenericAttributeValue<String> getW3d();
+    GenericAttributeValue<String> getW3d();
 
 
-	/**
-	 * Returns the value of the mode child.
-	 * @return the value of the mode child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the mode child.
+     * @return the value of the mode child.
+     */
+    @NotNull
     @Attribute("mode")
-	GenericAttributeValue<String> getMode();
+    GenericAttributeValue<String> getMode();
 
 
-	/**
-	 * Returns the value of the Resources child.
-	 * @return the value of the Resources child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the Resources child.
+     * @return the value of the Resources child.
+     */
+    @NotNull
     @SubTag("Resources")
-	Resources getResources();
+    Resources getResources();
 
 
-	/**
-	 * Returns the value of the Description child.
-	 * @return the value of the Description child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the Description child.
+     * @return the value of the Description child.
+     */
+    @NotNull
     @SubTag("Description")
-	Description getDescription();
+    Description getDescription();
 
 
-	/**
-	 * Returns the value of the PreloadCommands child.
-	 * @return the value of the PreloadCommands child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the PreloadCommands child.
+     * @return the value of the PreloadCommands child.
+     */
+    @NotNull
     @SubTag("PreloadCommands")
-	PreloadCommands getPreloadCommands();
+    PreloadCommands getPreloadCommands();
 
 
-	/**
-	 * Returns the value of the ExternalCOL child.
-	 * @return the value of the ExternalCOL child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the ExternalCOL child.
+     * @return the value of the ExternalCOL child.
+     */
+    @NotNull
     @SubTag("ExternalCOL")
-	ExternalCOL getExternalCOL();
+    ExternalCOL getExternalCOL();
 
 
-	/**
-	 * Returns the value of the ExternalPopup child.
-	 * @return the value of the ExternalPopup child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the ExternalPopup child.
+     * @return the value of the ExternalPopup child.
+     */
+    @NotNull
     @SubTag("ExternalPopup")
-	ExternalPopup getExternalPopup();
+    ExternalPopup getExternalPopup();
 
 
-	/**
-	 * Returns the value of the LessonReference child.
-	 * @return the value of the LessonReference child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the LessonReference child.
+     * @return the value of the LessonReference child.
+     */
+    @NotNull
     @SubTag("LessonReference")
-	LessonReference getLessonReference();
+    LessonReference getLessonReference();
 
 
-	/**
-	 * Returns the value of the BaseCamera child.
-	 * @return the value of the BaseCamera child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the BaseCamera child.
+     * @return the value of the BaseCamera child.
+     */
+    @NotNull
     @SubTag("BaseCamera")
-	GenericDomValue<String> getBaseCamera();
+    GenericDomValue<String> getBaseCamera();
 
 
-	/**
-	 * Returns the value of the ObjectTree child.
-	 * @return the value of the ObjectTree child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the ObjectTree child.
+     * @return the value of the ObjectTree child.
+     */
+    @NotNull
     @SubTag("ObjectTree")
-	ObjectTree getObjectTree();
+    ObjectTree getObjectTree();
 
 
-	/**
-	 * Returns the value of the ComponentFiles child.
-	 * @return the value of the ComponentFiles child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the ComponentFiles child.
+     * @return the value of the ComponentFiles child.
+     */
+    @NotNull
     @SubTag("ComponentFiles")
-	ComponentFiles getComponentFiles();
+    ComponentFiles getComponentFiles();
 
 
-	/**
-	 * Returns the value of the StepTree child.
-	 * @return the value of the StepTree child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the StepTree child.
+     * @return the value of the StepTree child.
+     */
+    @NotNull
     @SubTag("StepTree")
-	StepTree getStepTree();
+    StepTree getStepTree();
 
 
-	/**
-	 * Returns the value of the GlobalEvents child.
-	 * @return the value of the GlobalEvents child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the GlobalEvents child.
+     * @return the value of the GlobalEvents child.
+     */
+    @NotNull
     @SubTag("GlobalEvents")
-	GlobalEvents getGlobalEvents();
+    GlobalEvents getGlobalEvents();
 
 
-	/**
-	 * Returns the value of the CommandMacros child.
-	 * @return the value of the CommandMacros child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the CommandMacros child.
+     * @return the value of the CommandMacros child.
+     */
+    @NotNull
     @SubTag("CommandMacros")
-	CommandMacros getCommandMacros();
+    CommandMacros getCommandMacros();
 
 
-	/**
-	 * Returns the value of the Goals child.
-	 * @return the value of the Goals child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the Goals child.
+     * @return the value of the Goals child.
+     */
+    @NotNull
     @SubTag("Goals")
-	Goals getGoals();
+    Goals getGoals();
 
 
-	/**
-	 * Returns the value of the CustomNavViews child.
-	 * @return the value of the CustomNavViews child.
-	 */
-	@NotNull
+    /**
+     * Returns the value of the CustomNavViews child.
+     * @return the value of the CustomNavViews child.
+     */
+    @NotNull
     @SubTag("CustomNavViews")
-	CustomNavViews getCustomNavViews();
+    CustomNavViews getCustomNavViews();
 
 
-	/**
-	 * Returns the value of the FrameSetOrPages child.
-	 * @return the value of the FrameSetOrPages child.
-	 */
-	@NotNull
-	@Required
+    /**
+     * Returns the value of the FrameSetOrPages child.
+     * @return the value of the FrameSetOrPages child.
+     */
+    @NotNull
+    @Required
     @SubTag("FrameSet")
     FrameSet getFrameSet();
 

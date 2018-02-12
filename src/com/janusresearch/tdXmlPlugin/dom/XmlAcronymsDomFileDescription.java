@@ -10,10 +10,10 @@ package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.DomFileDescription;
 
-public class XmlAcronymDomFileDescription extends DomFileDescription<Acronyms> {
+public class XmlAcronymsDomFileDescription extends DomFileDescription<Acronyms> {
     private static final String ROOT_TAG = "Acronyms";
 
-    public XmlAcronymDomFileDescription() {
+    public XmlAcronymsDomFileDescription() {
         super(Acronyms.class, ROOT_TAG);
 
     }

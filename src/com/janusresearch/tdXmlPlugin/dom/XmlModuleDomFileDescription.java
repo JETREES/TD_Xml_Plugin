@@ -10,11 +10,11 @@ package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.DomFileDescription;
 
-public class XmlLessonsDomFileDescription extends DomFileDescription<XmlRoot> {
+public class XmlModuleDomFileDescription extends DomFileDescription<Module> {
     private static final String ROOT_TAG = "Module";
 
-    public XmlLessonsDomFileDescription() {
-        super(XmlRoot.class, ROOT_TAG);
+    public XmlModuleDomFileDescription() {
+        super(Module.class, ROOT_TAG);
 
     }
 }

@@ -15,11 +15,11 @@ public interface Acronyms extends DomElement {
      */
     @NotNull
     @SubTag("acronym")
-    java.util.List<Alias> getAcronyms();
+    java.util.List<Acronym> getAcronyms();
     /**
      * Adds new child to the list of Acronym children.
      * @return created child
      */
     @SubTag("acronym")
-    Alias addAcronym();
+    Acronym addAcronym();
 }

@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
-import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import com.janusresearch.tdXmlPlugin.dom.Module;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @SuppressWarnings("ConstantConditions")
 public class FrameSet {
-    private XmlRoot root;
+    private Module root;
     private XmlTag[] frames;
     private int frameCount;
     private Project myProject;
@@ -30,9 +30,9 @@ public class FrameSet {
     private List<String> newOtherValues = new ArrayList<>();
     private int actualStepCount;
 
-    public FrameSet(Project project, XmlRoot xmlRoot) {
+    public FrameSet(Project project, Module moduleRoot) {
         myProject = project;
-        root = xmlRoot;
+        root = moduleRoot;
     }
 
     /** Store every Frame sub tag from Frame Set in the frames array */

@@ -31,9 +31,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.dom.XmlLessonsDomFileDescription"/>
+        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.dom.XmlModuleDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.dom.XmlCOLsDomFileDescription"/>
-        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.dom.XmlAcronymDomFileDescription"/>
+        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.dom.XmlAcronymsDomFileDescription"/>
     </extensions>
 
     <project-components>

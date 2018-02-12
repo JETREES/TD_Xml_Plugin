@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
-import com.janusresearch.tdXmlPlugin.dom.XmlRoot;
+import com.janusresearch.tdXmlPlugin.dom.Module;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsole;
 import com.janusresearch.tdXmlPlugin.xml.FrameSet;
 
@@ -26,11 +26,11 @@ public class StepCount extends AnAction {
         //Create DomManager, FileDescription and register the description
         DomManager manager = DomManager.getDomManager(project);
 
-        //Get the XmlRoot File Element
-        XmlRoot xmlRoot = manager.getFileElement(xmlFile, XmlRoot.class).getRootElement();
+        //Get the Module File Element
+        Module moduleRoot = manager.getFileElement(xmlFile, Module.class).getRootElement();
 
-        if (Objects.equals(xmlRoot.getXmlElementName(), "Module")) {
-            FrameSet frameSet = new FrameSet(project, xmlRoot);
+        if (Objects.equals(moduleRoot.getXmlElementName(), "Module")) {
+            FrameSet frameSet = new FrameSet(project, moduleRoot);
             XmlConsole.printStepCount(psiFile, frameSet.getStepCount());
         }
     }

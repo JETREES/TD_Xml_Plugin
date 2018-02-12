@@ -17,6 +17,7 @@ public interface MultipleChoiceAnswers extends DomElement {
 	 * @return the value of the A child.
 	 */
 	@NotNull
+	@SubTag("A")
 	GenericDomValue<String> getA();
 
 
@@ -25,6 +26,7 @@ public interface MultipleChoiceAnswers extends DomElement {
 	 * @return the value of the B child.
 	 */
 	@NotNull
+	@SubTag("B")
 	GenericDomValue<String> getB();
 
 
@@ -33,6 +35,7 @@ public interface MultipleChoiceAnswers extends DomElement {
 	 * @return the value of the C child.
 	 */
 	@NotNull
+	@SubTag("C")
 	GenericDomValue<String> getC();
 
 
@@ -41,6 +44,7 @@ public interface MultipleChoiceAnswers extends DomElement {
 	 * @return the value of the D child.
 	 */
 	@NotNull
+	@SubTag("D")
 	GenericDomValue<String> getD();
 
 
@@ -49,6 +53,7 @@ public interface MultipleChoiceAnswers extends DomElement {
 	 * @return the value of the Correct child.
 	 */
 	@NotNull
+	@SubTag("Correct")
 	GenericDomValue<String> getCorrect();
 
 
@@ -57,6 +62,7 @@ public interface MultipleChoiceAnswers extends DomElement {
 	 * @return the value of the PositiveFeedback child.
 	 */
 	@NotNull
+	@SubTag("PositiveFeedback")
 	GenericDomValue<String> getPositiveFeedback();
 
 
@@ -65,6 +71,7 @@ public interface MultipleChoiceAnswers extends DomElement {
 	 * @return the value of the NegativeFeedback child.
 	 */
 	@NotNull
+	@SubTag("NegativeFeedback")
 	GenericDomValue<String> getNegativeFeedback();
 
 

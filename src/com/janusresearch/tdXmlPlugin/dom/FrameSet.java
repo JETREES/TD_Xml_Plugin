@@ -27,4 +27,34 @@ public interface FrameSet extends DomElement {
 	Frame addFrame();
 
 
+	/**
+	 * Returns the list of Question children.
+	 * @return the list of Question children.
+	 */
+	@NotNull
+	@SubTag("Question")
+	java.util.List<Frame> getQuestions();
+	/**
+	 * Adds new child to the list of Question children.
+	 * @return created child
+	 */
+	@SubTag("Question")
+	Frame addQuestion();
+
+
+	/**
+	 * Returns the list of COL children.
+	 * @return the list of COL children.
+	 */
+	@NotNull
+	@SubTag("COL")
+	java.util.List<COL> getCOLs();
+	/**
+	 * Adds new child to the list of COL children.
+	 * @return created child
+	 */
+	@SubTag("COL")
+	COL addCOL();
+
+
 }

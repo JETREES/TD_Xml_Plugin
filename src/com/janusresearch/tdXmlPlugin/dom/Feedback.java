@@ -7,7 +7,6 @@ import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 
 /**
  * null:FeedbackType interface.
@@ -21,6 +20,21 @@ public interface Feedback extends DomElement {
 	@NotNull
 	@SubTag("Correct")
 	GenericDomValue<String> getCorrect();
+
+
+	/**
+	 * Returns the list of Error children.
+	 * @return the list of Error children.
+	 */
+	@NotNull
+	@SubTag("Error")
+	java.util.List<Error> getErrors();
+	/**
+	 * Adds new child to the list of Error children.
+	 * @return created child
+	 */
+	@SubTag("Error")
+	Error addError();
 
 
 	/**

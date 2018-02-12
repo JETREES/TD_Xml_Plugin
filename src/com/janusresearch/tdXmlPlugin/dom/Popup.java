@@ -1,7 +1,7 @@
 // Generated on Mon Feb 12 09:46:36 EST 2018
 // DTD/Schema  :    null
 
-package test;
+package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
@@ -18,6 +18,7 @@ public interface Popup extends DomElement {
 	 */
 	@NotNull
 	@Required
+	@Attribute("x")
 	GenericAttributeValue<Integer> getX();
 
 
@@ -27,6 +28,7 @@ public interface Popup extends DomElement {
 	 */
 	@NotNull
 	@Required
+	@Attribute("y")
 	GenericAttributeValue<Integer> getY();
 
 
@@ -36,6 +38,7 @@ public interface Popup extends DomElement {
 	 */
 	@NotNull
 	@Required
+	@Attribute("w")
 	GenericAttributeValue<Integer> getW();
 
 
@@ -45,6 +48,7 @@ public interface Popup extends DomElement {
 	 */
 	@NotNull
 	@Required
+	@Attribute("h")
 	GenericAttributeValue<Integer> getH();
 
 
@@ -54,6 +58,7 @@ public interface Popup extends DomElement {
 	 */
 	@NotNull
 	@Required
+	@SubTag("Id")
 	GenericDomValue<String> getId();
 
 
@@ -63,6 +68,7 @@ public interface Popup extends DomElement {
 	 */
 	@NotNull
 	@Required
+	@SubTag("Text")
 	GenericDomValue<String> getText();
 
 
@@ -71,6 +77,7 @@ public interface Popup extends DomElement {
 	 * @return the value of the Close child.
 	 */
 	@NotNull
+	@SubTag("Close")
 	GenericDomValue<String> getClose();
 
 
@@ -79,6 +86,7 @@ public interface Popup extends DomElement {
 	 * @return the value of the Title child.
 	 */
 	@NotNull
+	@SubTag("Title")
 	GenericDomValue<String> getTitle();
 
 
@@ -87,6 +95,7 @@ public interface Popup extends DomElement {
 	 * @return the value of the Drag child.
 	 */
 	@NotNull
+	@SubTag("Drag")
 	GenericDomValue<Boolean> getDrag();
 
 

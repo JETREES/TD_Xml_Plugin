@@ -5,6 +5,7 @@ package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
+import com.sampullara.cli.Argument;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -40,12 +41,30 @@ public interface Frame extends DomElement {
 
 
 	/**
-	 * Returns the value of the ignore child.
-	 * @return the value of the ignore child.
+	 * Returns the value of the steps child.
+	 * @return the value of the steps child.
 	 */
 	@NotNull
-	@Attribute("ignore")
-	GenericAttributeValue<Integer> getIgnore();
+	@Argument("steps")
+	GenericAttributeValue<String> getSteps();
+
+
+	/**
+	 * Returns the value of the score child.
+	 * @return the value of the score child.
+	 */
+	@NotNull
+	@Attribute("score")
+	GenericAttributeValue<Integer> getScore();
+
+
+	/**
+	 * Returns the value of the status child.
+	 * @return the value of the status child.
+	 */
+	@NotNull
+	@Attribute("status")
+	GenericAttributeValue<String> getStatus();
 
 
 	/**
@@ -103,21 +122,30 @@ public interface Frame extends DomElement {
 
 
 	/**
-	 * Returns the value of the PathToFrame child.
-	 * @return the value of the PathToFrame child.
+	 * Returns the value of the Query child.
+	 * @return the value of the Query child.
 	 */
 	@NotNull
-	@SubTag("PathToFrame")
-	GenericDomValue<String> getPathToFrame();
+	@SubTag("Query")
+	GenericDomValue<String> getQuery();
 
 
 	/**
-	 * Returns the value of the EntryPoint child.
-	 * @return the value of the EntryPoint child.
+ 	* Returns the value of the Answers child.
+ 	* @return the value of the Answers child.
+ 	*/
+	@NotNull
+	@SubTag("Answers")
+	MultipleChoiceAnswers getAnswers();
+
+
+	/**
+	 * Returns the value of the InsertAfter child.
+	 * @return the value of the InsertAfter child.
 	 */
 	@NotNull
-	@SubTag("EntryPoint")
-	GenericDomValue<String> getEntryPoint();
+	@SubTag("InsertAfter")
+	GenericDomValue<String> getInsertAfter();
 
 
 }

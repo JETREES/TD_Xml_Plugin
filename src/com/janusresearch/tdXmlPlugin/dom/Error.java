@@ -1,7 +1,7 @@
 // Generated on Mon Feb 12 09:46:36 EST 2018
 // DTD/Schema  :    null
 
-package test;
+package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
@@ -18,11 +18,13 @@ public interface Error extends DomElement {
 	 */
 	@NotNull
 	@Required
+	@TagValue
 	String getValue();
 	/**
 	 * Sets the value of the simple content.
 	 * @param value the new value to set
 	 */
+	@TagValue
 	void setValue(@NotNull String value);
 
 
@@ -31,6 +33,7 @@ public interface Error extends DomElement {
 	 * @return the value of the count child.
 	 */
 	@NotNull
+	@Attribute("count")
 	GenericAttributeValue<Integer> getCount();
 
 

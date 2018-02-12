@@ -112,15 +112,6 @@ public interface Module extends DomElement {
 
 
     /**
-     * Returns the value of the Resources child.
-     * @return the value of the Resources child.
-     */
-    @NotNull
-    @SubTag("Resources")
-    Resources getResources();
-
-
-    /**
      * Returns the value of the Description child.
      * @return the value of the Description child.
      */

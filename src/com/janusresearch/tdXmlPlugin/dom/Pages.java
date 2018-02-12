@@ -42,4 +42,34 @@ public interface Pages extends DomElement {
 	 */
 	@SubTag("Insert")
 	GenericDomValue<String> addInsert();
+
+
+	/**
+	 * Returns the list of Question children.
+	 * @return the list of Question children.
+	 */
+	@NotNull
+	@SubTag("Question")
+	java.util.List<MultipleChoiceQuestion> getQuestions();
+	/**
+	 * Adds new child to the list of Question children.
+	 * @return created child
+	 */
+	@SubTag("Question")
+	MultipleChoiceQuestion addQuestion();
+
+
+	/**
+	 * Returns the list of COL children.
+	 * @return the list of COL children.
+	 */
+	@NotNull
+	@SubTag("COL")
+	java.util.List<COL> getCOLs();
+	/**
+	 * Adds new child to the list of COL children.
+	 * @return created child
+	 */
+	@SubTag("COL")
+	COL addCOL();
 }

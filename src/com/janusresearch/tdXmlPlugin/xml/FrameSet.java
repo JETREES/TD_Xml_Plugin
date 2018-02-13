@@ -153,7 +153,7 @@ public class FrameSet {
     /** Get the Text value from the Frame */
     @NotNull
     public String getFrameText(XmlTag x) {
-        String text = null;
+        String text = "";
         if (x.findFirstSubTag("Text") != null) {
             text = x.findFirstSubTag("Text").getValue().getText();
         }
@@ -163,7 +163,7 @@ public class FrameSet {
     /** Get the Text2 value from the Frame */
     @NotNull
     public String getFrameText2(XmlTag x) {
-        String text = null;
+        String text = "";
         if (x.findFirstSubTag("Text2") != null) {
             text = x.findFirstSubTag("Text2").getValue().getText();
         }

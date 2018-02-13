@@ -279,24 +279,22 @@ public class ScriptGenerator {
         descriptor.setDescription("Browse to and select the folder where the AcronymPronunciations.Xml file resides.");
 
         FileChooser.chooseFiles(descriptor, project, null, folder -> {
-            List<VirtualFile> acronymFolder = new ArrayList<>();
-            final boolean hasSelection = pm.runProcessWithProgressSynchronously((Runnable) () -> acronymFolder.addAll(folder), "Looking for Acronym Folder...", false, project);
-            if (!hasSelection || acronymFolder.isEmpty()) return;
+                    List<VirtualFile> acronymFolder = new ArrayList<>();
+                    final boolean hasSelection = pm.runProcessWithProgressSynchronously((Runnable) () -> acronymFolder.addAll(folder), "Looking for Acronym Folder...", false, project);
+                    if (!hasSelection || acronymFolder.isEmpty()) return;
 
-            pm.runProcessWithProgressSynchronously(() -> {
-                //Gets the path to the Dictionaries folder located inside Streaming Assets
-                VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymFolder.get(0).getPath() + "\\AcronymPronunciations.xml");
-                XmlFile xmlFile = null;
-                if (vFile != null) {
-                    xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(vFile);
-                }
+                    //Gets the path to the Dictionaries folder located inside Streaming Assets
+                    VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymFolder.get(0).getPath() + "\\AcronymPronunciations.xml");
+                    XmlFile xmlFile = null;
+                    if (vFile != null) {
+                        xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(vFile);
+                    }
 
-                //Get the Module File Element
-                Acronyms acronymsRoot = Objects.requireNonNull(manager.getFileElement(xmlFile, Acronyms.class)).getRootElement();
-                acronyms = acronymsRoot.getAcronyms();
+                    //Get the Module File Element
+                    Acronyms acronymsRoot = Objects.requireNonNull(manager.getFileElement(xmlFile, Acronyms.class)).getRootElement();
+                    acronyms = acronymsRoot.getAcronyms();
 
-            }, "Reading Acronym Pronunciations...", false, project);
-        });
+                });
 
 
 

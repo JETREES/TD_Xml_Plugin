@@ -4,16 +4,16 @@ import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.ItemEvent;
 
 public class LessonScriptsDialog extends DialogWrapper {
-    private static boolean specificLessons = false;
-    private static boolean projectLessons = false;
+    private JRadioButton projectLessons;
+    private JRadioButton specificLesson;
+
 
     public LessonScriptsDialog() {
         super(false);
         init();
-        setTitle("Generate Lesson Scripts For:");
+        setTitle("Generate Scripts for:");
     }
 
     @Nullable
@@ -21,24 +21,25 @@ public class LessonScriptsDialog extends DialogWrapper {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JCheckBox specificLesson = new JCheckBox("One or More Lessons");
-        JCheckBox projectLessons = new JCheckBox("All Lessons in a Project");
-        specificLesson.addItemListener(e -> LessonScriptsDialog.specificLessons = e.getStateChange() == ItemEvent.SELECTED);
-        projectLessons.addItemListener(e -> LessonScriptsDialog.projectLessons = e.getStateChange() == ItemEvent.SELECTED);
+        ButtonGroup dialogRbGroup = new ButtonGroup();
+        projectLessons = new JRadioButton("All Lessons in a Project");
+        specificLesson = new JRadioButton("Specific Lesson(s)");
+        dialogRbGroup.add(projectLessons);
+        dialogRbGroup.add(specificLesson);
         setOKButtonText("OK");
         setCancelButtonText("Cancel");
-        specificLesson.setSelected(true);
-
-        panel.add(specificLesson);
         panel.add(projectLessons);
+        panel.add(specificLesson);
+        projectLessons.setSelected(true);
 
         return panel;
     }
 
-    public static boolean isSpecificLessons() {
-        return specificLessons;
+    public boolean isSpecificLessons() {
+        return specificLesson.isSelected();
     }
-    public static boolean isProjectLessons() {
-        return projectLessons;
+
+    public boolean isProjectLessons() {
+        return projectLessons.isSelected();
     }
 }

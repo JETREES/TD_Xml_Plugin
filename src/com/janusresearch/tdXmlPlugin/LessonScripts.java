@@ -2,16 +2,13 @@ package com.janusresearch.tdXmlPlugin;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
@@ -28,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LessonScripts extends AnAction {
+    private String lessonFile = "[A-Z]{2}1[A-Z][0-9]{4}[a-zA-Z]?\\.xml";
+    private String colFile = "[A-Z]{2}1[A-Z][0-9]{4}[a-zA-Z]?(?:COL)\\.xml";
+
     @Override
     @SuppressWarnings("ConstantConditions")
     public void actionPerformed(AnActionEvent e) {
@@ -41,17 +41,15 @@ public class LessonScripts extends AnAction {
         if (dialog.isOK()) {
             FileChooserDescriptor descriptor = null;
             //Set File Choice criteria and File Browser information
-            if (LessonScriptsDialog.isSpecificLessons()) {
+            if (dialog.isSpecificLessons()) {
                 descriptor = new FileChooserDescriptor(true, false, false, false, false, true);
                 descriptor.setTitle("Select One or More Lessons");
-                descriptor.setDescription("Select one or more lessons from a Project's Lessons folder for which you want to create Audio Scripts.  Multiple files can be selected using the Shift or Ctrl key.  Component (Zero i.e. BX0A0101), Popup (POP), and Preload (PL) files are ignored even if selected.");
-            } else if (LessonScriptsDialog.isProjectLessons()) {//Set File Choice criteria and open the file browser
+                descriptor.setDescription("Select one or more lessons from a Project's Lessons folder for which you want to create Audio Scripts.  Multiple files can be selected using the Shift or Ctrl key.  Component (Zero i.e. BX0A0101), Popup (POP), and Preload (PL) files are ignored during processing even if selected.");
+            } else if (dialog.isProjectLessons()) {
                 descriptor = new FileChooserDescriptor(false, true, false, false, false, false);
                 descriptor.setTitle("Select a Project's Lessons Folder");
-                descriptor.setDescription("Select a Project's Lessons folder for which you want to create Audio Scripts.  Component (Zero i.e. BX0A0101), Popup (POP), and Preload (PL) files are ignored even if selected.");
+                descriptor.setDescription("Select a Project's Lessons folder for which you want to create Audio Scripts.  Component (Zero i.e. BX0A0101), Popup (POP), and Preload (PL) files are ignored during processing.");
             }
-            final boolean[] isLessonFile = new boolean[1];
-            final boolean[] isColFile = new boolean[1];
 
             //Open File/Path chooser and gather the Lesson XML files from the selections made
             FileChooser.chooseFiles(descriptor, project, null, files -> {
@@ -64,9 +62,7 @@ public class LessonScripts extends AnAction {
                     VirtualFile vFile = xmlFiles.get(0);
                     xmlFiles.clear();
                     for (VirtualFile v : vFile.getChildren()) {
-                        isLessonFile[0] = v.getName().matches("[A-Z]{2}1[A-Z][0-9]{4}[a-zA-Z]?\\.xml");
-                        isColFile[0] = v.getName().matches("[A-Z]{2}1[A-Z][0-9]{4}[a-zA-Z]?(?:COL)\\.xml");
-                        if (isLessonFile[0]) {
+                        if (isLessonFile(v)) {
                             xmlFiles.add(v);
                         }
                     }
@@ -79,39 +75,38 @@ public class LessonScripts extends AnAction {
                 ScriptGenerator sg = new ScriptGenerator(project);
                 sg.createAcronymPronunciations(manager, pm);
 
-                pm.runProcessWithProgressSynchronously(() -> {
-                    if (xmlFiles.size() != 0) {
-                        for (VirtualFile v : xmlFiles) {
-                            //get the Virtual file as an XML File and get the name of the file
-                            XmlFile xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(v);
-                            String fileName = xmlFile.getName().replaceFirst("\\..*", "");
+                if (xmlFiles.size() != 0) {
+                    for (VirtualFile v : xmlFiles) {
+                        //get the Virtual file as an XML File and get the name of the file
+                        XmlFile xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(v);
+                        String fileName = xmlFile.getName().replaceFirst("\\..*", "");
 
-                            if (xmlFile != null) {
-                                if (isLessonFile[0]) {
-                                    Module moduleRoot = manager.getFileElement(xmlFile, Module.class).getRootElement();
+                        if (xmlFile != null) {
+                            if (isLessonFile(xmlFile)) {
+                                Module moduleRoot = manager.getFileElement(xmlFile, Module.class).getRootElement();
 
-                                    //Create StepTree and FrameSet objects to collect lesson data and then use that data
-                                    //to generate the audio scripts for the selected lesson
-                                    StepTree stepTree = new StepTree(moduleRoot);
-                                    FrameSet frameSet = new FrameSet(project, moduleRoot);
-                                    stepTree.storeNodes();
-                                    frameSet.storeFrames();
-                                    sg.createLessonScript(fileName, stepTree, frameSet);
-                                } else if (isColFile[0]) {
-                                    COLs colsRoot = manager.getFileElement(xmlFile, COLs.class).getRootElement();
-                                    List<COL> cols = colsRoot.getCOLs();
-                                    COL col = cols.get(3);
-                                    String rawText = col.getType().getRawText();
-                                    Debug.print(rawText);
-                                    Debug.print(col.getQuestions().getQuestion1().getRawText());
-                                    WriteCommandAction.runWriteCommandAction(project, () -> {
-                                        col.getQuestions().getQuestion1().setValue("this is a test does this work");
-                                    });
-                                }
+                                //Create StepTree and FrameSet objects to collect lesson data and then use that data
+                                //to generate the audio scripts for the selected lesson
+                                StepTree stepTree = new StepTree(moduleRoot);
+                                FrameSet frameSet = new FrameSet(project, moduleRoot);
+                                stepTree.storeNodes();
+                                frameSet.storeFrames();
+                                sg.createLessonScript(fileName, stepTree, frameSet);
+                            }
+                            else if (isColFile(xmlFile)) {
+                                COLs colsRoot = manager.getFileElement(xmlFile, COLs.class).getRootElement();
+                                List<COL> cols = colsRoot.getCOLs();
+                                COL col = cols.get(3);
+                                String rawText = col.getType().getRawText();
+                                Debug.print(rawText);
+                                Debug.print(col.getQuestions().getQuestion1().getRawText());
+                                WriteCommandAction.runWriteCommandAction(project, () -> {
+                                    col.getQuestions().getQuestion1().setValue("this is a test does this work");
+                                });
                             }
                         }
                     }
-                }, "Generating Scripts", false, project);
+                }
             });
         }
     }
@@ -120,5 +115,21 @@ public class LessonScripts extends AnAction {
     public void update(AnActionEvent e) {
         //Set visibility of plugin button
         e.getPresentation().setEnabled(true);
+    }
+
+    private boolean isLessonFile(XmlFile file) {
+        return file.getName().matches(lessonFile);
+    }
+
+    private boolean isColFile(XmlFile file) {
+        return file.getName().matches(colFile);
+    }
+
+    private boolean isLessonFile(VirtualFile file) {
+        return file.getName().matches(lessonFile);
+    }
+
+    private boolean isColFile(VirtualFile file) {
+        return file.getName().matches(colFile);
     }
 }

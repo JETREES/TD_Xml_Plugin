@@ -67,7 +67,6 @@ public class ScriptGenerator {
             e1.printStackTrace();
         }
 
-
         //Create the document Title and document Heading
         paragraph = document.createParagraph();
         run = paragraph.createRun();
@@ -99,7 +98,7 @@ public class ScriptGenerator {
 
             //If the Frame is a Play Frame then only collect Text
             //For all other Frames collect all 3 Text types
-            if (isPlayFrame(f)) {
+            if (isPlayFrame(f) || isConclusionFrame(f.getNode(), nodes)) {
                 //Create Text Entry for current Frame
                 run.setBold(true);
                 run.setText("Text");
@@ -165,17 +164,27 @@ public class ScriptGenerator {
         }
     }
 
-    private boolean isPlayFrame(Frame frame) {
-        boolean playFrame = false;
-        for (Event e : frame.getEvents().getEvents()) {
-            if (Objects.equals(e.getGet().getRawText(), "Play")) {
-                playFrame = true;
-                break;
-            }
-        }
-        return playFrame;
+    /** Determines if a frame is a Play Frame
+     * @param node is the current Frame id that is being processed by Script generator
+     * @param nodes is a list of the StepTree nodes for the current lesson */
+    private boolean isConclusionFrame(GenericAttributeValue<String> node, List<StepTreeNode> nodes) {
+        return Objects.equals(node.getRawText(), nodes.get(nodes.size() - 1).getName().getRawText());
     }
 
+    /** Determines if a frame is a Play Frame
+     * @param frame is the current Frame that is being processed by Script generator*/
+    private boolean isPlayFrame(Frame frame) {
+        for (Event e : frame.getEvents().getEvents()) {
+            if (Objects.equals(e.getGet().getRawText(), "Play")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /** Finds and replaces acronym occurrences with the acronym and its pronunciation
+     * @param text is the text from the Text, Text2, or InfoText xml tags.*/
     @Contract("null -> null")
     private String matchAcronymPronunciations(String text) {
         if (text != null) {
@@ -207,7 +216,8 @@ public class ScriptGenerator {
     }
 
     /** Formats the List of Lists containing the paragraphs for the document ensuring
-     *  paragraphs and breaks are placed appropriately */
+     *  paragraphs and breaks are placed appropriately
+     *  @param text is the text from the Text, Text2, or InfoText xml tags.*/
     private void formatParagraphs(List<List<String>> text) {
         if (text != null) {
             try {
@@ -238,7 +248,8 @@ public class ScriptGenerator {
 
     /** Returns List of Lists containing the Frames text after being split by double/single returns
      *  The split creates a 2 dimensional List where each row contains a paragraph and each column (if any) contains
-     *  text that is in the same paragraph but on different lines due to single returns */
+     *  text that is in the same paragraph but on different lines due to single returns
+     *  @param text is the text from the Text, Text2, or InfoText xml tags.*/
     private List<List<String>> splitParagraphs(String text) {
         List<List<String>> paragraphs = new ArrayList<>();
         if (text != null) {
@@ -296,7 +307,8 @@ public class ScriptGenerator {
         return frameId + " - " + stepTreeLabel;
     }
 
-    /** Returns a Frames text with code related items stripped out of the text so it will be presented in a cleaner fashion in the document */
+    /** Returns a Frames text with code related items stripped out of the text so it will be presented in a cleaner fashion in the document
+     * @param text is the text from the Text, Text2, or InfoText xml tags.*/
     private String stripText(String text) {
         try {
             if (text != null) {
@@ -316,7 +328,9 @@ public class ScriptGenerator {
         return text;
     }
 
-    /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing */
+    /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing
+     * @param manager is the DomManager instance used to access the root of our Xml files
+     * @param pm this is the progress manager for which im not exactly sure why i needed this but it was in the example code i used */
     public void createAcronymPronunciations(DomManager manager, ProgressManager pm) {
         FileChooserDescriptor descriptor = new FileChooserDescriptor(false, true, false, false, false, false);
         descriptor.setTitle("Select the Location of AcronymPronunciations.Xml");

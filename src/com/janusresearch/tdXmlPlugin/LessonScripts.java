@@ -76,6 +76,7 @@ public class LessonScripts extends AnAction {
                         XmlFile xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(v);
                         String fileName = xmlFile.getName().replaceFirst("\\..*", "");
 
+                        //Get the root of the file and generate a script
                         if (xmlFile != null) {
                             if (isLessonFile(xmlFile)) {
                                 Module moduleRoot = manager.getFileElement(xmlFile, Module.class).getRootElement();

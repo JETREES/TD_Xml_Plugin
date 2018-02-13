@@ -3,7 +3,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsole;
+import com.janusresearch.tdXmlPlugin.toolWindow.XmlToolWindow;
 
 public class TDXmlTools extends AbstractProjectComponent{
     private Project project;
@@ -17,7 +17,7 @@ public class TDXmlTools extends AbstractProjectComponent{
     public void projectOpened() {
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
         ToolWindow toolWindow = toolWindowManager.registerToolWindow("Xml Console", false, ToolWindowAnchor.BOTTOM);
-        XmlConsole xmlConsole = new XmlConsole();
-        xmlConsole.createToolWindowContent(project, toolWindow);
+        XmlToolWindow xmlToolWindow = new XmlToolWindow();
+        xmlToolWindow.createToolWindowContent(project, toolWindow);
     }
 }

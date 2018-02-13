@@ -1,12 +1,14 @@
 package com.janusresearch.tdXmlPlugin;
 
+import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
 import com.janusresearch.tdXmlPlugin.dom.Module;
-import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsole;
+import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsoleViewContentType;
+import com.janusresearch.tdXmlPlugin.toolWindow.XmlToolWindow;
 import com.janusresearch.tdXmlPlugin.xml.FrameSet;
 
 import java.util.Objects;
@@ -31,7 +33,7 @@ public class StepCount extends AnAction {
 
         if (Objects.equals(moduleRoot.getXmlElementName(), "Module")) {
             FrameSet frameSet = new FrameSet(project, moduleRoot);
-            XmlConsole.printStepCount(psiFile, frameSet.getStepCount());
+            printStepCount(psiFile.getName(), frameSet.getStepCount());
         }
     }
 
@@ -54,5 +56,15 @@ public class StepCount extends AnAction {
             e.getPresentation().setEnabled(true);
         } else
             e.getPresentation().setEnabled(false);
+    }
+
+    private void printStepCount(String fileName, int stepCount) {
+        //Print lesson step count to console
+        XmlToolWindow.getConsole().print("Lesson Number:", XmlConsoleViewContentType.TITLE_OUTPUT);
+        XmlToolWindow.getConsole().print(" " + fileName + "\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+        XmlToolWindow.getConsole().print("Step Count=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+        XmlToolWindow.getConsole().print("\"" + String.valueOf(stepCount) + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
+        XmlToolWindow.getConsole().print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
+        XmlToolWindow.showToolWindow();
     }
 }

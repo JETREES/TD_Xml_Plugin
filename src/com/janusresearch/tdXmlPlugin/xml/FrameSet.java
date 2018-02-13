@@ -36,7 +36,7 @@ public class FrameSet {
     }
 
     /** Store every Frame sub tag from Frame Set in the frames array */
-    public void storeFrames() {
+    private void storeFrames() {
         frames = root.getXmlTag().findFirstSubTag("FrameSet").findSubTags("Frame");
         setFrameCount(frames);
     }
@@ -57,21 +57,6 @@ public class FrameSet {
             frameAttributes[i][2] = x.getAttribute("weight");
             i++;
         }
-    }
-
-    public boolean isPlayFrame(XmlTag x) {
-        boolean playFrame = false;
-        for (XmlTag e : getFrameEvents(x)) {
-            String get = e.getAttribute("get").getValue();
-            if (Objects.equals(get, "Play")) {
-                playFrame = true;
-                break;
-            }
-            else {
-                playFrame = false;
-            }
-        }
-        return playFrame;
     }
 
     /** Store the old values for each Frame in the oldFrameValues array */
@@ -139,30 +124,9 @@ public class FrameSet {
         return x.findFirstSubTag("Events").findSubTags("Event");
     }
 
-    /** Get the Text value from the Frame */
-    @NotNull
-    public String getFrameInfoText(XmlTag x) {
-        String text = "";
-        if (x.findFirstSubTag("InfoText") != null) {
-            text = x.findFirstSubTag("InfoText").getValue().getText();
-        }
-        return text;
-    }
-
-
-    /** Get the Text value from the Frame */
-    @NotNull
-    public String getFrameText(XmlTag x) {
-        String text = "";
-        if (x.findFirstSubTag("Text") != null) {
-            text = x.findFirstSubTag("Text").getValue().getText();
-        }
-        return text;
-    }
-
     /** Get the Text2 value from the Frame */
     @NotNull
-    public String getFrameText2(XmlTag x) {
+    private String getFrameText2(XmlTag x) {
         String text = "";
         if (x.findFirstSubTag("Text2") != null) {
             text = x.findFirstSubTag("Text2").getValue().getText();
@@ -207,12 +171,10 @@ public class FrameSet {
 
     /** Parses the Text2 text value to attempt to determine the number of steps in a given Frame */
     private int parseTextForCount(String s) {
-        int count = 1;
-
         //parse String s to determine an approximate count for the Frame
         //for Play Frames set steps="1"
 
-        return count;
+        return 1;
     }
 
     /** Process Events from every Frame to determine new nextid values */

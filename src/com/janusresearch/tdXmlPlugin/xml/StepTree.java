@@ -22,7 +22,7 @@ public class StepTree {
     }
 
     /** Store every node tag in the Step Tree in the nodes array */
-    public void storeNodes() {
+    private void storeNodes() {
         //Get all node sub tags from StepTree
         nodes = root.getXmlTag().findFirstSubTag("StepTree").findSubTags("node");
         setNodeCount();
@@ -106,7 +106,7 @@ public class StepTree {
 
     /** Returns the nodes array */
     @Contract(pure = true)
-    XmlTag[] getNodes() {
+    private XmlTag[] getNodes() {
         return nodes;
     }
 

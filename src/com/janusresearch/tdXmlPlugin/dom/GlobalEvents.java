@@ -7,7 +7,6 @@ import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 
 /**
  * null:GlobalEventsType interface.

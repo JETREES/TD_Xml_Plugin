@@ -3,7 +3,6 @@
 
 package com.janusresearch.tdXmlPlugin.dom;
 
-import com.intellij.util.xml.SubTag;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.util.xml.DomElement;

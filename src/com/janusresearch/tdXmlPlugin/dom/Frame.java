@@ -5,7 +5,6 @@ package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
-import com.sampullara.cli.Argument;
 import org.jetbrains.annotations.NotNull;
 
 /**

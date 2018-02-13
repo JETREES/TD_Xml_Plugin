@@ -233,7 +233,6 @@ public interface Module extends DomElement {
      * @return the value of the FrameSetOrPages child.
      */
     @NotNull
-    @Required
     @SubTag("FrameSet")
     FrameSet getFrameSet();
 
@@ -242,7 +241,6 @@ public interface Module extends DomElement {
      * @return the value of the Pages child.
      */
     @NotNull
-    @Required
     @SubTag("Pages")
     Pages getPages();
 

@@ -19,13 +19,13 @@ public interface GlobalEvents extends DomElement {
 	 * @return the list of Event children.
 	 */
 	@NotNull
-	@SubTag("Event")
+	@SubTagList("Event")
 	java.util.List<Event> getEvents();
 	/**
 	 * Adds new child to the list of Event children.
 	 * @return created child
 	 */
-	@SubTag("Event")
+	@SubTagList("Event")
 	Event addEvent();
 
 

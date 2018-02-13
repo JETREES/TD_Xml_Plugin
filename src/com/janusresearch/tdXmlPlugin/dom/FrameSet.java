@@ -4,6 +4,7 @@
 package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.util.xml.DomElement;
 
@@ -17,13 +18,13 @@ public interface FrameSet extends DomElement {
 	 * @return the list of Frame children.
 	 */
 	@NotNull
-	@SubTag("Frame")
+    @SubTagList("Frame")
 	java.util.List<Frame> getFrames();
 	/**
 	 * Adds new child to the list of Frame children.
 	 * @return created child
 	 */
-	@SubTag("Frame")
+    @SubTagList("Frame")
 	Frame addFrame();
 
 
@@ -32,13 +33,13 @@ public interface FrameSet extends DomElement {
 	 * @return the list of Question children.
 	 */
 	@NotNull
-	@SubTag("Question")
+	@SubTagList("Question")
 	java.util.List<Frame> getQuestions();
 	/**
 	 * Adds new child to the list of Question children.
 	 * @return created child
 	 */
-	@SubTag("Question")
+	@SubTagList("Question")
 	Frame addQuestion();
 
 
@@ -47,13 +48,13 @@ public interface FrameSet extends DomElement {
 	 * @return the list of COL children.
 	 */
 	@NotNull
-	@SubTag("COL")
+	@SubTagList("COL")
 	java.util.List<COL> getCOLs();
 	/**
 	 * Adds new child to the list of COL children.
 	 * @return created child
 	 */
-	@SubTag("COL")
+	@SubTagList("COL")
 	COL addCOL();
 
 

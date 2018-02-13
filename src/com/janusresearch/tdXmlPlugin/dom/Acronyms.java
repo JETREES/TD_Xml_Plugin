@@ -2,6 +2,7 @@ package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -14,12 +15,12 @@ public interface Acronyms extends DomElement {
      * @return the list of Acronym children.
      */
     @NotNull
-    @SubTag("acronym")
+    @SubTagList("acronym")
     java.util.List<Acronym> getAcronyms();
     /**
      * Adds new child to the list of Acronym children.
      * @return created child
      */
-    @SubTag("acronym")
+    @SubTagList("acronym")
     Acronym addAcronym();
 }

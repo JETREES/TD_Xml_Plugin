@@ -4,6 +4,7 @@
 package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.util.xml.DomElement;
 
@@ -17,12 +18,12 @@ public interface Events extends DomElement {
 	 * @return the list of Event children.
 	 */
 	@NotNull
-	@SubTag("Event")
+	@SubTagList("Event")
 	java.util.List<Event> getEvents();
 	/**
 	 * Adds new child to the list of Event children.
 	 * @return created child
 	 */
-	@SubTag("Event")
+	@SubTagList("Event")
 	Event addEvent();
 }

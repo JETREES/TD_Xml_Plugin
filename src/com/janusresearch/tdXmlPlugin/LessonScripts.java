@@ -84,25 +84,10 @@ public class LessonScripts extends AnAction {
                         if (xmlFile != null) {
                             if (isLessonFile(xmlFile)) {
                                 Module moduleRoot = manager.getFileElement(xmlFile, Module.class).getRootElement();
-
-                                //Create StepTree and FrameSet objects to collect lesson data and then use that data
-                                //to generate the audio scripts for the selected lesson
-                                StepTree stepTree = new StepTree(moduleRoot);
-                                FrameSet frameSet = new FrameSet(project, moduleRoot);
-                                stepTree.storeNodes();
-                                frameSet.storeFrames();
-                                sg.createLessonScript(fileName, stepTree, frameSet);
+                                sg.createLessonScript(fileName, moduleRoot);
                             }
                             else if (isColFile(xmlFile)) {
                                 COLs colsRoot = manager.getFileElement(xmlFile, COLs.class).getRootElement();
-                                List<COL> cols = colsRoot.getCOLs();
-                                COL col = cols.get(3);
-                                String rawText = col.getType().getRawText();
-                                Debug.print(rawText);
-                                Debug.print(col.getQuestions().getQuestion1().getRawText());
-                                WriteCommandAction.runWriteCommandAction(project, () -> {
-                                    col.getQuestions().getQuestion1().setValue("this is a test does this work");
-                                });
                             }
                         }
                     }

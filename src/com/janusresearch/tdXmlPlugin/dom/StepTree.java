@@ -4,6 +4,7 @@
 package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.util.xml.DomElement;
 
@@ -17,13 +18,13 @@ public interface StepTree extends DomElement {
 	 * @return the list of node children.
 	 */
 	@NotNull
-	@SubTag("node")
+	@SubTagList("node")
 	java.util.List<StepTreeNode> getNodes();
 	/**
 	 * Adds new child to the list of node children.
 	 * @return created child
 	 */
-	@SubTag("node")
+	@SubTagList("node")
 	StepTreeNode addNode();
 
 

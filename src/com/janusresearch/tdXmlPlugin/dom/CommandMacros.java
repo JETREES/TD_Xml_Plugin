@@ -4,6 +4,7 @@
 package com.janusresearch.tdXmlPlugin.dom;
 
 import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.util.xml.DomElement;
 
@@ -17,13 +18,13 @@ public interface CommandMacros extends DomElement {
 	 * @return the list of Macro children.
 	 */
 	@NotNull
-	@SubTag("Macro")
+	@SubTagList("Macro")
 	java.util.List<Macro> getMacros();
 	/**
 	 * Adds new child to the list of Macro children.
 	 * @return created child
 	 */
-	@SubTag("Macro")
+	@SubTagList("Macro")
 	Macro addMacro();
 
 

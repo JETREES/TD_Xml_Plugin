@@ -45,7 +45,7 @@ public interface Frame extends DomElement {
 	 * @return the value of the steps child.
 	 */
 	@NotNull
-	@Argument("steps")
+	@Attribute("steps")
 	GenericAttributeValue<String> getSteps();
 
 

@@ -8,6 +8,7 @@ import javax.swing.*;
 public class LessonScriptsDialog extends DialogWrapper {
     private JRadioButton projectLessons;
     private JRadioButton specificLesson;
+    private JCheckBox acronymMatching;
 
 
     public LessonScriptsDialog() {
@@ -24,13 +25,16 @@ public class LessonScriptsDialog extends DialogWrapper {
         ButtonGroup dialogRbGroup = new ButtonGroup();
         projectLessons = new JRadioButton("All Lessons in a Project");
         specificLesson = new JRadioButton("Specific Lesson(s)");
+        acronymMatching = new JCheckBox("Include Acronym Pronunciations");
         dialogRbGroup.add(projectLessons);
         dialogRbGroup.add(specificLesson);
         setOKButtonText("OK");
         setCancelButtonText("Cancel");
         panel.add(projectLessons);
         panel.add(specificLesson);
+        panel.add(acronymMatching);
         projectLessons.setSelected(true);
+        acronymMatching.setSelected(true);
 
         return panel;
     }
@@ -41,5 +45,9 @@ public class LessonScriptsDialog extends DialogWrapper {
 
     public boolean isProjectLessons() {
         return projectLessons.isSelected();
+    }
+
+    public boolean isAcronymMatching() {
+        return acronymMatching.isSelected();
     }
 }

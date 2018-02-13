@@ -2,16 +2,12 @@ package com.janusresearch.tdXmlPlugin.toolWindow;
 
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
-import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
-import com.intellij.psi.PsiFile;
 import com.intellij.ui.RoundedLineBorder;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.janusresearch.tdXmlPlugin.xml.FrameSet;
-import com.janusresearch.tdXmlPlugin.xml.StepTree;
 import icons.PluginIcons;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -22,13 +18,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class XmlToolWindow implements ToolWindowFactory{
-    private static ConsoleView console;
+    private ConsoleView console;
+    private static ConsoleView xmlConsole;
     private static ToolWindow myToolWindow;
     private JPanel xmlToolWindowContent;
     private JPanel consolePanel;
-    private static JPanel controlPanel;
+    private JPanel controlPanel;
     private JButton clearBtn;
     private JComponent consoleComponent;
+    private static JComponent xmlConsoleComponent;
     private static JButton clearBtn_copy;
 
     public XmlToolWindow() {}
@@ -40,7 +38,9 @@ public class XmlToolWindow implements ToolWindowFactory{
 
         //Create a console, get its component and then add it to the console panel in the tool window
         console = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
+        xmlConsole = console;
         consoleComponent = console.getComponent();
+        xmlConsoleComponent = consoleComponent;
         createUIComponents();
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(xmlToolWindowContent, "", false);
@@ -55,13 +55,12 @@ public class XmlToolWindow implements ToolWindowFactory{
 
     public static void showToolWindow() {
         myToolWindow.show(null);
-        if (console.getContentSize() > 0) {
+        if (xmlConsole.getContentSize() > 0) {
             clearBtn_copy.setEnabled(true);
         }
         else {
             clearBtn_copy.setEnabled(false);
         }
-        controlPanel.updateUI();
     }
 
     private void initClearBtn() {
@@ -105,7 +104,10 @@ public class XmlToolWindow implements ToolWindowFactory{
     }
 
     @Contract(pure = true)
-    public static ConsoleView getConsole() {
-        return console;
+    public static ConsoleView getXmlConsole() {
+        if (!myToolWindow.isVisible()) {
+            showToolWindow();
+        }
+        return xmlConsole;
     }
 }

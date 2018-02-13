@@ -11,6 +11,8 @@ import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.janusresearch.tdXmlPlugin.dom.*;
+import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsoleViewContentType;
+import com.janusresearch.tdXmlPlugin.toolWindow.XmlToolWindow;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -36,20 +38,21 @@ public class ScriptGenerator {
     private List<List<String>> acronyms;
     private String currentFileName;
     private String currentFrame;
+    private int filesProcessed = 0;
 
     public ScriptGenerator(Project project) {
         this.project = project;
     }
 
     /** Generates a lesson Script from a lesson given the filename */
-    public void createLessonScript(String fileName, Module moduleRoot) {
+    public void createLessonScript(String fileName, String projectName, Module moduleRoot) {
         //Create Blank Document
         document = new XWPFDocument();
         currentFileName = fileName;
 
         //Create the directory to save the Lesson Scripts in if it does not exist
-        if (!Files.isDirectory(Paths.get("C:\\Lesson Scripts\\"))) {
-            File dir = new File("C:\\Lesson Scripts\\");
+        if (!Files.isDirectory(Paths.get("C:\\Lesson Scripts\\" + projectName))) {
+            File dir = new File("C:\\Lesson Scripts\\" + projectName);
             boolean successful = dir.mkdir();
             if (successful) {
                 //add message to console for successful directory creation
@@ -62,7 +65,7 @@ public class ScriptGenerator {
         //Name the document with the lesson number
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream( new File("C:\\Lesson Scripts\\" + fileName + ".docx"));
+            out = new FileOutputStream( new File("C:\\Lesson Scripts\\" + projectName + "\\" + fileName + ".docx"));
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
         }
@@ -162,6 +165,7 @@ public class ScriptGenerator {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        filesProcessed++;
     }
 
     /** Determines if a frame is a Play Frame
@@ -187,7 +191,7 @@ public class ScriptGenerator {
      * @param text is the text from the Text, Text2, or InfoText xml tags.*/
     @Contract("null -> null")
     private String matchAcronymPronunciations(String text) {
-        if (text != null) {
+        if (text != null && (acronyms != null ? acronyms.size() : 0) !=0) {
             for (List<String> s : acronyms) {
                 try {
                     text = text.replace(" " + s.get(0) + " ", " " + s.get(0) + " " + s.get(1) + " ");
@@ -208,7 +212,8 @@ public class ScriptGenerator {
                     text = text.replace(" (" + s.get(0) + ")/", " (" + s.get(0) + ") " + s.get(1) + "/");
                     text = text.replace("/(" + s.get(0) + ") ", "/(" + s.get(0) + ") " + s.get(1) + " ");
                 } catch (Exception ex) {
-                    System.err.println("Exception Matching Acronyms: " + currentFileName + " - " + currentFrame + " >> " + ex.getMessage());
+                    XmlToolWindow.getXmlConsole().print("Exception Matching Acronyms -> File: " + currentFileName + " -> Frame: " + currentFrame + " >> "  + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
+                    XmlToolWindow.getXmlConsole().print("--- " + getFilesProcessed() + " files processed before error", XmlConsoleViewContentType.MESSAGE_OUTPUT);
                 }
             }
         }
@@ -241,7 +246,8 @@ public class ScriptGenerator {
                     i++;
                 }
             } catch (Exception ex) {
-                System.err.println("Exception Formatting Paragraphs: " + currentFileName + " - " + currentFrame + " >> " + ex.getMessage());
+                XmlToolWindow.getXmlConsole().print("Exception Formatting Paragraphs -> File: " + currentFileName + " -> Frame: " + currentFrame + " >> "  + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("--- " + getFilesProcessed() + " files processed before error", XmlConsoleViewContentType.MESSAGE_OUTPUT);
             }
         }
     }
@@ -280,7 +286,8 @@ public class ScriptGenerator {
                     paragraphs.add(paragraph);
                 }
             } catch (Exception ex) {
-                System.err.println("Exception Splitting Paragraphs: " + currentFileName + " - " + currentFrame + " >> " + ex.getMessage());
+                XmlToolWindow.getXmlConsole().print("Exception Splitting Paragraphs -> File: " + currentFileName + " -> Frame: " + currentFrame + " >> "  + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("--- " + getFilesProcessed() + " files processed before error", XmlConsoleViewContentType.MESSAGE_OUTPUT);
             }
         }
         return paragraphs;
@@ -302,7 +309,8 @@ public class ScriptGenerator {
                 }
             }
         } catch (Exception ex) {
-            System.err.println("Exception Matching Frame to Step: " + currentFileName + " - " + currentFrame + " >> "  + ex.getMessage());
+            XmlToolWindow.getXmlConsole().print("Exception Matching Frame to Step -> File: " + currentFileName + " -> Frame: " + currentFrame + " >> "  + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
+            XmlToolWindow.getXmlConsole().print("--- " + getFilesProcessed() + " files processed before error", XmlConsoleViewContentType.MESSAGE_OUTPUT);
         }
         return frameId + " - " + stepTreeLabel;
     }
@@ -322,7 +330,8 @@ public class ScriptGenerator {
                 text = text.replaceAll("\\[c.*?].*?H.*?](.*?)\\[.*?\\?]", "$1");
             }
         } catch (Exception ex) {
-            System.err.println("Exception Stripping Text: " + currentFileName + " - " + currentFrame + " >> "  + ex.getMessage());
+            XmlToolWindow.getXmlConsole().print("Exception Stripping Text -> File: " + currentFileName + " -> Frame: " + currentFrame + " >> "  + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
+            XmlToolWindow.getXmlConsole().print("--- " + getFilesProcessed() + " files processed before error", XmlConsoleViewContentType.MESSAGE_OUTPUT);
         }
 
         return text;
@@ -330,37 +339,47 @@ public class ScriptGenerator {
 
     /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing
      * @param manager is the DomManager instance used to access the root of our Xml files
-     * @param pm this is the progress manager for which im not exactly sure why i needed this but it was in the example code i used */
-    public void createAcronymPronunciations(DomManager manager, ProgressManager pm) {
-        FileChooserDescriptor descriptor = new FileChooserDescriptor(false, true, false, false, false, false);
-        descriptor.setTitle("Select the Location of AcronymPronunciations.Xml");
-        descriptor.setDescription("Browse to and select the folder where the AcronymPronunciations.Xml file resides.");
+     * @param pm this is the progress manager for which im not exactly sure why i needed this but it was in the example code i used
+     * @param acronymMatching is a boolean that turns the choosing of the aconym file off or on*/
+    public void createAcronymPronunciations(DomManager manager, ProgressManager pm, boolean acronymMatching) {
+        if (acronymMatching) {
+            FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, false, false, false);
+            descriptor.setTitle("Select AcronymPronunciations.Xml File");
+            descriptor.setDescription("Browse to and select the AcronymPronunciations.Xml file.");
 
-        FileChooser.chooseFiles(descriptor, project, null, folder -> {
-            List<VirtualFile> acronymFolder = new ArrayList<>();
-            final boolean hasSelection = pm.runProcessWithProgressSynchronously((Runnable) () -> acronymFolder.addAll(folder), "Looking for Acronym Folder...", false, project);
-            if (!hasSelection || acronymFolder.isEmpty()) return;
-
-            //Gets the path to the Dictionaries folder located inside Streaming Assets
-            VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymFolder.get(0).getPath() + "\\AcronymPronunciations.xml");
-            XmlFile xmlFile = null;
-            if (vFile != null) {
-                xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(vFile);
+            FileChooser.chooseFiles(descriptor, project, null, folder -> {
+                List<VirtualFile> acronymFolder = new ArrayList<>();
+                final boolean hasSelection = pm.runProcessWithProgressSynchronously((Runnable) () -> acronymFolder.addAll(folder), "Looking for Acronym Folder...", false, project);
+                if (!hasSelection || acronymFolder.isEmpty()) {
+                    XmlToolWindow.getXmlConsole().print("No AcronymPronunciations.Xml file was selected.", XmlConsoleViewContentType.MESSAGE_OUTPUT);
+                    return;
                 }
 
-            try {
-                //Get the Acronym File Element and store access to the acronyms
-                Acronyms acronymsRoot = Objects.requireNonNull(manager.getFileElement(xmlFile, Acronyms.class)).getRootElement();
-                acronyms = new ArrayList<>();
-                for (Acronym a : acronymsRoot.getAcronyms()) {
-                    List<String> newAcronym = new ArrayList<>();
-                    newAcronym.add(a.getName().getRawText());
-                    newAcronym.add(a.getPronunciation().getRawText());
-                    acronyms.add(newAcronym);
+                //Gets the path to the Dictionaries folder located inside Streaming Assets
+                VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymFolder.get(0).getPath());
+                XmlFile xmlFile = null;
+                if (vFile != null) {
+                    xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(vFile);
                 }
-            } catch (Exception ex) {
-                System.err.println("Exception Creating Acronyms List: " + currentFileName + " - " + currentFrame + " >> "  + ex.getMessage());
-            }
-        });
+
+                try {
+                    //Get the Acronym File Element and store access to the acronyms
+                    Acronyms acronymsRoot = Objects.requireNonNull(manager.getFileElement(xmlFile, Acronyms.class)).getRootElement();
+                    acronyms = new ArrayList<>();
+                    for (Acronym a : acronymsRoot.getAcronyms()) {
+                        List<String> newAcronym = new ArrayList<>();
+                        newAcronym.add(a.getName().getRawText());
+                        newAcronym.add(a.getPronunciation().getRawText());
+                        acronyms.add(newAcronym);
+                    }
+                } catch (Exception ex) {
+                    XmlToolWindow.getXmlConsole().print("Exception Creating Acronyms List: " + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
+                }
+            });
+        }
+    }
+
+    public int getFilesProcessed() {
+        return filesProcessed;
     }
 }

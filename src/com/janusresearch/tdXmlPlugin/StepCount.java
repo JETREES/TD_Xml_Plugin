@@ -60,11 +60,11 @@ public class StepCount extends AnAction {
 
     private void printStepCount(String fileName, int stepCount) {
         //Print lesson step count to console
-        XmlToolWindow.getConsole().print("Lesson Number:", XmlConsoleViewContentType.TITLE_OUTPUT);
-        XmlToolWindow.getConsole().print(" " + fileName + "\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
-        XmlToolWindow.getConsole().print("Step Count=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-        XmlToolWindow.getConsole().print("\"" + String.valueOf(stepCount) + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
-        XmlToolWindow.getConsole().print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
+        XmlToolWindow.getXmlConsole().print("Lesson Number:", XmlConsoleViewContentType.TITLE_OUTPUT_UNDERLINE);
+        XmlToolWindow.getXmlConsole().print(" " + fileName + "\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+        XmlToolWindow.getXmlConsole().print("Step Count=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+        XmlToolWindow.getXmlConsole().print("\"" + String.valueOf(stepCount) + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
+        XmlToolWindow.getXmlConsole().print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
         XmlToolWindow.showToolWindow();
     }
 }

@@ -10,6 +10,8 @@ class XmlColors extends JBColor {
         final static XmlColors ATTRIBUTE = new XmlColors(255, 12237498);
         final static XmlColors BACKING = new XmlColors(15724527, 2829099);
         final static XmlColors CHANGE = new XmlColors(14227737, 14454550);
+        final static XmlColors ERROR = new XmlColors(16739176, 16739176);
+        final static XmlColors MESSAGE = new XmlColors(12303291, 12303291);
     }
 
     static class icon {

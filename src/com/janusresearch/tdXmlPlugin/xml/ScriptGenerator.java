@@ -53,8 +53,8 @@ public class ScriptGenerator {
         //Create the directory to save the Lesson Scripts in if it does not exist
         if (!Files.isDirectory(Paths.get("C:\\Lesson Scripts\\" + projectName))) {
             File dir = new File("C:\\Lesson Scripts\\" + projectName);
-            boolean successful = dir.mkdir();
-            if (successful) {
+            boolean success = dir.mkdirs();
+            if (success) {
                 //add message to console for successful directory creation
             }
             else {

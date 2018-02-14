@@ -1,12 +1,7 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
-import com.intellij.openapi.fileChooser.FileChooser;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -339,32 +334,14 @@ public class ScriptGenerator {
 
     /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing
      * @param manager is the DomManager instance used to access the root of our Xml files
-     * @param pm this is the progress manager for which im not exactly sure why i needed this but it was in the example code i used
-     * @param acronymMatching is a boolean that turns the choosing of the aconym file off or on*/
-    public void createAcronymPronunciations(DomManager manager, ProgressManager pm, boolean acronymMatching) {
-        if (acronymMatching) {
-            FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, false, false, false);
-            descriptor.setTitle("Select AcronymPronunciations.Xml File");
-            descriptor.setDescription("Browse to and select the AcronymPronunciations.Xml file.");
-
-            FileChooser.chooseFiles(descriptor, project, null, folder -> {
-                List<VirtualFile> acronymFolder = new ArrayList<>();
-                final boolean hasSelection = pm.runProcessWithProgressSynchronously((Runnable) () -> acronymFolder.addAll(folder), "Looking for Acronym Folder...", false, project);
-                if (!hasSelection || acronymFolder.isEmpty()) {
-                    XmlToolWindow.getXmlConsole().print("No AcronymPronunciations.Xml file was selected.", XmlConsoleViewContentType.MESSAGE_OUTPUT);
-                    return;
-                }
-
-                //Gets the path to the Dictionaries folder located inside Streaming Assets
-                VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymFolder.get(0).getPath());
-                XmlFile xmlFile = null;
-                if (vFile != null) {
-                    xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(vFile);
-                }
-
-                try {
-                    //Get the Acronym File Element and store access to the acronyms
-                    Acronyms acronymsRoot = Objects.requireNonNull(manager.getFileElement(xmlFile, Acronyms.class)).getRootElement();
+     * @param xmlFile this is the XmlFile object for the AcronymPronunciations.xml file
+     * @param indicator
+     */
+    public void createAcronymPronunciations(DomManager manager, XmlFile xmlFile, ProgressIndicator indicator) {
+            try {
+                //Get the Acronym File Element and store access to the acronyms
+                Acronyms acronymsRoot = Objects.requireNonNull(manager.getFileElement(xmlFile, Acronyms.class)).getRootElement();
+                if (Objects.equals(acronymsRoot.getXmlElementName(), "Acronyms")) {
                     acronyms = new ArrayList<>();
                     for (Acronym a : acronymsRoot.getAcronyms()) {
                         List<String> newAcronym = new ArrayList<>();
@@ -372,11 +349,10 @@ public class ScriptGenerator {
                         newAcronym.add(a.getPronunciation().getRawText());
                         acronyms.add(newAcronym);
                     }
-                } catch (Exception ex) {
-                    XmlToolWindow.getXmlConsole().print("Exception Creating Acronyms List: " + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
                 }
-            });
-        }
+            } catch (Exception ex) {
+                XmlToolWindow.getXmlConsole().print("Exception Creating Acronyms List: " + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
+            }
     }
 
     public int getFilesProcessed() {

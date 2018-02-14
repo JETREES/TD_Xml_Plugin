@@ -15,6 +15,8 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
 import com.janusresearch.tdXmlPlugin.dialog.LessonScriptsDialog;
+import com.janusresearch.tdXmlPlugin.dom.Acronym;
+import com.janusresearch.tdXmlPlugin.dom.Acronyms;
 import com.janusresearch.tdXmlPlugin.dom.COLs;
 import com.janusresearch.tdXmlPlugin.dom.Module;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsoleViewContentType;
@@ -163,9 +165,10 @@ public class LessonScripts extends AnAction {
             getSg().createAcronymPronunciations(getManager(), getAcronymFile());
         }
 
+        indicator.setText("Generating Audio Scripts...");
+        indicator.setText2("this is a test");
         int fileCount = getXmlFiles().size();
         int filesProcessed = 0;
-        indicator.setText("Generating Audio Scripts...");
         for (VirtualFile v : getXmlFiles()) {
             //get the Virtual file as an XML File and get the name of the file
             XmlFile xmlFile = (XmlFile) PsiManager.getInstance(getProject()).findFile(v);

@@ -1,7 +1,12 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
-import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -352,6 +357,7 @@ public class ScriptGenerator {
             } catch (Exception ex) {
                 XmlToolWindow.getXmlConsole().print("Exception Creating Acronyms List: " + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
             }
+
     }
 
     public int getFilesProcessed() {

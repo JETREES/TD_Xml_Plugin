@@ -335,9 +335,8 @@ public class ScriptGenerator {
     /** Stores the Acronyms and their pronunciations in a 2-dimensional array to be used for matching/replacing
      * @param manager is the DomManager instance used to access the root of our Xml files
      * @param xmlFile this is the XmlFile object for the AcronymPronunciations.xml file
-     * @param indicator
      */
-    public void createAcronymPronunciations(DomManager manager, XmlFile xmlFile, ProgressIndicator indicator) {
+    public void createAcronymPronunciations(DomManager manager, XmlFile xmlFile) {
             try {
                 //Get the Acronym File Element and store access to the acronyms
                 Acronyms acronymsRoot = Objects.requireNonNull(manager.getFileElement(xmlFile, Acronyms.class)).getRootElement();

@@ -160,7 +160,7 @@ public class LessonScripts extends AnAction {
         if (getDialog().isAcronymMatching() && getAcronymFile() != null) {
             indicator.setText("Creating Acronym List With Pronunciations...");
             //Create a list of lists containing the Acronyms and Pronunciations
-            getSg().createAcronymPronunciations(getManager(), getAcronymFile(), indicator);
+            getSg().createAcronymPronunciations(getManager(), getAcronymFile());
         }
 
         int fileCount = getXmlFiles().size();

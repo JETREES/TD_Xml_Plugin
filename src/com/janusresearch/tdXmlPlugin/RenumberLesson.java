@@ -163,7 +163,7 @@ public class RenumberLesson extends AnAction {
             XmlToolWindow.getXmlConsole().print("\"" + frameSet.getNewFrameValues()[i][2] + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
             XmlToolWindow.getXmlConsole().print("/>\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
         }
-        XmlToolWindow.getXmlConsole().print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
+        XmlToolWindow.getXmlConsole().print("\n\n", ConsoleViewContentType.NORMAL_OUTPUT);
         XmlToolWindow.showToolWindow();
     }
 }

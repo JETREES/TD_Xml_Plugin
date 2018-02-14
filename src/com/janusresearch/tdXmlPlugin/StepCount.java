@@ -64,7 +64,7 @@ public class StepCount extends AnAction {
         XmlToolWindow.getXmlConsole().print(" " + fileName + "\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
         XmlToolWindow.getXmlConsole().print("Step Count=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
         XmlToolWindow.getXmlConsole().print("\"" + String.valueOf(stepCount) + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
-        XmlToolWindow.getXmlConsole().print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
+        XmlToolWindow.getXmlConsole().print("\n\n", ConsoleViewContentType.NORMAL_OUTPUT);
         XmlToolWindow.showToolWindow();
     }
 }

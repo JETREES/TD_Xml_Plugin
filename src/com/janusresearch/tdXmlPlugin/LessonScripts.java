@@ -137,14 +137,15 @@ public class LessonScripts extends AnAction {
                     }
                     XmlToolWindow.getXmlConsole().print("Files Processed Successfully:", XmlConsoleViewContentType.MESSAGE_OUTPUT);
                     XmlToolWindow.getXmlConsole().print(" " + sg.getFilesProcessed() + "\n", XmlConsoleViewContentType.VALUE_OUTPUT);
-                    XmlToolWindow.getXmlConsole().print("Scripts Location: C:\\Lesson Scripts\\" + projectName + "\nScript Generation Complete", XmlConsoleViewContentType.MESSAGE_OUTPUT);
+                    XmlToolWindow.getXmlConsole().print("Scripts Location: C:\\Lesson Scripts\\" + projectName + "\nScript Generation Complete\n\n", XmlConsoleViewContentType.MESSAGE_OUTPUT);
                      /*   }
                     });*/
                 } else {
                     XmlToolWindow.getXmlConsole().print("Script Generator\n", XmlConsoleViewContentType.TITLE_OUTPUT_UNDERLINE);
                     XmlToolWindow.getXmlConsole().print("Lessons Found:", XmlConsoleViewContentType.MESSAGE_OUTPUT);
-                    XmlToolWindow.getXmlConsole().print(" " + xmlFiles.size() + "\n", XmlConsoleViewContentType.VALUE_OUTPUT);
+                    XmlToolWindow.getXmlConsole().print(" " + xmlFiles.size() + "\n\n", XmlConsoleViewContentType.VALUE_OUTPUT);
                 }
+                XmlToolWindow.showToolWindow();
             });
         }
     }

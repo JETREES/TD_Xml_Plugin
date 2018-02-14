@@ -8,11 +8,15 @@
       This a proprietary plugin created for Janus Training Developers.<br><br>
       Provides actions for:<br><br>
       - Renumbering a Lesson<br>
-        - Renumbering handles both types of sub steps<br><br>
+          Supports standard APV format with or without sub steps<br><br>
       - Get step count for a lesson<br>
-        - For now this adds the steps attribute to each<br>
-          Frame with a count of 1 if it does not exist<br>
-          If they do exist it gets a total of all the values<br>
+          For now this adds the steps attribute to each Frame<br>
+          with a count of 1 if it does not exist. If they do<br>
+          exist it gets a total of all the values of all Frames<br><br>
+      - Generate Audio Scripts:<br>
+          Creates word Audio scripts for each lesson and has the capability<br>
+          to add acronym pronunciations to the script for each acronym usage<br>
+
     ]]></description>
 
     <!--<change-notes><![CDATA[

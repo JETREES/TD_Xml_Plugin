@@ -22,6 +22,7 @@ import com.janusresearch.tdXmlPlugin.dom.Module;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsoleViewContentType;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlToolWindow;
 import com.janusresearch.tdXmlPlugin.xml.ScriptGenerator;
+import org.jetbrains.annotations.Contract;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -71,7 +72,7 @@ public class LessonScripts extends AnAction {
                 this.descriptor = new FileChooserDescriptor(false, true, false, false, false, false);
                 getDescriptor().setTitle("Select a Project's Lessons Folder");
             }
-            getDescriptor().setDescription("Component (Zero i.e. BX0A0101), Popup (POP), and Preload (PL) files are ignored during processing.");
+            getDescriptor().setDescription("Component (Zero i.e. BX0A0101), POP, COL, and PL files are ignored during processing.");
 
             //Open File/Path chooser and select the Lesson XML files or folder path and store the lesson files paths in a list
             this.pm = ProgressManager.getInstance();
@@ -166,7 +167,6 @@ public class LessonScripts extends AnAction {
         }
 
         indicator.setText("Generating Audio Scripts...");
-        indicator.setText2("this is a test");
         int fileCount = getXmlFiles().size();
         int filesProcessed = 0;
         for (VirtualFile v : getXmlFiles()) {
@@ -196,38 +196,47 @@ public class LessonScripts extends AnAction {
         return bd.doubleValue();
     }
 
+    @Contract(pure = true)
     private DomManager getManager() {
         return manager;
     }
 
+    @Contract(pure = true)
     private ProgressManager getPm() {
         return pm;
     }
 
+    @Contract(pure = true)
     private ScriptGenerator getSg() {
         return sg;
     }
 
+    @Contract(pure = true)
     private Project getProject() {
         return project;
     }
 
+    @Contract(pure = true)
     private List<VirtualFile> getXmlFiles() {
         return xmlFiles;
     }
 
+    @Contract(pure = true)
     private String getProjectName() {
         return projectName;
     }
 
+    @Contract(pure = true)
     private FileChooserDescriptor getDescriptor() {
         return descriptor;
     }
 
+    @Contract(pure = true)
     private LessonScriptsDialog getDialog() {
         return dialog;
     }
 
+    @Contract(pure = true)
     private XmlFile getAcronymFile() {
         return acronymFile;
     }

@@ -8,12 +8,14 @@ import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
+import com.janusresearch.tdXmlPlugin.debug.Debug;
 import com.janusresearch.tdXmlPlugin.dialog.LessonScriptsDialog;
 import com.janusresearch.tdXmlPlugin.dom.Acronym;
 import com.janusresearch.tdXmlPlugin.dom.Acronyms;
@@ -23,11 +25,13 @@ import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsoleViewContentType;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlToolWindow;
 import com.janusresearch.tdXmlPlugin.xml.ScriptGenerator;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class LessonScripts extends AnAction {
@@ -94,36 +98,57 @@ public class LessonScripts extends AnAction {
                     }
                 }
 
+                //Send update to console Script Generator started and how many lesson files were found
+                XmlToolWindow.getXmlConsole().print("Script Generator\n", XmlConsoleViewContentType.TITLE_OUTPUT_UNDERLINE);
+                XmlToolWindow.getXmlConsole().print("Lessons Found:", XmlConsoleViewContentType.MESSAGE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print(" " + getXmlFiles().size() + "\n", XmlConsoleViewContentType.VALUE_OUTPUT);
+
                 if (getXmlFiles().size() != 0) {
                     //Create the acronyms list in memory if the option was selected on the dialog
                     if (getDialog().isAcronymMatching()) {
                         //Choose the AcronymPronunciations.xml file
                         this.descriptor = new FileChooserDescriptor(true, false, false, false, false, false);
+                        getDescriptor().setTitle("Select an AcronymPronunciations.Xml File");
                         FileChooser.chooseFiles(getDescriptor(), getProject(), null, file -> {
-                            List<VirtualFile> acronymFile = new ArrayList<>();
-                            final boolean acronymFileSelected = getPm().runProcessWithProgressSynchronously((Runnable) () -> acronymFile.addAll(file), "Looking for Acronym Folder...", false, getProject());
-                            if (!acronymFileSelected || acronymFile.isEmpty()) {
+                            List<VirtualFile> acronymXmlFile = new ArrayList<>();
+                            final boolean acronymFileSelected = getPm().runProcessWithProgressSynchronously((Runnable) () -> acronymXmlFile.addAll(file), "Looking for Acronym Folder...", false, getProject());
+                            if (!acronymFileSelected || acronymXmlFile.isEmpty()) {
                                 XmlToolWindow.getXmlConsole().print("No AcronymPronunciations.Xml file was selected.", XmlConsoleViewContentType.MESSAGE_OUTPUT);
                                 return;
                             }
 
-                            //Gets the path to the Dictionaries folder located inside Streaming Assets
-                            VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymFile.get(0).getPath());
+                            if (Objects.equals(acronymXmlFile.get(0).getFileType().getName().toLowerCase(), "xml")) {
+                                //Gets the path to the Dictionaries folder located inside Streaming Assets
+                                VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(acronymXmlFile.get(0).getPath());
 
-                            if (vFile != null) {
-                                this.acronymFile = (XmlFile) PsiManager.getInstance(getProject()).findFile(vFile);
+                                if (vFile != null) {
+                                    this.acronymFile = (XmlFile) PsiManager.getInstance(getProject()).findFile(vFile);
+                                }
                             }
+                            else {
+                                getDialog().setAcronymMatching(false);
+                                XmlToolWindow.getXmlConsole().print("No AcronymPronunciations.Xml file selected.\n", XmlConsoleViewContentType.MESSAGE_OUTPUT);
+                            }
+
                         });
+
+                        if (getAcronymFile() == null) {
+                            //stop acronym processing if the file is null
+                            getDialog().setAcronymMatching(false);
+                        }
                     }
 
                     Pattern pattern = Pattern.compile(".*StreamingAssets/(.*?)/.*");
                     this.projectName = getXmlFiles().get(0).getPath().replaceAll(String.valueOf(pattern), "$1");
 
-                    getPm().runProcessWithProgressSynchronously(() -> ApplicationManager.getApplication().runReadAction(this::generateScripts), "Script Generator", false, getProject());
+                    getPm().run(new Task.Backgroundable(getProject(), "Script Generator"){
+                        public void run(@NotNull ProgressIndicator progressIndicator) {
+                            ApplicationManager.getApplication().runReadAction(() -> generateScripts(progressIndicator));
+                        }});
                 } else {
                     XmlToolWindow.getXmlConsole().print("Script Generator\n", XmlConsoleViewContentType.TITLE_OUTPUT_UNDERLINE);
                     XmlToolWindow.getXmlConsole().print("Lessons Found:", XmlConsoleViewContentType.MESSAGE_OUTPUT);
-                    XmlToolWindow.getXmlConsole().print(" " + getXmlFiles().size() + "\n\n", XmlConsoleViewContentType.VALUE_OUTPUT);
+                    XmlToolWindow.getXmlConsole().print(" " + getXmlFiles().size() + "\n", XmlConsoleViewContentType.VALUE_OUTPUT);
                 }
             });
         }
@@ -152,13 +177,7 @@ public class LessonScripts extends AnAction {
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void generateScripts() {
-        //Send update to console Script Generator started and how many lesson files were found
-        XmlToolWindow.getXmlConsole().print("Script Generator\n", XmlConsoleViewContentType.TITLE_OUTPUT_UNDERLINE);
-        XmlToolWindow.getXmlConsole().print("Lessons Found:", XmlConsoleViewContentType.MESSAGE_OUTPUT);
-        XmlToolWindow.getXmlConsole().print(" " + getXmlFiles().size() + "\n", XmlConsoleViewContentType.VALUE_OUTPUT);
-
-        ProgressIndicator indicator = getPm().getProgressIndicator();
+    private void generateScripts(ProgressIndicator indicator) {
 
         if (getDialog().isAcronymMatching() && getAcronymFile() != null) {
             indicator.setText("Creating Acronym List With Pronunciations...");

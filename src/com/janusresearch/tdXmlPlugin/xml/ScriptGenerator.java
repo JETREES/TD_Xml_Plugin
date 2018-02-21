@@ -186,7 +186,6 @@ public class ScriptGenerator {
         return false;
     }
 
-
     /** Finds and replaces acronym occurrences with the acronym and its pronunciation
      * @param text is the text from the Text, Text2, or InfoText xml tags.*/
     @Contract("null -> null")
@@ -312,6 +311,10 @@ public class ScriptGenerator {
             XmlToolWindow.getXmlConsole().print("Exception Matching Frame to Step -> File: " + currentFileName + " -> Frame: " + currentFrame + " >> "  + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
             XmlToolWindow.getXmlConsole().print("--- " + getFilesProcessed() + " files processed before error", XmlConsoleViewContentType.MESSAGE_OUTPUT);
         }
+
+        if (stepTreeLabel == null) {
+            XmlToolWindow.getXmlConsole().print("WARNING: " + "No StepTree node found for \"" + currentFileName + "\" - Frame " + currentFrame + "\n", XmlConsoleViewContentType.ERROR_OUTPUT);
+        }
         return frameId + " - " + stepTreeLabel;
     }
 
@@ -355,7 +358,7 @@ public class ScriptGenerator {
                     }
                 }
             } catch (Exception ex) {
-                XmlToolWindow.getXmlConsole().print("Exception Creating Acronyms List: " + ex.getMessage(), XmlConsoleViewContentType.ERROR_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("AcronymPronunciations.Xml file does not have required Module type Acronyms.\n", XmlConsoleViewContentType.ERROR_OUTPUT);
             }
 
     }

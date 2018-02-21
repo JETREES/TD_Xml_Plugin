@@ -50,4 +50,8 @@ public class LessonScriptsDialog extends DialogWrapper {
     public boolean isAcronymMatching() {
         return acronymMatching.isSelected();
     }
+
+    public void setAcronymMatching(Boolean bool) {
+        this.acronymMatching.setSelected(bool);
+    }
 }

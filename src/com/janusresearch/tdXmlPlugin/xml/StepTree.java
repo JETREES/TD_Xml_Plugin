@@ -1,69 +1,62 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
-import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.xml.GenericAttributeValue;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
 import com.janusresearch.tdXmlPlugin.dom.Module;
-import org.jetbrains.annotations.Contract;
+import com.janusresearch.tdXmlPlugin.dom.StepTreeNode;
 
 import java.util.Objects;
 
 @SuppressWarnings("ConstantConditions")
 public class StepTree {
     private Module root;
-    private XmlTag[] nodes;
     private int nodeCount;
-    private XmlAttribute[][] nodeAttributes; //array stores name parent and id attributes from StepTree node
-    private String[][] oldNodeValues;   //array stores old and new values for each node, used in processing FrameChange
+    private GenericAttributeValue[][] nodeAttributes; //array stores name parent and id attributes from StepTree node
+    private GenericAttributeValue[][] oldNodeValues;   //array stores old and new values for each node, used in processing FrameChange
     private String[][] newNodeValues;   //array stores old and new values for each node, used in processing FrameChange
 
     public StepTree(Module moduleRoot) {
-        root = moduleRoot;
-    }
-
-    /** Store every node tag in the Step Tree in the nodes array */
-    private void storeNodes() {
-        //Get all node sub tags from StepTree
-        nodes = root.getXmlTag().findFirstSubTag("StepTree").findSubTags("node");
+        this.root = moduleRoot;
         setNodeCount();
+        storeNodeAttributes();
+        storeOldNodeValues();
+        storeNewNodeValues();
+
     }
 
     /** Store the length of the StepTree as nodeCount */
     private void setNodeCount() {
-        nodeCount = getNodes().length;
+        nodeCount = getRoot().getStepTree().getNodes().size();
     }
 
     /** Store the reference to every StepTree node attributes in the nodeAttributes array */
-    public void storeNodeAttributes() {
-        storeNodes();
-        //Set array size based on nodes array length
-        nodeAttributes = new XmlAttribute[nodeCount][3];
+    private void storeNodeAttributes() {
+        nodeAttributes = new GenericAttributeValue[nodeCount][3];
         int i = 0;
-        for (XmlTag x : getNodes()) {
+        for (StepTreeNode n : getRoot().getStepTree().getNodes()) {
             //Store the name, parent and id attributes in the array
-            nodeAttributes[i][0] = x.getAttribute("name");
-            nodeAttributes[i][1] = x.getAttribute("parent");
-            nodeAttributes[i][2] = x.getAttribute("id");
+            nodeAttributes[i][0] = n.getName();
+            nodeAttributes[i][1] = n.getParentAttr();
+            nodeAttributes[i][2] = n.getId();
             i++;
         }
     }
 
     /** Store the old values for each node in the oldNodeValues array */
-    public void storeOldNodeValues() {
-        //Set array size based on nodes array length
-        oldNodeValues = new String[nodeCount][3];
+    private void storeOldNodeValues() {
+        oldNodeValues = new GenericAttributeValue[nodeCount][3];
         int i = 0;
-        for (XmlAttribute[] x : getNodeAttributes()) {
+        for (GenericAttributeValue[] a : getNodeAttributes()) {
             //store the old values for each node
-            oldNodeValues[i][0] = x[0].getValue();
-            oldNodeValues[i][1] = x[1].getValue();
-            oldNodeValues[i][2] = x[2].getValue();
+            oldNodeValues[i][0] = a[0];
+            oldNodeValues[i][1] = a[1];
+            oldNodeValues[i][2] = a[2];
             i++;
         }
     }
 
     /** Store the new values for each node in the newNodeValues array */
-    public void storeNewNodeValues() {
+    private void storeNewNodeValues() {
         //Set array size based on nodes array length
         newNodeValues = new String[nodeCount][3];
 
@@ -85,11 +78,11 @@ public class StepTree {
                     s[0] = String.valueOf(i + 1);
                     s[2] = String.valueOf(i + 1);
                 }
-                String oldParent = getOldNodeValues()[i][1];
+                String oldParent = getOldNodeValues()[i][1].getStringValue();
                 if (!Objects.equals(oldParent, "0") && SubStepsDialog.hasSubSteps()) {
                     int j = 0;
-                    for (String[] n : getOldNodeValues()) {
-                        if (Objects.equals(oldParent, n[0])) {
+                    for (GenericAttributeValue[] n : getOldNodeValues()) {
+                        if (Objects.equals(oldParent, n[0].getStringValue())) {
                             s[1] = getNewNodeValues()[j][0];
                             break;
                         }
@@ -104,29 +97,27 @@ public class StepTree {
         }
     }
 
-    /** Returns the nodes array */
-    @Contract(pure = true)
-    private XmlTag[] getNodes() {
-        return nodes;
-    }
-
     /** Returns the nodeCount */
     public int getNodeCount() {
         return nodeCount;
     }
 
     /** Returns the nodeAttributes array */
-    public XmlAttribute[][] getNodeAttributes() {
+    public GenericAttributeValue[][] getNodeAttributes() {
         return nodeAttributes;
     }
 
     /** Returns the oldNodeValues array */
-    public String[][] getOldNodeValues() {
+    public GenericAttributeValue[][] getOldNodeValues() {
         return oldNodeValues;
     }
 
     /** Returns the newNodeValues array */
     public String[][] getNewNodeValues() {
         return newNodeValues;
+    }
+
+    private Module getRoot() {
+        return root;
     }
 }

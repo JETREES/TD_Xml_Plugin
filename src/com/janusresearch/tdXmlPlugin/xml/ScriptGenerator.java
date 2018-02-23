@@ -353,7 +353,7 @@ public class ScriptGenerator {
                     for (Acronym a : acronymsRoot.getAcronyms()) {
                         List<String> newAcronym = new ArrayList<>();
                         newAcronym.add(a.getName().getRawText());
-                        newAcronym.add(a.getPronunciation().getRawText());
+                        newAcronym.add("[" + a.getPronunciation().getRawText() + "]");
                         acronyms.add(newAcronym);
                     }
                 }

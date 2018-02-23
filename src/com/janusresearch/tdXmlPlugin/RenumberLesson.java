@@ -51,27 +51,19 @@ public class RenumberLesson extends AnAction {
             if (Objects.equals(moduleRoot.getXmlElementName(), "Module")) {
                 //Process the Step Tree
                 StepTree stepTree = new StepTree(moduleRoot);
-                stepTree.storeNodeAttributes();
-                stepTree.storeOldNodeValues();
-                stepTree.storeNewNodeValues();
 
                 //Process the FrameSet
-                FrameSet frameSet = new FrameSet(project, moduleRoot);
-                frameSet.storeFrameAttributes();
-                frameSet.storeOldFrameValues();
-                frameSet.storeNewFrameValues();
-                frameSet.processEvents();
+                FrameSet frameSet = new FrameSet(moduleRoot);
 
                 //Process CommandMacros to store FrameChange commands and their new values
-                CommandMacros commandMacros = new CommandMacros(moduleRoot);
-                commandMacros.processMacros(frameSet.getOldFrameValues(), frameSet.getNewFrameValues());
+                CommandMacros commandMacros = new CommandMacros(moduleRoot, frameSet.getOldFrameValues(), frameSet.getNewFrameValues());
 
                 //write all the stored data from arrays to the xml file
                 WriteToXmlFile.renumberLesson(project, stepTree, frameSet, commandMacros);
 
                 //Determine if the Last StepTree node id is equal to the Last Frame node id then show a notification when it doesn't
-                int lastNode = Integer.parseInt(stepTree.getNodeAttributes()[stepTree.getNodeCount() - 1][2].getValue());
-                int lastFrame = Integer.parseInt(frameSet.getFrameAttributes()[frameSet.getFrameCount() - 1][1].getValue());
+                int lastNode = Integer.parseInt(stepTree.getNodeAttributes()[stepTree.getNodeCount() - 1][2].getStringValue());
+                int lastFrame = Integer.parseInt(frameSet.getFrameAttributes()[frameSet.getFrameCount() - 1][1].getStringValue());
                 if (lastNode < lastFrame) {
                     Notifications.showWarningMessage("Check Xml - There are not enough StepTree nodes.");
                 }
@@ -114,7 +106,7 @@ public class RenumberLesson extends AnAction {
         XmlToolWindow.getXmlConsole().print("Step Tree Modifications\n", XmlConsoleViewContentType.TITLE_OUTPUT_UNDERLINE);
         int i;
         for (i = 0; i < stepTree.getNodeCount(); i++) {
-            int spaces = 14 - stepTree.getOldNodeValues()[i][0].length() - stepTree.getOldNodeValues()[i][1].length() - stepTree.getOldNodeValues()[i][2].length();
+            int spaces = 14 - stepTree.getOldNodeValues()[i][0].getRawText().length() - stepTree.getOldNodeValues()[i][1].getRawText().length() - stepTree.getOldNodeValues()[i][2].getRawText().length();
             XmlToolWindow.getXmlConsole().print("<node ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
             XmlToolWindow.getXmlConsole().print("name=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
             XmlToolWindow.getXmlConsole().print("\"" + stepTree.getOldNodeValues()[i][0] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);

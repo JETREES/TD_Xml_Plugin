@@ -2,12 +2,11 @@ package com.janusresearch.tdXmlPlugin.xml;
 
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.xml.GenericAttributeValue;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
+import com.janusresearch.tdXmlPlugin.dom.Event;
+import com.janusresearch.tdXmlPlugin.dom.Frame;
 import com.janusresearch.tdXmlPlugin.dom.Module;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,63 +15,57 @@ import java.util.Objects;
 @SuppressWarnings("ConstantConditions")
 public class FrameSet {
     private Module root;
-    private XmlTag[] frames;
     private int frameCount;
-    private Project myProject;
-    private XmlAttribute[][] frameAttributes;
+    private GenericAttributeValue[][] frameAttributes;
     private String[][] oldFrameValues;
     private String[][] newFrameValues;
-    private List<XmlAttribute> playEvents = new ArrayList<>();
-    private List<XmlAttribute> backEvents = new ArrayList<>();
-    private List<XmlAttribute> otherEvents = new ArrayList<>();
+    private List<GenericAttributeValue<String>> playEvents = new ArrayList<>();
+    private List<GenericAttributeValue<String>> backEvents = new ArrayList<>();
+    private List<GenericAttributeValue<String>> otherEvents = new ArrayList<>();
     private List<String> newPlayValues = new ArrayList<>();
     private List<String> newBackValues = new ArrayList<>();
     private List<String> newOtherValues = new ArrayList<>();
-    private int actualStepCount;
 
-    public FrameSet(Project project, Module moduleRoot) {
-        myProject = project;
-        root = moduleRoot;
-    }
-
-    /** Store every Frame sub tag from Frame Set in the frames array */
-    private void storeFrames() {
-        frames = root.getXmlTag().findFirstSubTag("FrameSet").findSubTags("Frame");
-        setFrameCount(frames);
+    public FrameSet(Module moduleRoot) {
+        this.root = moduleRoot;
+        setFrameCount();
+        storeFrameAttributes();
+        storeOldFrameValues();
+        storeNewFrameValues();
+        processEvents();
     }
 
     /** Store the length of the FrameSet as frameCount */
-    private void setFrameCount(XmlTag[] frames) {
-        frameCount = frames.length;
+    private void setFrameCount() {
+        frameCount = getRoot().getFrameSet().getFrames().size();
     }
 
-    /** Store the reference to all Frame attributes from FrameSet in the frameAttributes array */
-    public void storeFrameAttributes() {
-        storeFrames();
-        frameAttributes = new XmlAttribute[frameCount][3];
+    /** Store all Frame attributes from FrameSet in the frameAttributes array */
+    private void storeFrameAttributes() {
+        frameAttributes = new GenericAttributeValue[frameCount][3];
         int i = 0;
-        for (XmlTag x : getFrames()) {
-            frameAttributes[i][0] = x.getAttribute("id");
-            frameAttributes[i][1] = x.getAttribute("node");
-            frameAttributes[i][2] = x.getAttribute("weight");
+        for (Frame f : getRoot().getFrameSet().getFrames()) {
+            frameAttributes[i][0] = f.getId();
+            frameAttributes[i][1] = f.getNode();
+            frameAttributes[i][2] = f.getWeight();
             i++;
         }
     }
 
     /** Store the old values for each Frame in the oldFrameValues array */
-    public void storeOldFrameValues() {
+    private void storeOldFrameValues() {
         oldFrameValues = new String[frameCount][3];
         int i = 0;
-        for (XmlAttribute[] x : getFrameAttributes()) {
-            oldFrameValues[i][0] = x[0].getValue();
-            oldFrameValues[i][1] = x[1].getValue();
-            oldFrameValues[i][2] = x[2].getValue();
+        for (GenericAttributeValue[] s : getFrameAttributes()) {
+            oldFrameValues[i][0] = s[0].getStringValue();
+            oldFrameValues[i][1] = s[1].getStringValue();
+            oldFrameValues[i][2] = s[2].getStringValue();
             i++;
         }
     }
 
     /** Store the new values for each Frame in the newFrameValues array */
-    public void storeNewFrameValues() {
+    private void storeNewFrameValues() {
         //Set array size based on nodes array length
         newFrameValues = new String[frameCount][3];
         int i = 0;
@@ -87,8 +80,8 @@ public class FrameSet {
                 s[2] = "01";
             }
             else {
-                oldLastNode = getFrameAttributes()[i - 1][1].getValue();
-                oldCurrentNode = getFrameAttributes()[i][1].getValue();
+                oldLastNode = getFrameAttributes()[i - 1][1].getStringValue();
+                oldCurrentNode = getFrameAttributes()[i][1].getStringValue();
 
                 if (i < 9) {
                     s[0] = "0" + (i + 1);
@@ -118,73 +111,14 @@ public class FrameSet {
         }
     }
 
-    /** Get all Event sub tags from a Frame */
-    @NotNull
-    public XmlTag[] getFrameEvents(XmlTag x) {
-        return x.findFirstSubTag("Events").findSubTags("Event");
-    }
-
-    /** Get the Text2 value from the Frame */
-    @NotNull
-    private String getFrameText2(XmlTag x) {
-        String text = "";
-        if (x.findFirstSubTag("Text2") != null) {
-            text = x.findFirstSubTag("Text2").getValue().getText();
-        }
-        return text;
-    }
-
-    /** Returns boolean true if the Frame has a steps attribute otherwise false */
-    private boolean hasSteps(XmlTag x) {
-        return x.getAttribute("steps") != null;
-    }
-
-    /** Returns boolean true if the Frame has a steps attribute with no value otherwise false */
-    private boolean isStepsEmpty(XmlTag x) {
-        return x.getAttribute("steps").getValue().isEmpty();
-    }
-
-    /** Returns boolean true if the Frame has a steps attribute with a value of zero otherwise false */
-    private boolean isStepsZero(XmlTag x) {
-        return x.getAttribute("steps").getValue().equals("0");
-    }
-
-    /** Returns the step count from a lesson. If the lesson contains step attributes in each Frame it will use
-     * those values for the count.  If they do not have the steps attribute or if the steps attribute is an empty
-     * String or equals zero then attribute is added/updated with a value that is an approximate value
-     * determined through processing the Text2 block
-     */
-    public int getStepCount() {
-        storeFrames();
-        actualStepCount = 0;
-        WriteCommandAction.runWriteCommandAction(myProject, () -> {
-            for (XmlTag f : getFrames()) {
-                if (!hasSteps(f) || (hasSteps(f) && (isStepsEmpty(f) || isStepsZero(f)))) {
-                    int stepCount = parseTextForCount(getFrameText2(f));
-                    f.setAttribute("steps", String.valueOf(stepCount));
-                }
-                actualStepCount += Integer.parseInt(f.getAttribute("steps").getValue());
-            }
-        });
-        return actualStepCount;
-    }
-
-    /** Parses the Text2 text value to attempt to determine the number of steps in a given Frame */
-    private int parseTextForCount(String s) {
-        //parse String s to determine an approximate count for the Frame
-        //for Play Frames set steps="1"
-
-        return 1;
-    }
-
     /** Process Events from every Frame to determine new nextid values */
-    public void processEvents() {
+    private void processEvents() {
         int i = 0;
-        for (XmlTag f : getFrames()) {
-            for (XmlTag e : getFrameEvents(f)) {
-                XmlAttribute nextid = e.getAttribute("nextid");
+        for (Frame f : getRoot().getFrameSet().getFrames()) {
+            for (Event e : f.getEvents().getEvents()) {
+                GenericAttributeValue<String> nextid = e.getNextid();
                 if (nextid != null) {
-                    String get = e.getAttribute("get").getValue();
+                    String get = e.getGet().getValue();
                     if (Objects.equals(get, "Play")) {
                         addPlayEvent(nextid);
                         addNewPlayValue(i);
@@ -204,8 +138,8 @@ public class FrameSet {
     }
 
     /** Adds reference to Play nextid attribute to the list*/
-    private void addPlayEvent(XmlAttribute x) {
-        playEvents.add(x);
+    private void addPlayEvent(GenericAttributeValue<String> a) {
+        playEvents.add(a);
     }
 
     /** Adds the Play nextid new value to the list */
@@ -218,9 +152,9 @@ public class FrameSet {
         }
     }
 
-    /** Adds reference to Back nextid attribute to the list */
-    private void addBackEvent(XmlAttribute x) {
-        backEvents.add(x);
+    /** Adds reference to Back nextid attribute to the list*/
+    private void addBackEvent(GenericAttributeValue<String> a) {
+        backEvents.add(a);
     }
 
     /** Adds the Back nextid new value to the list */
@@ -233,9 +167,9 @@ public class FrameSet {
         }
     }
 
-    /** Adds reference to Other nextid attribute to the list */
-    private void addOtherEvent(XmlAttribute x) {
-        otherEvents.add(x);
+    /** Adds reference to Other nextid attribute to the list*/
+    private void addOtherEvent(GenericAttributeValue<String> a) {
+        otherEvents.add(a);
     }
 
     /** Adds the Other nextid new value to the list */
@@ -246,6 +180,11 @@ public class FrameSet {
         else {
             getNewOtherValues().add(String.valueOf(i + 2));
         }
+    }
+
+    /** Returns the root of the lesson file list */
+    public Module getRoot() {
+        return root;
     }
 
     /** Returns the newPlayValues list */
@@ -264,24 +203,18 @@ public class FrameSet {
     }
 
     /** Returns the playEvents list */
-    public List<XmlAttribute> getPlayEvents() {
+    public List<GenericAttributeValue<String>> getPlayEvents() {
         return playEvents;
     }
 
     /** Returns the backEvents list */
-    public List<XmlAttribute> getBackEvents() {
+    public List<GenericAttributeValue<String>> getBackEvents() {
         return backEvents;
     }
 
     /** Returns the otherEvents list */
-    public List<XmlAttribute> getOtherEvents() {
+    public List<GenericAttributeValue<String>> getOtherEvents() {
         return otherEvents;
-    }
-
-    /** Returns the frames array */
-    @Contract(pure = true)
-    public XmlTag[] getFrames() {
-        return frames;
     }
 
     /** Returns the nodeCount */
@@ -290,7 +223,7 @@ public class FrameSet {
     }
 
     /** Returns the nodeAttributes array */
-    public XmlAttribute[][] getFrameAttributes() {
+    public GenericAttributeValue[][] getFrameAttributes() {
         return frameAttributes;
     }
 

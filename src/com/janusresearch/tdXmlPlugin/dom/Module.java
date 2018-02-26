@@ -17,6 +17,7 @@ public interface Module extends DomElement {
      * @return the value of the title child.
      */
     @NotNull
+    @Required
     @Attribute("title")
     GenericAttributeValue<String> getTitle();
 

@@ -1,6 +1,5 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
-import com.intellij.util.xml.GenericAttributeValue;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
 import com.janusresearch.tdXmlPlugin.dom.Module;
 import com.janusresearch.tdXmlPlugin.dom.StepTreeNode;
@@ -11,17 +10,12 @@ import java.util.Objects;
 public class StepTree {
     private Module root;
     private int nodeCount;
-    private GenericAttributeValue[][] nodeAttributes; //array stores name parent and id attributes from StepTree node
-    private GenericAttributeValue[][] oldNodeValues;   //array stores old and new values for each node, used in processing FrameChange
+    private String[][] oldNodeValues;   //array stores old and new values for each node, used in processing FrameChange
     private String[][] newNodeValues;   //array stores old and new values for each node, used in processing FrameChange
 
     public StepTree(Module moduleRoot) {
         this.root = moduleRoot;
-        setNodeCount();
-        storeNodeAttributes();
-        storeOldNodeValues();
         storeNewNodeValues();
-
     }
 
     /** Store the length of the StepTree as nodeCount */
@@ -29,34 +23,24 @@ public class StepTree {
         nodeCount = getRoot().getStepTree().getNodes().size();
     }
 
-    /** Store the reference to every StepTree node attributes in the nodeAttributes array */
-    private void storeNodeAttributes() {
-        nodeAttributes = new GenericAttributeValue[nodeCount][3];
-        int i = 0;
-        for (StepTreeNode n : getRoot().getStepTree().getNodes()) {
-            //Store the name, parent and id attributes in the array
-            nodeAttributes[i][0] = n.getName();
-            nodeAttributes[i][1] = n.getParentAttr();
-            nodeAttributes[i][2] = n.getId();
-            i++;
-        }
-    }
-
     /** Store the old values for each node in the oldNodeValues array */
     private void storeOldNodeValues() {
-        oldNodeValues = new GenericAttributeValue[nodeCount][3];
+        oldNodeValues = new String[nodeCount][3];
         int i = 0;
-        for (GenericAttributeValue[] a : getNodeAttributes()) {
+        for (StepTreeNode n : getRoot().getStepTree().getNodes()) {
             //store the old values for each node
-            oldNodeValues[i][0] = a[0];
-            oldNodeValues[i][1] = a[1];
-            oldNodeValues[i][2] = a[2];
+            oldNodeValues[i][0] = n.getName().getStringValue();
+            oldNodeValues[i][1] = n.getParentAttr().getStringValue();
+            oldNodeValues[i][2] = n.getId().getStringValue();
             i++;
         }
     }
 
     /** Store the new values for each node in the newNodeValues array */
     private void storeNewNodeValues() {
+        setNodeCount();
+        storeOldNodeValues();
+
         //Set array size based on nodes array length
         newNodeValues = new String[nodeCount][3];
 
@@ -78,11 +62,11 @@ public class StepTree {
                     s[0] = String.valueOf(i + 1);
                     s[2] = String.valueOf(i + 1);
                 }
-                String oldParent = getOldNodeValues()[i][1].getStringValue();
+                String oldParent = getOldNodeValues()[i][1];
                 if (!Objects.equals(oldParent, "0") && SubStepsDialog.hasSubSteps()) {
                     int j = 0;
-                    for (GenericAttributeValue[] n : getOldNodeValues()) {
-                        if (Objects.equals(oldParent, n[0].getStringValue())) {
+                    for (String[] st : getOldNodeValues()) {
+                        if (Objects.equals(oldParent, st[0])) {
                             s[1] = getNewNodeValues()[j][0];
                             break;
                         }
@@ -102,13 +86,8 @@ public class StepTree {
         return nodeCount;
     }
 
-    /** Returns the nodeAttributes array */
-    public GenericAttributeValue[][] getNodeAttributes() {
-        return nodeAttributes;
-    }
-
     /** Returns the oldNodeValues array */
-    public GenericAttributeValue[][] getOldNodeValues() {
+    public String[][] getOldNodeValues() {
         return oldNodeValues;
     }
 
@@ -117,7 +96,7 @@ public class StepTree {
         return newNodeValues;
     }
 
-    private Module getRoot() {
+    public Module getRoot() {
         return root;
     }
 }

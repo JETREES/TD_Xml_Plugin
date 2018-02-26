@@ -1,7 +1,5 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.project.Project;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
 import com.janusresearch.tdXmlPlugin.dom.Event;
@@ -16,7 +14,6 @@ import java.util.Objects;
 public class FrameSet {
     private Module root;
     private int frameCount;
-    private GenericAttributeValue[][] frameAttributes;
     private String[][] oldFrameValues;
     private String[][] newFrameValues;
     private List<GenericAttributeValue<String>> playEvents = new ArrayList<>();
@@ -28,9 +25,6 @@ public class FrameSet {
 
     public FrameSet(Module moduleRoot) {
         this.root = moduleRoot;
-        setFrameCount();
-        storeFrameAttributes();
-        storeOldFrameValues();
         storeNewFrameValues();
         processEvents();
     }
@@ -40,34 +34,25 @@ public class FrameSet {
         frameCount = getRoot().getFrameSet().getFrames().size();
     }
 
-    /** Store all Frame attributes from FrameSet in the frameAttributes array */
-    private void storeFrameAttributes() {
-        frameAttributes = new GenericAttributeValue[frameCount][3];
-        int i = 0;
-        for (Frame f : getRoot().getFrameSet().getFrames()) {
-            frameAttributes[i][0] = f.getId();
-            frameAttributes[i][1] = f.getNode();
-            frameAttributes[i][2] = f.getWeight();
-            i++;
-        }
-    }
-
     /** Store the old values for each Frame in the oldFrameValues array */
     private void storeOldFrameValues() {
         oldFrameValues = new String[frameCount][3];
         int i = 0;
-        for (GenericAttributeValue[] s : getFrameAttributes()) {
-            oldFrameValues[i][0] = s[0].getStringValue();
-            oldFrameValues[i][1] = s[1].getStringValue();
-            oldFrameValues[i][2] = s[2].getStringValue();
+        for (Frame f : getRoot().getFrameSet().getFrames()) {
+            oldFrameValues[i][0] = f.getId().getStringValue();
+            oldFrameValues[i][1] = f.getNode().getStringValue();
+            oldFrameValues[i][2] = f.getWeight().getStringValue();
             i++;
         }
     }
 
     /** Store the new values for each Frame in the newFrameValues array */
     private void storeNewFrameValues() {
+        setFrameCount();
+        storeOldFrameValues();
+
         //Set array size based on nodes array length
-        newFrameValues = new String[frameCount][3];
+        newFrameValues = new String[getFrameCount()][3];
         int i = 0;
         String oldLastNode;
         String oldCurrentNode;
@@ -80,8 +65,8 @@ public class FrameSet {
                 s[2] = "01";
             }
             else {
-                oldLastNode = getFrameAttributes()[i - 1][1].getStringValue();
-                oldCurrentNode = getFrameAttributes()[i][1].getStringValue();
+                oldLastNode = getOldFrameValues()[i - 1][1];
+                oldCurrentNode = getOldFrameValues()[i][1];
 
                 if (i < 9) {
                     s[0] = "0" + (i + 1);
@@ -220,11 +205,6 @@ public class FrameSet {
     /** Returns the nodeCount */
     public int getFrameCount() {
         return frameCount;
-    }
-
-    /** Returns the nodeAttributes array */
-    public GenericAttributeValue[][] getFrameAttributes() {
-        return frameAttributes;
     }
 
     /** Returns the oldNodeValues array */

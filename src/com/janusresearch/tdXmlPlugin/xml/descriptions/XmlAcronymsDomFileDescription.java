@@ -6,9 +6,10 @@
  * the deprecated on mentioned here.
  */
 
-package com.janusresearch.tdXmlPlugin.dom;
+package com.janusresearch.tdXmlPlugin.xml.descriptions;
 
 import com.intellij.util.xml.DomFileDescription;
+import com.janusresearch.tdXmlPlugin.dom.Acronyms;
 
 public class XmlAcronymsDomFileDescription extends DomFileDescription<Acronyms> {
     private static final String ROOT_TAG = "Acronyms";

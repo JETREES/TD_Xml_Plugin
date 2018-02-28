@@ -36,9 +36,10 @@
     <extensions defaultExtensionNs="com.intellij">
         <!--<annotator language="XML" implementationClass="com.janusresearch.tdXmlPlugin.xml.highlighting.XmlAnnotator"/>-->
         <!-- Add your extensions here -->
-        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.dom.XmlModuleDomFileDescription"/>
-        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.dom.XmlCOLsDomFileDescription"/>
-        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.dom.XmlAcronymsDomFileDescription"/>
+        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlModuleDomFileDescription"/>
+        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlCOLsDomFileDescription"/>
+        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlAcronymsDomFileDescription"/>
+        <annotator language="XML" implementationClass="com.janusresearch.tdXmlPlugin.xml.highlighting.XmlAnnotator"/>
     </extensions>
 
     <project-components>

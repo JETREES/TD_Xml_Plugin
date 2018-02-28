@@ -6,12 +6,10 @@
 * the deprecated on mentioned here.
 */
 
-package com.janusresearch.tdXmlPlugin.dom;
+package com.janusresearch.tdXmlPlugin.xml.descriptions;
 
 import com.intellij.util.xml.DomFileDescription;
-import com.intellij.util.xml.highlighting.DomElementsAnnotator;
-import com.janusresearch.tdXmlPlugin.xml.highlighting.XmlAnnotator;
-import org.jetbrains.annotations.Nullable;
+import com.janusresearch.tdXmlPlugin.dom.Module;
 
 public class XmlModuleDomFileDescription extends DomFileDescription<Module> {
     private static final String ROOT_TAG = "Module";
@@ -21,9 +19,5 @@ public class XmlModuleDomFileDescription extends DomFileDescription<Module> {
 
     }
 
-    @Nullable
-    @Override
-    public DomElementsAnnotator createAnnotator() {
-        return new XmlAnnotator();
-    }
+
 }

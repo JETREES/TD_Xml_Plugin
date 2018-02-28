@@ -39,6 +39,7 @@
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlModuleDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlCOLsDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlAcronymsDomFileDescription"/>
+        <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlConfigDomFileDescription"/>
         <annotator language="XML" implementationClass="com.janusresearch.tdXmlPlugin.xml.highlighting.XmlAnnotator"/>
     </extensions>
 

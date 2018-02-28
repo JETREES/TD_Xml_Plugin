@@ -1,8 +1,8 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
-import com.janusresearch.tdXmlPlugin.dom.Module;
-import com.janusresearch.tdXmlPlugin.dom.StepTreeNode;
+import com.janusresearch.tdXmlPlugin.dom.module.Module;
+import com.janusresearch.tdXmlPlugin.dom.module.StepTreeNode;
 
 import java.util.Objects;
 

@@ -9,7 +9,7 @@
 package com.janusresearch.tdXmlPlugin.xml.descriptions;
 
 import com.intellij.util.xml.DomFileDescription;
-import com.janusresearch.tdXmlPlugin.dom.Module;
+import com.janusresearch.tdXmlPlugin.dom.module.Module;
 
 public class XmlModuleDomFileDescription extends DomFileDescription<Module> {
     private static final String ROOT_TAG = "Module";

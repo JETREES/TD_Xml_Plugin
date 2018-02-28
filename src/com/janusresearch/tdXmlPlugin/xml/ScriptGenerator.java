@@ -1,16 +1,10 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
-import com.intellij.openapi.fileChooser.FileChooser;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.GenericAttributeValue;
-import com.janusresearch.tdXmlPlugin.dom.*;
+import com.janusresearch.tdXmlPlugin.dom.module.*;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsoleViewContentType;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlToolWindow;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;

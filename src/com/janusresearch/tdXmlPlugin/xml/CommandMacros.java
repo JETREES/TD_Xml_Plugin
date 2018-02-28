@@ -1,9 +1,9 @@
 package com.janusresearch.tdXmlPlugin.xml;
 
 import com.intellij.util.xml.GenericAttributeValue;
-import com.janusresearch.tdXmlPlugin.dom.Command;
-import com.janusresearch.tdXmlPlugin.dom.Macro;
-import com.janusresearch.tdXmlPlugin.dom.Module;
+import com.janusresearch.tdXmlPlugin.dom.module.Command;
+import com.janusresearch.tdXmlPlugin.dom.module.Macro;
+import com.janusresearch.tdXmlPlugin.dom.module.Module;
 import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;

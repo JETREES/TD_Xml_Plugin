@@ -9,7 +9,7 @@
 package com.janusresearch.tdXmlPlugin.xml.descriptions;
 
 import com.intellij.util.xml.DomFileDescription;
-import com.janusresearch.tdXmlPlugin.dom.Acronyms;
+import com.janusresearch.tdXmlPlugin.dom.module.Acronyms;
 
 public class XmlAcronymsDomFileDescription extends DomFileDescription<Acronyms> {
     private static final String ROOT_TAG = "Acronyms";

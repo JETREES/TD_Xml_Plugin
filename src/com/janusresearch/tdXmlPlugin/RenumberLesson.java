@@ -9,7 +9,7 @@ import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
-import com.janusresearch.tdXmlPlugin.dom.*;
+import com.janusresearch.tdXmlPlugin.dom.module.*;
 import com.janusresearch.tdXmlPlugin.notification.Notifications;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsoleViewContentType;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlToolWindow;

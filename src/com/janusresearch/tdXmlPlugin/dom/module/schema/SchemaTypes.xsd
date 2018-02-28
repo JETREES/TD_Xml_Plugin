@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:include schemaLocation="SharedSchemaTypes.xsd"/>
+
+    <!--This XSD file contains schemas that are used by UVEE XSD files only.  See
+        also SharedSchemaTypes.xsd or JSchemaTypes.xsd.-->
+
+    <xsd:element name="FrameSetOrPages" abstract="true"/>
+    <xsd:element name="FrameSet"  type="FrameSetType" substitutionGroup="FrameSetOrPages"/>
+    <xsd:element name="Pages" type="PagesType" substitutionGroup="FrameSetOrPages"/>
+
+    <xsd:complexType name="ModuleType">
+        <xsd:all minOccurs="0">
+            <xsd:element name="Description" type="DescriptionType" minOccurs="0"/>
+            <xsd:element name="PreloadCommands" type="PreloadCommandsType" minOccurs="0"/>
+            <xsd:element name="ExternalCOL" type="ExternalCOLType" minOccurs="0"/>
+            <xsd:element name="ExternalPopup" type="ExternalPopupType" minOccurs="0"/>
+            <xsd:element name="LessonReference" type="LessonReferenceType" minOccurs="0"/>
+            <xsd:element name="BaseCamera" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="ObjectTree" type="ObjectTreeType" minOccurs="0"/>
+            <xsd:element name="ComponentFiles" type="ComponentFilesType" minOccurs="0"/>
+            <xsd:element name="StepTree" type="StepTreeType" minOccurs="0"/>
+            <xsd:element name="GlobalEvents" type="GlobalEventsType" minOccurs="0"/>
+            <xsd:element name="CommandMacros" type="CommandMacrosType" minOccurs="0"/>
+            <xsd:element name="Goals" type="GoalsType" minOccurs="0"/>
+            <xsd:element name="CustomNavViews" type="CustomNavViewsType" minOccurs="0"/>
+            <xsd:element ref="FrameSetOrPages" />
+        </xsd:all>
+        <xsd:attribute name="title" type="xsd:string"/>
+        <xsd:attribute name="timed" type="xsd:boolean"/>
+        <xsd:attribute name="estimatedtime" type="EstimatedTimeType"/>
+        <xsd:attribute name="type" type="ModuleTypeType"/>
+        <xsd:attribute name="view" type="xsd:string"/>
+        <xsd:attribute name="movie" type="xsd:string"/>
+        <xsd:attribute name="lines" type="xsd:unsignedInt"/>
+        <xsd:attribute name="version" type="xsd:unsignedInt"/>
+        <xsd:attribute name="widescreen" type="BooleanType"/>
+        <xsd:attribute name="w3d" type="xsd:string"/>
+        <xsd:attribute name="mode" type="ModeType"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="FrameSetType">
+        <xsd:sequence maxOccurs="unbounded" minOccurs="0">
+            <xsd:element name="Frame" type="FrameType" maxOccurs="unbounded" minOccurs="0"/>
+            <xsd:element name="Question" type="FrameType" maxOccurs="unbounded" minOccurs="0"/>
+            <xsd:element name="COL" type="COLType" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="FrameType">
+        <xsd:all minOccurs="0">
+            <xsd:element name="Events" type="EventsType" minOccurs="0"/>
+            <xsd:element name="Commands" type="CommandsType" minOccurs="0"/>
+            <xsd:element name="Commands2" type="CommandsType" minOccurs="0"/>
+            <xsd:element name="InfoText" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Text" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Text2" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Query" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Answers" type="MultipleChoiceAnswersType" minOccurs="0"/>
+            <xsd:element name="InsertAfter" type="xsd:string" minOccurs="0"/>
+        </xsd:all>
+        <xsd:attribute name="id" type="FrameIDType"/>
+        <xsd:attribute name="node" type="GrotesqueIDType"/>
+        <xsd:attribute name="weight" type="xsd:decimal"/>
+        <xsd:attribute name="steps" type="xsd:decimal"/>
+        <xsd:attribute name="score" type="xsd:unsignedInt"/>
+        <xsd:attribute name="status" type="BooleanType"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="EventsType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Event" type="EventType" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!--UVEE specific Event format does not allow Command children-->
+    <xsd:complexType name="EventType">
+        <xsd:attribute name="get" type="xsd:string"/>
+        <xsd:attribute name="nextid" type="FrameIDType"/>
+        <xsd:attribute name="send" type="xsd:string"/>
+        <xsd:attribute name="varcheck" type="xsd:string"/>
+        <xsd:attribute name="input" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="GlobalEventsType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Event" type="EventType" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

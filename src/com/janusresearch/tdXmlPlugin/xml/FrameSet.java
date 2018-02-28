@@ -2,9 +2,9 @@ package com.janusresearch.tdXmlPlugin.xml;
 
 import com.intellij.util.xml.GenericAttributeValue;
 import com.janusresearch.tdXmlPlugin.dialog.SubStepsDialog;
-import com.janusresearch.tdXmlPlugin.dom.Event;
-import com.janusresearch.tdXmlPlugin.dom.Frame;
-import com.janusresearch.tdXmlPlugin.dom.Module;
+import com.janusresearch.tdXmlPlugin.dom.module.Event;
+import com.janusresearch.tdXmlPlugin.dom.module.Frame;
+import com.janusresearch.tdXmlPlugin.dom.module.Module;
 
 import java.util.ArrayList;
 import java.util.List;

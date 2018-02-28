@@ -7,8 +7,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
-import com.janusresearch.tdXmlPlugin.dom.Frame;
-import com.janusresearch.tdXmlPlugin.dom.Module;
+import com.janusresearch.tdXmlPlugin.dom.module.Frame;
+import com.janusresearch.tdXmlPlugin.dom.module.Module;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlConsoleViewContentType;
 import com.janusresearch.tdXmlPlugin.toolWindow.XmlToolWindow;
 

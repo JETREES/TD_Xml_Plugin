@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <xsd:complexType name="ConfigurationType">
+        <xsd:all minOccurs="0">
+            <xsd:element name="VEEVersion" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Settings" type="SettingsType" minOccurs="0"/>
+            <xsd:element name="Shelter" type="ShelterType" minOccurs="0"/>
+            <xsd:element name="Course" type="CourseType" minOccurs="0"/>
+        </xsd:all>
+    </xsd:complexType>
+
+    <xsd:complexType name="SettingsType">
+        <xsd:all>
+            <xsd:element name="ShowStepTreeOnPracticeValidate" type="BooleanType" minOccurs="0"/>
+            <xsd:element name="RandomColAtEnd" type="BooleanType" minOccurs="0"/>
+            <xsd:element name="HighlightHotspots" type="BooleanType" minOccurs="0"/>
+            <xsd:element name="IntroMovies" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="DisableDefaultLessonReference" type="BooleanType" minOccurs="0"/>
+            <xsd:element name="FamiliarizeString" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="AcquireString" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="PracticeString" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="ValidateString" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="HintString" type="xsd:string" minOccurs="0"/>
+        </xsd:all>
+    </xsd:complexType>
+
+    <xsd:complexType name="ShelterType">
+        <xsd:all minOccurs="0">
+            <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Preview" type="SimpleImageNameType" minOccurs="0"/>
+            <xsd:element name="Userclasses" type="UserclassesType" minOccurs="0"/>
+            <xsd:element name="Movies" type="MoviesType" minOccurs="0"/>
+        </xsd:all>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="UserclassesType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Userclass" type="UserclassType" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="MoviesType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Movie" type="MovieType" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="UserclassType">
+        <xsd:all minOccurs="0">
+            <xsd:element name="Title" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Preview" minOccurs="0" type="SimpleImageNameType"/>
+        </xsd:all>
+        <xsd:attribute name="position" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="MovieType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Flash" type="FlashType" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="filename" type="SimpleMovieNameType"/>
+        <xsd:attribute name="w3d" type="SimpleSceneNameType"/>
+        <xsd:attribute name="alias" type="GrotesqueIDType"/>
+        <xsd:attribute name="default" type="BooleanType"/>
+    </xsd:complexType>
+
+    <xsd:simpleType name="SimpleFileNameType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="(|[A-Za-z0-9_]+\.[A-Za-z0-9_]+)"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="SimpleImageNameType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="(|[A-Za-z0-9_]+(\.([Gg][Ii][Ff]|[Jj][Pp][Ee]?[Gg]|[Pp][Nn][Gg]))?)"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="SimpleFlashNameType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="(|[A-Za-z0-9_]+\.[Ss][Ww][Ff])"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="SimpleMovieNameType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="(|[A-Za-z0-9_]+\.[Dd][Cc][Rr])"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="BooleanType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="1"/>
+            <xsd:enumeration value="TRUE"/>
+            <xsd:enumeration value="true"/>
+            <xsd:enumeration value="True"/>
+            <xsd:enumeration value="YES"/>
+            <xsd:enumeration value="Yes"/>
+            <xsd:enumeration value="yes"/>
+            <xsd:enumeration value="0"/>
+            <xsd:enumeration value="FALSE"/>
+            <xsd:enumeration value="False"/>
+            <xsd:enumeration value="false"/>
+            <xsd:enumeration value="NO"/>
+            <xsd:enumeration value="No"/>
+            <xsd:enumeration value="no"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="SimpleSceneNameType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="(|[A-Za-z0-9_]+\.[Ww]3[Dd])"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="GrotesqueIDType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="(|[A-Za-z0-9_]+)"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="FlashType">
+        <xsd:attribute name="filename" type="SimpleFlashNameType"/>
+        <xsd:attribute name="alias" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="CourseType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Type" type="TypeType" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="TypeType">
+        <xsd:all minOccurs="0">
+            <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Preview" type="SimpleImageNameType" minOccurs="0"/>
+            <xsd:element name="Positions" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Groups" type="GroupsType" minOccurs="0"/>
+        </xsd:all>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="GroupsType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Group" type="GroupType" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="GroupType">
+        <xsd:all minOccurs="0">
+            <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Preview" type="SimpleImageNameType" minOccurs="0"/>
+            <xsd:element name="Positions" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Devices" type="DevicesType" minOccurs="0"/>
+        </xsd:all>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="DevicesType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Device" type="DeviceType" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="DeviceType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Module" type="ModuleType" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+        <xsd:attribute name="lessonScene" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="ModuleType">
+        <xsd:all>
+            <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Preview" type="SimpleImageNameType" minOccurs="0"/>
+            <xsd:element name="Positions" type="xsd:string" minOccurs="0"/>
+        </xsd:all>
+        <xsd:attribute name="number" type="ModuleNumberType"/>
+        <xsd:attribute name="fapv" type="FAPVType"/>
+    </xsd:complexType>
+
+    <xsd:simpleType name="FAPVType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="f"/>
+            <xsd:enumeration value="a"/>
+            <xsd:enumeration value="ap"/>
+            <xsd:enumeration value="p"/>
+            <xsd:enumeration value="pfp"/>
+            <xsd:enumeration value="v"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="ModuleNumberType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[A-Za-z0-9_\-]+"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:element name="Configuration" type="ConfigurationType"/>
+
+</xsd:schema>

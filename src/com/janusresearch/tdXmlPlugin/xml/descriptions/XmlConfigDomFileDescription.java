@@ -9,13 +9,13 @@
 package com.janusresearch.tdXmlPlugin.xml.descriptions;
 
 import com.intellij.util.xml.DomFileDescription;
-import com.janusresearch.tdXmlPlugin.dom.module.COLs;
+import com.janusresearch.tdXmlPlugin.dom.config.Configuration;
 
-public class XmlCOLsDomFileDescription extends DomFileDescription<COLs> {
-    private static final String ROOT_TAG = "COLs";
+public class XmlConfigDomFileDescription extends DomFileDescription<Configuration> {
+    private static final String ROOT_TAG = "Configuration";
 
-    public XmlCOLsDomFileDescription() {
-        super(COLs.class, ROOT_TAG);
+    public XmlConfigDomFileDescription() {
+        super(Configuration.class, ROOT_TAG);
 
     }
 }

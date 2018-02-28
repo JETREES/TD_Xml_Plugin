@@ -127,6 +127,7 @@ public class XmlAnnotator implements Annotator {
                         String lessonNumber = d.getModules().get(0).getNumber().getValue();
                         if (fileName.equals(lessonNumber)) {
                             lessonTitle = d.getName().getValue();
+                            return lessonTitle;
                         }
                     }
                 }

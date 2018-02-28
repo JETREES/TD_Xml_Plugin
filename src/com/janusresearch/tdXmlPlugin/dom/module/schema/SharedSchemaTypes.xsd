@@ -414,7 +414,6 @@
         </xsd:restriction>
     </xsd:simpleType>
 
-
     <xsd:simpleType name="ModeType">
         <xsd:restriction base="xsd:string">
             <xsd:pattern value="([Pp][Uu][Tt][Tt][Yy])?"/>

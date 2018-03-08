@@ -14,7 +14,7 @@
           with a count of 1 if it does not exist. If they do<br>
           exist it gets a total of all the values of all Frames<br><br>
       - Generate Audio Scripts:<br>
-          Creates word Audio scripts for each lesson and has the capability<br>
+          Creates word document Audio scripts for each lesson and has the capability<br>
           to add acronym pronunciations to the script for each acronym usage<br>
 
     ]]></description>
@@ -34,13 +34,12 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <!--<annotator language="XML" implementationClass="com.janusresearch.tdXmlPlugin.xml.highlighting.XmlAnnotator"/>-->
         <!-- Add your extensions here -->
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlModuleDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlCOLsDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlAcronymsDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlConfigDomFileDescription"/>
-        <annotator language="XML" implementationClass="com.janusresearch.tdXmlPlugin.xml.highlighting.XmlAnnotator"/>
+        <!--<annotator language="XML" implementationClass="com.janusresearch.tdXmlPlugin.xml.highlighting.XmlAnnotator"/>-->
     </extensions>
 
     <project-components>

@@ -57,6 +57,7 @@ public class XmlAnnotator implements Annotator {
 
                 switch (xmlElementName) {
                     case "title" :
+                        //highlights the "text" for the Module title attribute
                         if (!Objects.equals(domElement.toString(), getConfigTitle(psiElement))) {
                                 PsiElement[] children = new PsiElement[0];
                                 if (domElement.getXmlElement() != null) {
@@ -70,6 +71,16 @@ public class XmlAnnotator implements Annotator {
                         break;
                     case "Title" :
                         if (!Objects.equals(domElement.toString(), getConfigTitle(psiElement))) {
+                            /*
+                            //This commented out section would highlight just the text between the tags however when there is
+                            //no text it only highlights the > at the end of the Title tag which could be difficult to see.
+                            PsiElement[] children = new PsiElement[0];
+                            if (domElement.getXmlElement() != null) {
+                                children = domElement.getXmlElement().getChildren();
+                            }
+                            holder.createErrorAnnotation(children[children.length - 4], "Title doesn't match Config file"); */
+
+                            //highlights the entire <Title>text</Title> element
                             holder.createErrorAnnotation(psiElement, "Title doesn't match Config file");
                         }
                         break;

@@ -102,7 +102,7 @@ public class FrameSet {
         for (Frame f : getRoot().getFrameSet().getFrames()) {
             for (Event e : f.getEvents().getEvents()) {
                 GenericAttributeValue<String> nextid = e.getNextid();
-                if (nextid != null) {
+                if (nextid.getValue() != null) {
                     String get = e.getGet().getValue();
                     if (Objects.equals(get, "Play")) {
                         addPlayEvent(nextid);

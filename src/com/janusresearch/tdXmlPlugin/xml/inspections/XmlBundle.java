@@ -8,20 +8,21 @@ import org.jetbrains.annotations.PropertyKey;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
  */
-public class SampleBundle {
+public class XmlBundle {
   @NonNls
-  private static final String BUNDLE = "com.janusresearch.tdXmlPlugin.xml.inspections.SampleBundle";
+  private static final String BUNDLE = "com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle";
 
   @Nullable
   private static Reference<ResourceBundle> _bundle;
 
   @NotNull
   public static String message( @NotNull @PropertyKey(resourceBundle = BUNDLE) String key, Object... params ) {
-    return CommonBundle.message( getBundle(), key, params );
+    return CommonBundle.message(Objects.requireNonNull(getBundle()), key, params );
   }
 
   @Nullable

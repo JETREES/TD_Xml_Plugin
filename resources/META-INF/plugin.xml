@@ -35,11 +35,24 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <!--<annotator language="XML" implementationClass="com.janusresearch.tdXmlPlugin.xml.highlighting.XmlAnnotator"/>-->
-        <localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.FooInspection" language="XML"
-                         bundle="com.janusresearch.tdXmlPlugin.xml.inspections.SampleBundle"
-                         groupKey="inspections.sample.name" key="inspections.sample.foo.name" groupBundle="com.janusresearch.tdXmlPlugin.xml.inspections.SampleBundle" displayName="FooInspection" shortName="Foo"
-                         enabledByDefault="true" level="WARNING"/>
+        <localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.DescriptionTitleInspection"
+                         language="XML"
+                         bundle="com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle"
+                         groupKey="inspections.xml.name"
+                         key="inspections.xml.description.title"
+                         displayName="Description Title Inspection"
+                         shortName="DescriptionTitle"
+                         enabledByDefault="true"
+                         level="WARNING"/>
+        <localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.ModuleTitleInspection"
+                         language="XML"
+                         bundle="com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle"
+                         groupKey="inspections.xml.name"
+                         key="inspections.xml.module.title"
+                         displayName="Module Title Inspection"
+                         shortName="ModuleTitle"
+                         enabledByDefault="true"
+                         level="WARNING"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlModuleDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlCOLsDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlAcronymsDomFileDescription"/>

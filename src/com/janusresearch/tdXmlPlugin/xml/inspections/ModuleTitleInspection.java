@@ -6,35 +6,38 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.ex.BaseLocalInspectionTool;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.XmlElementVisitor;
+import com.intellij.psi.*;
 import com.intellij.psi.xml.XmlElement;
+import com.intellij.psi.xml.XmlTag;
+import com.janusresearch.tdXmlPlugin.xml.inspections.quickFixes.ModuleTitleQuickFix;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
+import static com.janusresearch.tdXmlPlugin.file.FileHandler.getConfigTitle;
+
 /**
  */
-public class FooInspection extends BaseLocalInspectionTool {
+public class ModuleTitleInspection extends BaseLocalInspectionTool {
   @Nls
   @NotNull
   @Override
   public String getGroupDisplayName() {
-    return SampleBundle.message( "inspections.sample.foo.name" );
+    return XmlBundle.message("inspections.xml.module.title");
   }
 
   @Nls
   @NotNull
   @Override
   public String getDisplayName() {
-    return SampleBundle.message( "inspections.sample.foo.name" );
+    return XmlBundle.message("inspections.xml.module.title");
   }
 
   @NotNull
   @Override
   public String getShortName() {
-    return "Foo";
+    return "ModuleTitle";
   }
 
   @NotNull
@@ -44,7 +47,17 @@ public class FooInspection extends BaseLocalInspectionTool {
       @Override
       public void visitXmlElement(XmlElement element) {
         if( isProblematic( element ) ) {
-          holder.registerProblem( element, SampleBundle.message( "inspections.sample.foo.error" ), ProblemHighlightType.GENERIC_ERROR_OR_WARNING, new Fix( element ) );
+          PsiElement thisElement;
+          if (element.getContext() != null) {
+            String text = element.getContext().getChildren()[2].getText();
+            if (!text.equals("\"\"")) {
+              thisElement = element.getContext().getChildren()[2].getFirstChild().getNextSibling();
+            }
+            else {
+              thisElement = element.getParent();
+            }
+            holder.registerProblem(thisElement, XmlBundle.message("inspections.xml.title.error"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING, new Fix(element));
+          }
           return;
         }
         super.visitXmlElement(element);
@@ -52,19 +65,21 @@ public class FooInspection extends BaseLocalInspectionTool {
     };
   }
 
-  private static boolean isProblematic( PsiElement elem ) {
+  private static boolean isProblematic( XmlElement elem ) {
     String text = elem.getText();
-    if( elem.getClass().getName().endsWith( "GosuIdentifierImpl" ) ) {
-      return elem.getText().startsWith("Foo");
+    String title;
+    if (text.equals("title") && ((XmlTag) elem.getParent().getParent()).getName().equals("Module")) {
+      title = Objects.requireNonNull(elem.getContext()).getChildren()[2].getFirstChild().getNextSibling().getText();
+      return !Objects.requireNonNull(title).equals(getConfigTitle(elem));
     }
     return false;
   }
 
   class Fix implements LocalQuickFix {
-    private final FooQuickFix _fix;
+    private final ModuleTitleQuickFix _fix;
 
-    public Fix( PsiElement elem ) {
-      _fix = new FooQuickFix( elem );
+    Fix(PsiElement elem) {
+      _fix = new ModuleTitleQuickFix( elem );
     }
 
     @NotNull
@@ -74,7 +89,7 @@ public class FooInspection extends BaseLocalInspectionTool {
 
     @NotNull
     public String getFamilyName() {
-      return "Foo fix";
+      return "Module Title fix";
     }
 
     public void applyFix( @NotNull Project project, @NotNull ProblemDescriptor descriptor ) {
@@ -88,5 +103,4 @@ public class FooInspection extends BaseLocalInspectionTool {
       }
     }
   }
-
 }

@@ -308,6 +308,12 @@
     </dirset>
   </path>
   
+  <path id="td_xml_plugin.module.test.sourcepath">
+    <dirset dir="${module.td_xml_plugin.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
   
   <target name="compile.module.td_xml_plugin" depends="compile.module.td_xml_plugin.production,compile.module.td_xml_plugin.tests" description="Compile module TD Xml Plugin"/>
   
@@ -333,7 +339,23 @@
     </copy>
   </target>
   
-  <target name="compile.module.td_xml_plugin.tests" depends="register.custom.compilers,compile.module.td_xml_plugin.production" description="compile module TD Xml Plugin; test classes" unless="skip.tests"/>
+  <target name="compile.module.td_xml_plugin.tests" depends="register.custom.compilers,compile.module.td_xml_plugin.production" description="compile module TD Xml Plugin; test classes" unless="skip.tests">
+    <mkdir dir="${td_xml_plugin.testoutput.dir}"/>
+    <javac2 destdir="${td_xml_plugin.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.td_xml_plugin}/javac">
+      <compilerarg line="${compiler.args.td_xml_plugin}"/>
+      <bootclasspath refid="td_xml_plugin.module.bootclasspath"/>
+      <classpath refid="td_xml_plugin.module.classpath"/>
+      <src refid="td_xml_plugin.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.td_xml_plugin"/>
+    </javac2>
+    
+    <copy todir="${td_xml_plugin.testoutput.dir}">
+      <fileset dir="${module.td_xml_plugin.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
   
   <target name="clean.module.td_xml_plugin" description="cleanup module">
     <delete dir="${td_xml_plugin.output.dir}"/>

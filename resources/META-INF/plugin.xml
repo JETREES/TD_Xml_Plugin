@@ -35,24 +35,33 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.DescriptionTitleInspection"
-                         language="XML"
-                         bundle="com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle"
-                         groupKey="inspections.xml.name"
-                         key="inspections.xml.description.title"
-                         displayName="Description Title Inspection"
-                         shortName="DescriptionTitle"
-                         enabledByDefault="true"
-                         level="WARNING"/>
         <localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.ModuleTitleInspection"
                          language="XML"
                          bundle="com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle"
                          groupKey="inspections.xml.name"
                          key="inspections.xml.module.title"
-                         displayName="Module Title Inspection"
+                         displayName="Module Lesson Title Inspection"
                          shortName="ModuleTitle"
                          enabledByDefault="true"
                          level="WARNING"/>
+        <!--<localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.DescriptionTitleInspection"
+                         language="XML"
+                         bundle="com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle"
+                         groupKey="inspections.xml.name"
+                         key="inspections.xml.description.title"
+                         displayName="Description Lesson Title Inspection"
+                         shortName="DescriptionTitle"
+                         enabledByDefault="true"
+                         level="WARNING"/>-->
+        <!--<localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.ConclusionTitleInspection"
+                         language="XML"
+                         bundle="com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle"
+                         groupKey="inspections.xml.name"
+                         key="inspections.xml.conclusion.title"
+                         displayName="Conclusion Lesson Title Inspection"
+                         shortName="ConclusionTitle"
+                         enabledByDefault="true"
+                         level="WARNING"/>-->
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlModuleDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlCOLsDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlAcronymsDomFileDescription"/>
@@ -74,7 +83,7 @@
                 description="Intelligently determines the step count for an APV lesson."
                 icon="PluginIcons.stepCount">
         </action>
-        <action id="lessonScripts" class="com.janusresearch.tdXmlPlugin.LessonScripts" text="Generate Lesson Script(s)"
+        <action id="lessonScripts" class="com.janusresearch.tdXmlPlugin.LessonScripts" text="Lesson Script(s)"
                 description="Generates Lesson Script(s) for an entire project or a single lesson"
                 icon="PluginIcons.lessonScript">
         </action>

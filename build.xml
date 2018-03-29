@@ -390,7 +390,8 @@
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
-  
+
+  <target name="test" description="test"/>
   <target name="clean" depends="clean.module.td_xml_plugin" description="cleanup all"/>
   
   <target name="build.modules" depends="init, clean, plugin.build.jar.td_xml_plugin" description="build all modules"/>

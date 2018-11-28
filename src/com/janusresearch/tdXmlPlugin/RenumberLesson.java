@@ -196,6 +196,7 @@ public class RenumberLesson extends AnAction {
     }
 
     private void printRenumberingModifications(String fileName, StepTree stepTree, FrameSet frameSet) {
+        XmlToolWindow.getXmlConsole().clear();
         //Print lesson number to console
         XmlToolWindow.getXmlConsole().print("Renumber Lesson:", XmlConsoleViewContentType.TITLE_OUTPUT_UNDERLINE);
         XmlToolWindow.getXmlConsole().print(" " + fileName + "\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
@@ -203,56 +204,72 @@ public class RenumberLesson extends AnAction {
         //Print StepTree Modifications to console
         XmlToolWindow.getXmlConsole().print("Step Tree Modifications\n", XmlConsoleViewContentType.TITLE_OUTPUT_UNDERLINE);
         int i;
+        boolean changeDetected = false;
         for (i = 0; i < stepTree.getNodeCount(); i++) {
-            int spaces = 14 - stepTree.getOldNodeValues()[i][0].length() - stepTree.getOldNodeValues()[i][1].length() - stepTree.getOldNodeValues()[i][2].length();
-            XmlToolWindow.getXmlConsole().print("<node ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("name=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + stepTree.getOldNodeValues()[i][0] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("parent=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + stepTree.getOldNodeValues()[i][1] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("id=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + stepTree.getOldNodeValues()[i][2] + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("/>  ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
-            for (int j = 0; j < spaces; j++) {
-                XmlToolWindow.getXmlConsole().print(" ", XmlConsoleViewContentType.CHANGE_OUTPUT);
+            if (!Objects.equals(stepTree.getOldNodeValues()[i][0], stepTree.getNewNodeValues()[i][0]) || !Objects.equals(stepTree.getOldNodeValues()[i][1], stepTree.getNewNodeValues()[i][1]) || !Objects.equals(stepTree.getOldNodeValues()[i][2], stepTree.getNewNodeValues()[i][2])) {
+                changeDetected = true;
+                int spaces = 8 - stepTree.getOldNodeValues()[i][0].length() - stepTree.getOldNodeValues()[i][1].length() - stepTree.getOldNodeValues()[i][2].length();
+                XmlToolWindow.getXmlConsole().print("<node ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("name=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + stepTree.getOldNodeValues()[i][0] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("parent=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + stepTree.getOldNodeValues()[i][1] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("id=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + stepTree.getOldNodeValues()[i][2] + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("/>  ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+                for (int j = 0; j < spaces; j++) {
+                    XmlToolWindow.getXmlConsole().print(" ", XmlConsoleViewContentType.CHANGE_OUTPUT);
+                }
+                XmlToolWindow.getXmlConsole().print("-->  ", XmlConsoleViewContentType.CHANGE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("<node ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("name=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + stepTree.getNewNodeValues()[i][0] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("parent=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + stepTree.getNewNodeValues()[i][1] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("id=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + stepTree.getNewNodeValues()[i][2] + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("/>\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
             }
-            XmlToolWindow.getXmlConsole().print("-->  ", XmlConsoleViewContentType.CHANGE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("<node ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("name=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + stepTree.getNewNodeValues()[i][0] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("parent=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + stepTree.getNewNodeValues()[i][1] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("id=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + stepTree.getNewNodeValues()[i][2] + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("/>\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
         }
+        if (!changeDetected) {
+            XmlToolWindow.getXmlConsole().print("No Changes Detected\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+            changeDetected = false;
+        }
+
         XmlToolWindow.getXmlConsole().print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
 
         //Print FrameSet Modifications to console
         XmlToolWindow.getXmlConsole().print("Frame Set Modifications\n", XmlConsoleViewContentType.TITLE_OUTPUT_UNDERLINE);
         for (i = 0; i < frameSet.getFrameCount(); i++) {
-            int spaces = 13 - frameSet.getOldFrameValues()[i][0].length() - frameSet.getOldFrameValues()[i][1].length() - frameSet.getOldFrameValues()[i][2].length();
-            XmlToolWindow.getXmlConsole().print("<Frame ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("id=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + frameSet.getOldFrameValues()[i][0] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("node=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + frameSet.getOldFrameValues()[i][1] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("weight=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + frameSet.getOldFrameValues()[i][2] + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("/>  ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
-            for (int j = 0; j < spaces; j++) {
-                XmlToolWindow.getXmlConsole().print(" ", XmlConsoleViewContentType.CHANGE_OUTPUT);
+            if (!Objects.equals(frameSet.getOldFrameValues()[i][0], frameSet.getNewFrameValues()[i][0]) || !Objects.equals(frameSet.getOldFrameValues()[i][1], frameSet.getNewFrameValues()[i][1]) || !Objects.equals(frameSet.getOldFrameValues()[i][2], frameSet.getNewFrameValues()[i][2])) {
+                changeDetected = true;
+                int spaces = 7 - frameSet.getOldFrameValues()[i][0].length() - frameSet.getOldFrameValues()[i][1].length() - frameSet.getOldFrameValues()[i][2].length();
+                XmlToolWindow.getXmlConsole().print("<Frame ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("id=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + frameSet.getOldFrameValues()[i][0] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("node=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + frameSet.getOldFrameValues()[i][1] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("weight=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + frameSet.getOldFrameValues()[i][2] + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("/>  ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+                for (int j = 0; j < spaces; j++) {
+                    XmlToolWindow.getXmlConsole().print(" ", XmlConsoleViewContentType.CHANGE_OUTPUT);
+                }
+                XmlToolWindow.getXmlConsole().print("-->  ", XmlConsoleViewContentType.CHANGE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("<Frame ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("id=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + frameSet.getNewFrameValues()[i][0] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("node=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + frameSet.getNewFrameValues()[i][1] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("weight=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("\"" + frameSet.getNewFrameValues()[i][2] + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
+                XmlToolWindow.getXmlConsole().print("/>\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
             }
-            XmlToolWindow.getXmlConsole().print("-->  ", XmlConsoleViewContentType.CHANGE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("<Frame ", XmlConsoleViewContentType.ELEMENT_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("id=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + frameSet.getNewFrameValues()[i][0] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("node=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + frameSet.getNewFrameValues()[i][1] + "\" ", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("weight=", XmlConsoleViewContentType.ATTRIBUTE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("\"" + frameSet.getNewFrameValues()[i][2] + "\"", XmlConsoleViewContentType.VALUE_OUTPUT);
-            XmlToolWindow.getXmlConsole().print("/>\n", XmlConsoleViewContentType.ELEMENT_OUTPUT);
         }
+        if (!changeDetected) {
+            XmlToolWindow.getXmlConsole().print("No Changes Detected", XmlConsoleViewContentType.ELEMENT_OUTPUT);
+        }
+
         XmlToolWindow.getXmlConsole().print("\n\n", ConsoleViewContentType.NORMAL_OUTPUT);
         XmlToolWindow.showToolWindow();
     }

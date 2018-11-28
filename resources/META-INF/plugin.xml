@@ -35,33 +35,16 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.ModuleTitleInspection"
+        <localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.LessonTitleInspection"
                          language="XML"
                          bundle="com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle"
                          groupKey="inspections.xml.name"
-                         key="inspections.xml.module.title"
-                         displayName="Module Lesson Title Inspection"
-                         shortName="ModuleTitle"
+                         key="inspections.xml.lessonTitle"
+                         displayName="Lesson Title Inspection"
+                         shortName="LessonTitle"
                          enabledByDefault="true"
                          level="WARNING"/>
-        <!--<localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.DescriptionTitleInspection"
-                         language="XML"
-                         bundle="com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle"
-                         groupKey="inspections.xml.name"
-                         key="inspections.xml.description.title"
-                         displayName="Description Lesson Title Inspection"
-                         shortName="DescriptionTitle"
-                         enabledByDefault="true"
-                         level="WARNING"/>-->
-        <!--<localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.ConclusionTitleInspection"
-                         language="XML"
-                         bundle="com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle"
-                         groupKey="inspections.xml.name"
-                         key="inspections.xml.conclusion.title"
-                         displayName="Conclusion Lesson Title Inspection"
-                         shortName="ConclusionTitle"
-                         enabledByDefault="true"
-                         level="WARNING"/>-->
+
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlModuleDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlCOLsDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlAcronymsDomFileDescription"/>

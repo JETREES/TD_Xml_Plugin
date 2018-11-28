@@ -35,7 +35,7 @@ public class FooInspection extends BaseLocalInspectionTool {
     @NotNull
     @Override
     public String getShortName() {
-        return "Foo";
+        return "FooInspection";
     }
 
     @NotNull

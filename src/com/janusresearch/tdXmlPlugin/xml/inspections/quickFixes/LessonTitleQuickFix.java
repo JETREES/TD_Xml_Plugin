@@ -68,35 +68,38 @@ public class LessonTitleQuickFix extends LocalQuickFixAndIntentionActionOnPsiEle
             }
 
             // fixes lesson title in the Module title attribute
-            if (Objects.equals(((XmlTag) startElement.getParent().getParent()).getName(), "Module")) {
-                PsiElement[] children = Objects.requireNonNull(startElement.getContext()).getChildren()[2].getChildren();
-                if (children.length == 3) {
-                    startElement = Objects.requireNonNull(startElement.getContext()).getChildren()[2].getFirstChild().getNextSibling();
-                    Objects.requireNonNull(file.getViewProvider().getDocument()).replaceString(startElement.getTextOffset(),
-                            startElement.getTextOffset() + startElement.getTextLength(),
-                            getConfigTitle(startElement));
-                }
-                else if (children.length == 2) {
-                    startElement = startElement.getContext().getChildren()[2].getLastChild();
-                    Objects.requireNonNull(file.getViewProvider().getDocument()).replaceString(startElement.getTextOffset(),
-                            startElement.getTextOffset() + startElement.getTextLength(),
-                            getConfigTitle(startElement) + "\"");
+            if (startElement.getParent().getParent().getClass().getName().endsWith("XmlTagImpl")) {
+                if (Objects.equals(((XmlTag) startElement.getParent().getParent()).getName(), "Module")) {
+                    PsiElement[] children = Objects.requireNonNull(startElement.getContext()).getChildren()[2].getChildren();
+                    if (children.length == 3) {
+                        startElement = Objects.requireNonNull(startElement.getContext()).getChildren()[2].getFirstChild().getNextSibling();
+                        Objects.requireNonNull(file.getViewProvider().getDocument()).replaceString(startElement.getTextOffset(),
+                                startElement.getTextOffset() + startElement.getTextLength(),
+                                getConfigTitle(startElement));
+                    } else if (children.length == 2) {
+                        startElement = startElement.getContext().getChildren()[2].getLastChild();
+                        Objects.requireNonNull(file.getViewProvider().getDocument()).replaceString(startElement.getTextOffset(),
+                                startElement.getTextOffset() + startElement.getTextLength(),
+                                getConfigTitle(startElement) + "\"");
+                    }
                 }
             }
 
             // fixes lesson title in Description Title tag
-            if (Objects.equals(((XmlTag) startElement.getParent()).getName(), "Title") && Objects.equals(((XmlTag) startElement.getParent().getParent()).getName(), "Description")) {
-                PsiElement[] children = Objects.requireNonNull(startElement.getContext()).getChildren();
-                if (children.length == 6) {
-                    startElement = startElement.getContext().getChildren()[3];
-                    Objects.requireNonNull(file.getViewProvider().getDocument()).replaceString(startElement.getTextOffset(),
-                            startElement.getTextOffset() + startElement.getTextLength(),
-                            getConfigTitle(startElement) + "</");
-                } else if (children.length == 7) {
-                    startElement = startElement.getContext().getChildren()[3];
-                    Objects.requireNonNull(file.getViewProvider().getDocument()).replaceString(startElement.getTextOffset(),
-                            startElement.getTextOffset() + startElement.getTextLength(),
-                            getConfigTitle(startElement));
+            if (startElement.getParent().getParent().getClass().getName().endsWith("XmlTagImpl")) {
+                if (Objects.equals(((XmlTag) startElement.getParent()).getName(), "Title") && Objects.equals(((XmlTag) startElement.getParent().getParent()).getName(), "Description")) {
+                    PsiElement[] children = Objects.requireNonNull(startElement.getContext()).getChildren();
+                    if (children.length == 6) {
+                        startElement = startElement.getContext().getChildren()[3];
+                        Objects.requireNonNull(file.getViewProvider().getDocument()).replaceString(startElement.getTextOffset(),
+                                startElement.getTextOffset() + startElement.getTextLength(),
+                                getConfigTitle(startElement) + "</");
+                    } else if (children.length == 7) {
+                        startElement = startElement.getContext().getChildren()[3];
+                        Objects.requireNonNull(file.getViewProvider().getDocument()).replaceString(startElement.getTextOffset(),
+                                startElement.getTextOffset() + startElement.getTextLength(),
+                                getConfigTitle(startElement));
+                    }
                 }
             }
         }

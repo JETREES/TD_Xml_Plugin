@@ -50,19 +50,21 @@ public class LessonTitleInspection extends BaseLocalInspectionTool {
                 if( isProblematic( element ) ) {
                     PsiElement thisElement;
                     if (element.getContext() != null) {
-                        if (element.getText().equals("title") && ((XmlTag) element.getParent().getParent()).getName().equals("Module")) {
-                            String text = element.getContext().getChildren()[2].getText();
-                            if (!text.equals("\"\"")) {
-                                thisElement = element.getContext().getChildren()[2].getFirstChild().getNextSibling();
-                            } else {
-                                thisElement = element.getParent();
+                        if(element.getClass().getName().endsWith( "XmlTokenImpl" )) {
+                            if (element.getText().equals("title") && ((XmlTag) element.getParent().getParent()).getName().equals("Module")) {
+                                String text = element.getContext().getChildren()[2].getText();
+                                if (!text.equals("\"\"")) {
+                                    thisElement = element.getContext().getChildren()[2].getFirstChild().getNextSibling();
+                                } else {
+                                    thisElement = element.getParent();
+                                }
+                                holder.registerProblem(thisElement, XmlBundle.message("inspections.xml.lessonTitle.error"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING, new Fix(element));
                             }
-                            holder.registerProblem(thisElement, XmlBundle.message("inspections.xml.lessonTitle.error"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING, new Fix(element));
                         }
-
-                        if( element.getClass().getName().endsWith( "XmlTextImpl" )) {
+                        else if( element.getClass().getName().endsWith( "XmlTextImpl" )) {
                             if (((XmlTag) element.getParent()).getName().equals("Title")) {
-                                holder.registerProblem(element, XmlBundle.message("inspections.xml.lessonTitle.error"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING, new Fix(element));
+                                thisElement = element.getContext().getChildren()[3];
+                                holder.registerProblem(thisElement, XmlBundle.message("inspections.xml.lessonTitle.error"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING, new Fix(element));
                             }
                             else if (element.getText().startsWith("\"This concludes the")){
                                 holder.registerProblem(element, XmlBundle.message("inspections.xml.lessonTitle.error"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING, TextRange.create(20, element.getTextLength() - 70), new Fix(element));

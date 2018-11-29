@@ -44,15 +44,15 @@
                          shortName="LessonTitle"
                          enabledByDefault="true"
                          level="WARNING"/>
-        <!--<localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.TextDoubleSpaceInspection"
+        <localInspection implementationClass="com.janusresearch.tdXmlPlugin.xml.inspections.UnnecessarySpacingInspection"
                          language="XML"
                          bundle="com.janusresearch.tdXmlPlugin.xml.inspections.XmlBundle"
                          groupKey="inspections.xml.name"
-                         key="inspections.xml.text.doubleSpace"
-                         displayName="Text Double Space Inspection"
-                         shortName="TextDoubleSpace"
+                         key="inspections.xml.text.spacing"
+                         displayName="Unnecessary Spacing Inspection"
+                         shortName="UnnecessarySpacing"
                          enabledByDefault="true"
-                         level="WARNING"/>-->
+                         level="WARNING"/>
 
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlModuleDomFileDescription"/>
         <dom.fileDescription implementation="com.janusresearch.tdXmlPlugin.xml.descriptions.XmlCOLsDomFileDescription"/>

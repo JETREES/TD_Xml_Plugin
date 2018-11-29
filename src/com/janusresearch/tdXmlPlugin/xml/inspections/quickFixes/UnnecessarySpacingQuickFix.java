@@ -16,23 +16,23 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  */
-public class TextDoubleSpaceQuickFix extends LocalQuickFixAndIntentionActionOnPsiElement {
-    private static final Logger LOG = Logger.getInstance( "#" + TextDoubleSpaceQuickFix.class.getName() );
+public class UnnecessarySpacingQuickFix extends LocalQuickFixAndIntentionActionOnPsiElement {
+    private static final Logger LOG = Logger.getInstance( "#" + UnnecessarySpacingQuickFix.class.getName() );
 
-    public TextDoubleSpaceQuickFix(PsiElement elem ) {
+    public UnnecessarySpacingQuickFix(PsiElement elem ) {
         super( elem );
     }
 
     @NotNull
     @Override
     public String getText() {
-        return "Replace double space with single space";
+        return "Remove unnecessary spaces";
     }
 
     @Override
     @NotNull
     public String getFamilyName() {
-        return "Replace double with single space";
+        return "Remove unnecessary spaces";
     }
 
     @Override
